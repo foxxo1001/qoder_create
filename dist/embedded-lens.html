@@ -343,6 +343,9 @@ body.landing-on{overflow:hidden}
 .ld-stage{grid-row:1;grid-column:2;position:relative;margin:8px 8px 8px 0;display:grid;place-items:center;perspective:900px}
 #ldgl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
 #ldgl:active{cursor:grabbing}
+.ld-zoom{position:absolute;right:12px;bottom:44px;display:flex;gap:6px;z-index:3}
+.ld-zoom button{font-family:var(--mono);font-size:11px;line-height:1;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:2px;min-width:24px;height:24px;padding:0 6px;cursor:pointer}
+.ld-zoom button:hover{color:var(--accent);border-color:var(--accent)}
 .ld-stage.gl-ok .ld-scope{display:none}
 .ld-q{position:absolute;left:66%;top:22%;font-family:var(--mono);font-size:12px;color:var(--faint);display:none;pointer-events:none;animation:ldq 7s ease-in-out infinite}
 .ld-stage.gl-ok .ld-q{display:block}
@@ -402,7 +405,7 @@ body.landing-on #ldhome{display:none}
 #landing{grid-template-columns:1fr}
 .ld-main{padding:clamp(22px,6vw,40px);max-width:none}
 .ld-stage{position:absolute;right:-22%;bottom:2%;width:88vw;height:88vw;margin:0;opacity:.3;pointer-events:none;z-index:0}
-.ld-tag,.ld-trace,.ld-eggtoast,.ld-wave,.ld-stage-foot,.ld-ruler,.ld-stage-tag{display:none}
+.ld-tag,.ld-trace,.ld-eggtoast,.ld-wave,.ld-stage-foot,.ld-ruler,.ld-stage-tag,.ld-zoom{display:none}
 .ld-sweep{display:none}
 .ld-title{font-size:clamp(46px,13vw,72px)}
 .ld-meta{gap:14px}
@@ -435,6 +438,7 @@ body.landing-on #ldhome{display:none}
     <div class="ld-ruler l"></div>
     <div class="ld-ruler r"></div>
     <canvas id="ldgl"></canvas>
+    <div class="ld-zoom" aria-hidden="true"><button id="ldzout" tabindex="-1" aria-label="缩小">−</button><button id="ldzin" tabindex="-1" aria-label="放大">+</button><button id="ldzreset" tabindex="-1" aria-label="复位视角">RESET</button></div>
     <span class="ld-q" id="ldq" aria-hidden="true">?</span>
     <div class="ld-scope" id="ldscope">
       <svg viewBox="0 0 560 560" id="ldsvg">
@@ -467,7 +471,7 @@ body.landing-on #ldhome{display:none}
     <span class="ld-tag t3"><i></i>DELAYED</span>
     <span class="ld-tag t4"><i></i>ODR</span>
     <svg class="ld-wave" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,34 12,34 14,18 18,18 20,34 42,34 46,26 50,26 52,34 78,34 80,10 84,10 86,34 104,34 108,30 112,30 114,34 150,34 152,22 156,22 158,34 186,34 190,38 194,38 196,34 230,34 232,14 236,14 238,34 260,34 264,28 268,28 270,34 300,34 302,20 306,20 308,34 336,34 340,32 344,32 346,34 380,34 382,12 386,12 388,34 420,34"/></svg>
-    <div class="ld-stage-foot"><span>SWD · 2-WIRE</span><span>DRAG TO ROTATE</span><span>HALT → READ → RESUME</span></div>
+    <div class="ld-stage-foot"><span>SWD · 2-WIRE</span><span>DRAG ROTATE · WHEEL ZOOM</span><span>HALT → READ → RESUME</span></div>
     <div class="ld-trace" id="ldtrace"><span>HALT</span><i></i><span>READ</span><i></i><span>RESUME</span><div class="ld-scanbar" id="ldscan"></div></div>
     <div class="ld-eggtoast" id="ldeggtoast">彩蛋 · 停核采样演练（示意）</div>
   </div>
@@ -1356,7 +1360,7 @@ function init3D(){
     [13,23].forEach(z=>box(1,.8,4,tinMat,x,3.6,z));
   }
   /* 双晶振：8 MHz 大罐 + 32.768 kHz 小罐 */
-  box(16,5,8,canMat,-56,5.7,-30);
+  box(20,7,10,canMat,-56,5.7,-30);
   box(8,3,4,canMat,-56,4.7,-16);
   /* LDO + 两颗电解电容（黑壳银顶 + 负极白条） */
   box(11,3.2,7,blackMat,-66,4.8,34);
@@ -1398,6 +1402,49 @@ function init3D(){
   /* JST 电池座 */
   box(12,6,9,whiteMat,-134,6.2,-42);
   [-137,-131].forEach(x=>box(1.6,4,1.6,goldMat,x,9.5,-42));
+  /* 晶振负载电容 / 去耦电容（0603 MLCC）与 0805 */
+  const resMat=new T.MeshStandardMaterial({color:col(0x1b1e22),roughness:.7,metalness:.1});
+  const mlccMat=new T.MeshStandardMaterial({color:col(0xc7a86a),roughness:.55,metalness:.15});
+  const indMat=new T.MeshStandardMaterial({color:col(0x3a3f45),roughness:.5,metalness:.3});
+  const tantMat=new T.MeshStandardMaterial({color:col(0xc9a13a),roughness:.45,metalness:.25});
+  function smd(x,z,mat,w,d,h){
+    box(w,h,d,mat,x,3.2+h/2,z);
+    [-1,1].forEach(sx=>box(w*.24,h+.2,d+.2,tinMat,x+sx*(w/2-w*.12),3.2+h/2,z));
+  }
+  function res(x,z){smd(x,z,resMat,7.5,3.7,1.8);}
+  function cap(x,z){smd(x,z,mlccMat,7.5,3.7,2);}
+  /* MCU 四边去耦电容 */
+  [-32,-22,-12,-2].forEach(x=>{cap(x,-42);cap(x,34);});
+  [-18,-8,2].forEach(z=>{cap(-48,z);cap(28,z);});
+  /* 晶振负载电容 */
+  cap(-44,-38);cap(-44,-26);cap(-66,-24);cap(-66,-12);
+  /* LDO 输入输出：钽电容 + MLCC + 功率电感 + 磁珠 + 防反二极管 */
+  smd(-80,26,tantMat,12,7,6);smd(-80,44,tantMat,12,7,6);
+  cap(-54,28);cap(-54,44);
+  smd(-96,26,indMat,13,10,5);
+  smd(-110,34,resMat,7,4,2.6);
+  smd(-124,34,blackMat,7,4,2.4);
+  box(1,2.6,4.4,silkMat,-124,4.4,32.6);
+  /* USB 串阻与上拉、ESD */
+  res(-124,6);res(-124,-2);res(-118,-14);
+  box(6,2.4,8,blackMat,-134,4.4,-16);
+  for(let i=0;i<3;i++){box(1,.8,3,tinMat,-137+i*3,3.6,-21);box(1,.8,3,tinMat,-137+i*3,3.6,-11);}
+  /* 复位上拉与电容 */
+  res(-30,48);cap(-30,60);
+  /* LED 限流电阻 */
+  [-56,-28,-4,20].forEach(z=>res(92,z));
+  /* OLED I2C 上拉 */
+  res(-124,-24);res(-124,-12);
+  /* 电位器与 SD 上拉、排阻 */
+  res(50,36);cap(74,36);res(36,28);
+  [8,20,32].forEach(x=>res(x,-42));
+  /* 驱动三极管 SOT-23 */
+  [[24,36],[88,28]].forEach(q=>{
+    box(5,2.2,6,blackMat,q[0],4.3,q[1]);
+    box(1.2,.8,2.6,tinMat,q[0]-1.6,3.5,q[1]+4);
+    box(1.2,.8,2.6,tinMat,q[0]+1.6,3.5,q[1]+4);
+    box(1.2,.8,2.6,tinMat,q[0],3.5,q[1]-4);
+  });
   /* SWD 1×4 */
   box(10,3,26,blackMat,134,4.7,-24);
   [-34,-29,-24,-19].forEach(z=>box(1.8,6,1.8,goldMat,134,9,z));
@@ -1412,7 +1459,7 @@ function init3D(){
   const ledTx=ledMesh(0xffb35c,0xff9a3c);ledTx.position.set(104,4.6,20);board.add(ledTx);
   /* 测试焊盘 + 右侧原型焊盘区 */
   for(let i=0;i<8;i++)box(3,.4,3,goldMat,20+i*10,3.5,64);
-  for(let r=0;r<4;r++)for(let c=0;c<6;c++)box(2.2,.35,2.2,tinMat,84+c*8,3.4,38+r*8);
+  for(let r=0;r<4;r++)for(let c=0;c<6;c++)box(2.2,.35,2.2,tinMat,84+c*8,3.4,30+r*8);
   /* 固定孔 */
   [[-142,-68],[142,-68],[-142,68],[142,68]].forEach(q=>{
     cyl(3.2,3.2,1.6,canMat,q[0],3.6,q[1]);
@@ -1452,21 +1499,31 @@ function init3D(){
     const x=c.getContext('2d');
     function label(txt,wx,wz,size,col){x.fillStyle=col||'rgba(214,232,248,.85)';x.font='500 '+size+'px Consolas,monospace';x.textAlign='center';
       x.fillText(txt,(wx+150)/300*1536,816*(.5+wz/160));}
-    label('U1',-10,32,26);
-    label('Y1',-56,-40,22);label('Y2',-56,-6,22);
-    label('U2',-104,30,22);label('U3',-66,46,22);
-    label('OLED',-100,-62,24);
-    label('SD',52,28,22);
-    label('BUZ',24,50,22);
-    label('KEY1',36,-62,22);label('KEY2',62,-62,22);
-    label('RST',-42,60,24);label('BOOT0',-42,-62,22);
-    label('SWD',134,-44,24);
-    label('PC3',104,-18,22);label('PC1',104,6,22);
-    label('PWR',104,-46,22);label('TX',104,30,22);
-    label('J1',-134,-56,22);label('VBAT',-116,-56,20);
-    label('PROTO',104,66,20);
-    label('3V3',-140,-64,22);label('GND',-140,64,22);
-    label('F103 MULTI-IO',0,-64,28,'rgba(159,196,232,.6)');
+    label('U1',-46,12,24);
+    label('Y1',-56,-44,20);label('Y2',-56,-6,20);
+    label('U2',-104,30,20);label('U3',-66,54,20);
+    label('OLED',-100,-16,22);
+    label('SD',52,28,20);
+    label('BUZ',24,50,20);
+    label('KEY1',26,-50,18);label('KEY2',52,-50,18);
+    label('RST',-42,34,20);label('BOOT0',-42,-38,20);
+    label('SWD',134,-44,22);
+    label('PC3',104,-18,20);label('PC1',104,6,20);
+    label('PWR',104,-46,20);label('TX',104,10,18);
+    label('J1',-134,-56,20);label('VBAT',-116,-56,18);
+    label('PROTO',104,66,18);
+    label('C1',-32,-48,16);label('C5',-32,42,16);label('C9',-56,-18,16);label('C12',36,-18,16);
+    label('C15',-44,-46,16);label('C17',-74,-24,16);
+    label('C19',-80,16,16);label('C20',-80,54,16);label('C21',-54,20,16);label('C22',-54,54,16);
+    label('L1',-96,36,16);label('FB1',-110,42,16);label('D1',-124,42,16);
+    label('Q1',24,44,16);label('Q2',88,20,16);
+    label('R1',-124,14,16);label('R3',-118,-22,16);label('R4',-30,56,16);label('R5',84,-56,16);
+    label('R9',-124,-32,16);label('R11',50,28,16);label('R12',36,20,16);label('R13',8,-34,16);
+    label('ESD',-134,-6,14);
+    const pinTop=['3V3','GND','PA0','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PB0','PB1','PB2','PB3','PB4','PB5','PB6','PB7','PB8','PB9','PC13','PC14','PC15','VBAT'];
+    const pinBot=['GND','5V','PA8','PA9','PA10','PA11','PA12','PA13','PA14','PA15','PB10','PB11','PB12','PB13','PB14','PB15','PC0','PC1','PC2','PC3','PC4','PC5','PC6','PC7'];
+    pinTop.forEach((p,i)=>label(p,-134.5+i*11.7,-62,15,'rgba(214,232,248,.78)'));
+    pinBot.forEach((p,i)=>label(p,-134.5+i*11.7,60,15,'rgba(214,232,248,.78)'));
     label('E M B E D D E D  L E N S',0,68,30,'rgba(159,196,232,.6)');
     const t=new T.CanvasTexture(c);t.anisotropy=4;t.encoding=T.sRGBEncoding;return t;
   }
@@ -1478,7 +1535,7 @@ function init3D(){
     new T.MeshBasicMaterial({color:0x14406b,transparent:true,opacity:.45}));
   ring.rotation.x=-Math.PI/2+.26;ringGroup.add(ring);
 
-  const state={yaw:.72,pitch:.95,radius:420,lookX:0,lookY:0,auto:true,freeze:false,dragging:false};
+  const state={yaw:.72,pitch:.95,radius:420,zoom:1,lookX:0,lookY:0,auto:true,freeze:false,dragging:false,pinching:false};
   function fit(){
     const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -1489,19 +1546,40 @@ function init3D(){
   if(window.ResizeObserver)new ResizeObserver(fit).observe(host);
 
   const ray=new T.Raycaster(),pt=new T.Vector2();
-  let downX=0,downY=0,lastX=0,lastY=0,idle=null;
+  let downX=0,downY=0,lastX=0,lastY=0,idle=null,targetZoom=1;
   function castAt(e){
     const b=canvas.getBoundingClientRect();
     pt.x=((e.clientX-b.left)/b.width)*2-1;pt.y=-((e.clientY-b.top)/b.height)*2+1;
     ray.setFromCamera(pt,camera);
     return ray.intersectObject(body,false).length>0;
   }
+  function zoomTo(z){
+    targetZoom=Math.max(.55,Math.min(2.3,z));
+    if(G&&!RM2.matches)G.to(state,{zoom:targetZoom,duration:.32,ease:'power2.out',overwrite:'auto'});
+    else state.zoom=targetZoom;
+  }
+  function resetView(){
+    targetZoom=1;
+    if(G&&!RM2.matches)G.to(state,{yaw:.72,pitch:.95,zoom:1,duration:.6,ease:'power3.inOut',overwrite:'auto'});
+    else{state.yaw=.72;state.pitch=.95;state.zoom=1;}
+  }
+  const pts=new Map();let pinchDist=0;
+  function twoDist(){const a=[...pts.values()];return a.length<2?0:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);}
   canvas.addEventListener('pointerdown',e=>{
-    state.dragging=true;state.auto=false;clearTimeout(idle);
-    downX=lastX=e.clientX;downY=lastY=e.clientY;
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(canvas.setPointerCapture)canvas.setPointerCapture(e.pointerId);
+    if(pts.size===2){state.pinching=true;state.dragging=false;state.auto=false;pinchDist=twoDist();clearTimeout(idle);}
+    else if(pts.size===1){
+      state.dragging=true;state.auto=false;clearTimeout(idle);
+      downX=lastX=e.clientX;downY=lastY=e.clientY;
+    }
   });
   canvas.addEventListener('pointermove',e=>{
+    if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(state.pinching){
+      if(pts.size>=2){const d=twoDist();if(d>0&&pinchDist>0)zoomTo(targetZoom*(pinchDist/d));pinchDist=d;}
+      return;
+    }
     if(state.dragging){
       state.yaw-=(e.clientX-lastX)*.006;
       state.pitch=Math.max(.45,Math.min(1.38,state.pitch-(e.clientY-lastY)*.005));
@@ -1513,6 +1591,8 @@ function init3D(){
     }
   });
   function endDrag(e){
+    pts.delete(e.pointerId);
+    if(state.pinching){if(pts.size<2){state.pinching=false;idle=setTimeout(()=>{state.auto=true;},2600);}return;}
     if(!state.dragging)return;
     state.dragging=false;
     idle=setTimeout(()=>{state.auto=true;},2600);
@@ -1521,6 +1601,12 @@ function init3D(){
   canvas.addEventListener('pointerup',endDrag);
   canvas.addEventListener('pointercancel',endDrag);
   canvas.addEventListener('pointerleave',()=>{bodyMat.emissive.setHex(0x000000);canvas.style.cursor='grab';});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();zoomTo(targetZoom*Math.exp(e.deltaY*.0011));},{passive:false});
+  canvas.addEventListener('dblclick',e=>{e.preventDefault();resetView();});
+  const zin=$('ldzin'),zout=$('ldzout'),zreset=$('ldzreset');
+  if(zin)zin.addEventListener('click',()=>zoomTo(targetZoom/1.22));
+  if(zout)zout.addEventListener('click',()=>zoomTo(targetZoom*1.22));
+  if(zreset)zreset.addEventListener('click',resetView);
 
   let prev=0;
   renderer.setAnimationLoop(t=>{
@@ -1528,7 +1614,7 @@ function init3D(){
     const dt=prev?Math.min(.06,(t-prev)/1000):0;prev=t;
     if(state.auto&&!state.dragging&&!state.freeze)state.yaw+=dt*.11;
     const yaw=state.yaw+state.lookX*.22,pitch=state.pitch+state.lookY*.07;
-    const sp=Math.sin(pitch),rad=state.radius;
+    const sp=Math.sin(pitch),rad=state.radius*state.zoom;
     camera.position.set(rad*sp*Math.sin(yaw),rad*Math.cos(pitch)+12,rad*sp*Math.cos(yaw));
     camera.lookAt(0,12,0);
     if(!state.freeze){board.position.y=Math.sin(t/1600)*1.6;board.rotation.z=Math.sin(t/2400)*.012;ringGroup.rotation.y+=dt*.5;}
