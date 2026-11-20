@@ -17,7 +17,10 @@
 --r:3px;--ease:cubic-bezier(.22,.61,.36,1)}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh}
-.wrap{max-width:1040px;margin:0 auto;padding:0 22px 80px;position:relative}
+.wrap{width:100%;min-width:0;position:relative}
+.wrap::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;mask-image:linear-gradient(#000,transparent 500px)}
+#ldgrid,.wrap::before{background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);background-size:56px 56px}
+body.landing-on .wrap{visibility:hidden}
 ::selection{background:var(--accent-tint);color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 ::-webkit-scrollbar{width:11px;height:11px}
@@ -30,19 +33,40 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:
 svg.ic{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
 
 /* datasheet masthead */
-.masthead{display:grid;grid-template-columns:1fr auto;gap:26px;align-items:end;padding:34px 0 20px;border-bottom:2px solid var(--ink)}
-.mark{width:44px;height:44px;color:var(--accent);margin-bottom:12px}
-.mark svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:1.3;stroke-linecap:round}
-.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-h1{font-family:var(--serif);font-size:37px;font-weight:700;letter-spacing:-.015em;line-height:1.05;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-h1 .zh{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--muted);letter-spacing:.06em}
-.sub{color:var(--muted);font-size:13px;margin-top:9px;max-width:58ch}
-.spec{font-family:var(--mono);font-size:11px;min-width:230px;border-left:1px solid var(--line);padding-left:20px}
-.spec .row{display:flex;justify-content:space-between;gap:16px;padding:4px 0;border-bottom:1px dotted var(--line)}
-.spec .row:last-child{border-bottom:none}
-.spec .k{color:var(--faint);letter-spacing:.08em}
-.spec .val{color:var(--ink);text-align:right}
-.rule{height:1px;background:var(--ink);opacity:.28;margin:3px 0 22px}
+.masthead{display:flex;justify-content:space-between;gap:16px;align-items:center;min-height:76px;padding:18px 0;border-bottom:1px solid var(--line)}
+.workspace-label{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px}
+.workspace-label b{color:var(--ink);font-weight:600}
+.workspace-label .slash{color:var(--line)}
+.brand{min-width:0;padding:10px 8px 32px}
+.brand-lockup{display:flex;align-items:center;gap:10px}
+.mark{width:29px;height:29px;color:var(--accent);flex:0 0 auto}
+.mark svg{width:29px;height:29px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round}
+.brand-name{font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:-.035em;line-height:1.2}
+.brand-name span{color:var(--accent)}
+.brand-caption{font-family:var(--serif);font-size:10px;color:var(--muted);letter-spacing:.24em;margin-top:6px}
+.kicker{font-family:var(--mono);font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h1{font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:-.015em;line-height:1.05}
+.view-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:30px 0 24px}
+.view-head h2{font-family:var(--serif);font-size:27px;font-weight:700;letter-spacing:.025em;padding:0;margin:0 0 6px;border:0;gap:0}
+.view-head p{font-size:12px;color:var(--muted)}
+.view-index{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.1em;white-space:nowrap}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.section-head h3{font-size:14px;font-weight:650}
+.section-head .note{font-size:11px}
+.learn-more{margin-top:22px;border-top:1px solid var(--line-2);font-size:12px;color:var(--muted)}
+.learn-more>summary{padding:15px 0 0;cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;color:var(--ink-2);font-weight:600}
+.learn-more>summary::-webkit-details-marker{display:none}
+.learn-more>summary::before{content:'+';font:16px var(--mono);color:var(--accent)}
+.learn-more[open]>summary::before{content:'−'}
+.learn-more .plain{margin:14px 0 0}
+.learn-more .lesson-body{margin-top:16px}
+.view-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 0;font-size:11px;color:var(--muted)}
+.view-foot .mono{font-size:10px;letter-spacing:.06em}
+.spec{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));font-family:var(--mono);font-size:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.spec .row{display:flex;flex-direction:column;gap:4px;padding:0 18px;border-left:1px solid var(--line-2);min-width:0}
+.spec .row:first-child{border-left:none;padding-left:0}
+.spec .k{color:var(--muted);font-size:9px;letter-spacing:.12em}
+.spec .val{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
 
 /* badges */
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
@@ -54,8 +78,8 @@ h1 .zh{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--muted
 .tag.acc{border-color:var(--accent-tint);color:var(--accent);background:var(--accent-soft)} .tag.acc::before{background:var(--accent)}
 
 /* ruled sections */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:18px;position:relative}
-h2{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:15px;padding-bottom:11px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px;letter-spacing:-.01em;flex-wrap:wrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;margin-bottom:20px;position:relative;min-width:0}
+h2{font-family:var(--sans);font-size:16px;font-weight:650;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:11px;letter-spacing:-.01em;flex-wrap:wrap}
 h2 .n{font-family:var(--mono);font-size:10.5px;font-weight:600;background:transparent;color:var(--accent);border:1px solid var(--accent-tint);border-radius:var(--r);padding:3px 7px;letter-spacing:.05em}
 .seal{width:26px;height:26px;border-radius:var(--r);display:inline-grid;place-items:center;flex:0 0 auto;border:1px solid var(--line)}
 .seal svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -65,13 +89,12 @@ h2 .n{font-family:var(--mono);font-size:10.5px;font-weight:600;background:transp
 .fp{font-family:var(--mono);font-size:11px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);padding:3px 9px;color:var(--ink-2);display:inline-block;margin:3px 6px 0 0}
 
 /* index nav */
-.tabs{display:flex;gap:0;flex-wrap:wrap;margin-bottom:22px;position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding:0}
-.tab{border:none;border-bottom:2px solid transparent;background:none;border-radius:0;padding:13px 20px 11px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:9px;transition:color .2s,border-color .2s;user-select:none}
-.tab .num{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.05em}
-.tab:hover{color:var(--ink)}
-.tab.on{color:var(--accent);border-bottom-color:transparent}
-.tab.on .num{color:var(--accent)}
-.tab-ink{position:absolute;left:0;top:0;height:2px;background:var(--accent);border-radius:2px 2px 0 0;pointer-events:none;will-change:transform,width}
+.tabs{display:flex;flex-direction:column;gap:6px;margin:0;position:relative;padding:0}
+.tab{border:none;background:transparent;border-radius:var(--r);padding:12px;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:11px;transition:color .2s,background .2s;user-select:none;text-align:left;min-height:44px;width:100%}
+.tab:hover{color:var(--ink);background:var(--surface-3)}
+.tab.on{color:var(--accent);background:var(--accent-soft);font-weight:650}
+.tab[data-v="plat"]{margin-top:22px}
+.tab-ink{position:absolute;left:0;top:0;width:3px;height:2px;background:var(--accent);border-radius:2px;pointer-events:none;will-change:transform,width,height}
 .view{display:none} .view.on{display:block}
 
 /* four-state values */
@@ -114,20 +137,28 @@ td.m{font-family:var(--mono)}
 .c-a{background:var(--bar-a)} .c-b{background:var(--bar-b)} .c-c{background:var(--accent-2)}
 .c-idle{background:var(--idle)} .c-cur{background:var(--bar-cur)}
 .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:9px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.grid2>div{min-width:0}
 
 /* empty + notes */
-.empty{border:1px dashed var(--line);border-radius:var(--r);padding:34px 26px;text-align:center;color:var(--muted);background:var(--surface-2)}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:24px;text-align:left;color:var(--muted);background:var(--surface-2)}
 .empty b{color:var(--warn);font-size:15px;font-family:var(--serif)}
 .snote{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--surface-2);border-radius:var(--r);padding:12px 15px;margin:11px 0;font-size:12.8px;color:var(--ink-2)}
 .snote b{color:var(--accent)}
 
 /* register map */
-.bits{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:15px 0}
-.bit{border:1px solid var(--line);border-radius:var(--r);padding:9px 4px 8px;text-align:center;font-family:var(--mono);font-size:11px;cursor:pointer;background:var(--surface);transition:all .18s var(--ease);position:relative}
-.bit:hover{border-color:var(--accent);transform:translateY(-2px)}
-.bit .bn{font-size:9px;color:var(--faint);display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bit .bv{font-size:17px;font-weight:700;color:var(--faint);line-height:1}
+.bits{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px;margin:20px 0}
+.bit{border:1px solid var(--line);border-radius:var(--r);padding:15px 4px;text-align:center;font-family:var(--mono);font-size:11px;background:var(--surface);transition:border-color .18s,background .18s;position:relative}
+.bit:hover{border-color:var(--accent)}
+.bit .bn{font-size:9px;color:var(--muted);display:block;margin-bottom:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bit .bv{font-size:25px;font-weight:500;color:var(--faint);line-height:1}
+.bit .bit-pin{display:block;min-height:15px;margin-top:10px;color:var(--accent);font-size:9px}
+.register-map{padding:22px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface-2)}
+.register-map .section-head{margin:0}
+.map-legend{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.map-legend span{display:inline-flex;align-items:center;gap:6px}
+.map-legend i{width:7px;height:7px;background:var(--accent-tint);border:1px solid var(--accent);border-radius:2px}
+.map-legend i.unknown{background:var(--surface);border-color:var(--line)}
 .bit.hi{border-color:var(--accent-tint);background:var(--accent-soft)}
 .bit.hi::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;background:var(--accent)}
 .bit.set{border-color:var(--accent);background:var(--accent-soft)}
@@ -145,7 +176,14 @@ td.m{font-family:var(--mono)}
 .chip.lit{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
 
 /* deep term cards */
-.term-deep{padding:19px 20px}
+.term-deep{padding:24px;margin-bottom:18px}
+.term-deep>*{min-width:0}
+.term-details{margin-top:20px;border-top:1px solid var(--line-2)}
+.term-details>summary{cursor:pointer;padding-top:14px;font-size:12px;color:var(--accent);font-weight:600}
+.term-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px}
+.term-detail-grid>.srcrow,.term-detail-grid>.tadv{grid-column:1/-1}
+.term-detail-grid .srcrow{margin-top:18px}
+.term-detail-grid>*{min-width:0}
 .term .thead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:5px}
 .term .thead h3{margin:0}
 .srcrow{margin:4px 0 8px}
@@ -281,7 +319,133 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 .gl-item .t{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px}
 .gl-item .p{font-size:12.8px;color:var(--ink-2);line-height:1.6}
 .gl-empty{color:var(--muted);font-size:13px;padding:20px 0;text-align:center}
-.mast-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.mast-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.mast-actions .btn{font-size:12px;padding:7px 12px;min-height:36px}
+.project-panel{margin-top:18px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r)}
+.project-panel>summary{display:flex;align-items:center;gap:14px;padding:12px 16px;cursor:pointer;list-style:none;flex-wrap:wrap}
+.project-panel>summary::-webkit-details-marker{display:none}
+.project-name{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;min-width:0;overflow-wrap:anywhere}
+.project-name .ic{color:var(--accent);width:18px;height:18px}
+.project-name b{font-weight:600}
+.project-detail-label{margin-left:auto;font-size:10px;color:var(--muted);white-space:nowrap}
+.project-detail-label::after{content:' +';color:var(--accent)}
+.project-panel[open] .project-detail-label::after{content:' −'}
+.project-body{border-top:1px solid var(--line-2);padding:0 16px 16px}
+.project-body .spec{margin-bottom:14px}
+.status-strip{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.status-strip .tag{font-size:10px;padding:0;border:0;background:transparent}
+.status-strip .tag::before{border-radius:50%;width:5px;height:5px}
+.status-strip .tag+.tag{border-left:1px solid var(--line-2);padding-left:14px}
+.identity-panel{border:1px solid var(--line);border-radius:5px;background:var(--surface);min-width:0;font-size:12px}
+.identity-panel>summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;padding:11px 14px;list-style:none}
+.identity-panel>summary::-webkit-details-marker{display:none}
+.identity-label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.identity-label .seal{width:22px;height:22px}
+.identity-label .tag{padding:2px 7px}
+.identity-state{color:var(--warn);font-size:11px;line-height:1.5}
+.identity-state.verified{color:var(--ok)}
+.identity-hint{margin-left:auto;font-size:10px;color:var(--muted);white-space:nowrap}
+.identity-hint::after{content:" +";color:var(--accent)}
+.identity-panel[open] .identity-hint::after{content:" −"}
+.identity-body{border-top:1px solid var(--line-2);padding:16px;overflow-wrap:anywhere}
+.identity-body .plain{margin-bottom:12px}
+.workbench{display:grid;grid-template-columns:214px minmax(0,1fr);align-items:start;min-height:100vh;position:relative}
+.workbench-nav{position:sticky;top:0;height:100vh;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line);padding:22px 15px;background:var(--surface);overflow-y:auto}
+.nav-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;margin:0 8px 10px}
+.nav-label{font-size:10px;letter-spacing:.12em;color:var(--muted);min-width:0}
+.nav-toggle{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;padding:0;border:0;border-radius:4px;background:transparent;color:var(--muted);cursor:pointer}
+.nav-toggle:hover{color:var(--accent);background:var(--accent-soft)}
+.nav-toggle .ic{width:17px;height:17px}
+.nav-chevron{transform-origin:15.5px 12px;transition:transform .18s var(--ease)}
+.tab-icon{display:inline-flex;align-items:center;justify-content:center}
+.nav-note{font-size:10px;color:var(--muted);line-height:1.9;margin:auto 8px 0;padding-top:34px}
+.nav-note b{display:flex;align-items:center;gap:7px;color:var(--ink-2);font-size:11px;font-weight:500;margin-bottom:6px}
+.nav-note b::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--ok)}
+.nav-note p{padding-top:8px;margin-top:18px;border-top:1px solid var(--line-2);font-family:var(--mono);font-size:9px;letter-spacing:.06em}
+.workbench-main{min-width:0;width:100%;max-width:1536px;margin:0 auto;padding:0 clamp(24px,3.2vw,52px) 28px}
+.workbench-main .view{scroll-margin-top:24px}
+.workbench-main .note,.workbench-main .src,.workbench-main .chip,.workbench-main .v{overflow-wrap:anywhere;word-break:normal;white-space:normal}
+.workbench-main .src,.workbench-main .chip{max-width:100%}
+.readout-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin:0 0 24px}
+.readout{padding:0 22px 0 0;min-width:0}
+.readout+.readout{border-left:1px solid var(--line-2);padding:0 0 0 24px}
+.readout-label{font-size:10px;color:var(--muted);margin-bottom:8px;font-family:var(--mono);letter-spacing:.08em}
+.readout-value{font-size:26px;line-height:1.5;font-weight:500;letter-spacing:-.025em}
+.readout .note{margin-top:6px;font-size:11px}
+.snapshot-empty{text-align:center;padding:42px 24px 38px;background:var(--surface)}
+.empty-symbol{width:66px;height:66px;border:1px solid var(--accent-tint);background:var(--accent-soft);color:var(--accent);border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;outline:1px solid var(--line-2);outline-offset:5px}
+.empty-symbol .ic{width:30px;height:30px}
+.snapshot-empty h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:10px}
+.snapshot-empty>p{font-size:12px;color:var(--muted);max-width:48ch;margin:0 auto;line-height:1.9}
+.snapshot-empty .btns{justify-content:center;margin:22px 0 0}
+.snapshot-empty .btn{font-size:12px}
+.snapshot-empty .empty-metrics{display:grid;grid-template-columns:repeat(3,1fr);margin:30px auto 0;max-width:580px;border-top:1px solid var(--line-2);padding-top:24px}
+.empty-metrics>div+div{border-left:1px solid var(--line-2)}
+.empty-metrics dt{font-size:10px;color:var(--muted);margin-bottom:6px}
+.empty-metrics dd{font-family:var(--mono);color:var(--faint);font-size:13px}
+.sample-log{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:0 18px;margin-bottom:20px;font-size:12px}
+.sample-log>summary{cursor:pointer;padding:14px 0;color:var(--warn);font-weight:500}
+.sample-log .note{padding:0 0 16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.current-task{padding:16px 20px;border:1px solid var(--accent-tint);border-radius:var(--r);background:var(--accent-soft);margin:18px 0 24px;font-size:12px}
+.scheduler-lists>div{border:1px solid var(--line-2);padding:20px;border-radius:var(--r);background:var(--surface-2)}
+.scheduler-lists .heapbar{margin-top:16px;height:62px}
+.scheduler-timeline{padding-top:20px;border-top:1px solid var(--line-2);margin-top:24px}
+.table-scroll{width:100%;overflow-x:auto;border:1px solid var(--line-2);border-radius:4px;margin-top:14px}
+.table-scroll .pin-table{min-width:600px;table-layout:fixed}
+.pin-table th:nth-child(1){width:14%}.pin-table th:nth-child(2){width:20%}.pin-table th:nth-child(3){width:21%}
+.pin-table td{overflow-wrap:anywhere}
+.table-scroll .cmp{min-width:860px}
+.cmp th:first-child,.cmp td:first-child{position:sticky;left:0;background:var(--surface-2);z-index:1}
+.replay-layout.on{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:0 20px;align-items:start}
+.replay-layout>.view-head{grid-column:1/-1}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.replay-empty{font-size:12px;color:var(--warn);padding-top:14px}
+input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+.replay-settings{padding:16px;border:1px solid var(--line-2);border-radius:4px;background:var(--surface-2);margin:18px 0}
+.replay-settings label{display:block;font-size:12px;font-weight:600;color:var(--ink-2)}
+.replay-range{display:flex;align-items:center;gap:12px;margin-top:12px}
+.replay-range input{flex:1;min-width:0}
+.replay-range .chip{margin:0;flex-shrink:0}
+.delivery-note{line-height:1.8}
+.delivery-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink-2);margin-top:16px}
+.delivery-item .ic{color:var(--ok)}
+.mapping-details{padding:18px 24px}
+.mapping-details>summary{cursor:pointer;display:flex;align-items:center;gap:10px;list-style:none;font-size:13px}
+.mapping-details>summary::-webkit-details-marker{display:none}
+.mapping-details>summary::after{content:'+';margin-left:auto;font:16px var(--mono);color:var(--accent)}
+.mapping-details[open]>summary::after{content:'−'}
+.mapping-details>summary .note{font-size:10px}
+.data-contract{border-top:1px solid var(--line);margin-top:6px;font-size:12px;color:var(--muted)}
+.data-contract>summary{cursor:pointer;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0;list-style:none}
+.data-contract>summary::after{content:"+";color:var(--accent)}
+.data-contract[open]>summary::after{content:"−"}
+.data-contract>summary::-webkit-details-marker{display:none}
+.data-contract .legend{padding-bottom:16px;gap:12px 18px}
+@media(max-width:1100px){
+.term-detail-grid{grid-template-columns:1fr}
+.replay-layout.on{grid-template-columns:1fr}
+.project-panel>summary{gap:10px 16px}
+}
+@media(min-width:901px){
+.workbench.is-nav-collapsed{grid-template-columns:72px minmax(0,1fr)}
+.is-nav-collapsed .workbench-nav{padding-left:12px;padding-right:12px}
+.is-nav-collapsed .brand{padding-left:9px;padding-right:0}
+.is-nav-collapsed .nav-head{justify-content:center;margin-left:0;margin-right:0}
+.is-nav-collapsed .nav-label,.is-nav-collapsed .nav-note,.is-nav-collapsed .tab-label,.is-nav-collapsed .brand-text{display:none}
+.is-nav-collapsed .tab{justify-content:center;padding:13px 8px}
+.is-nav-collapsed .nav-chevron{transform:rotate(180deg)}
+}
+@media(max-width:900px){
+.workbench{grid-template-columns:1fr}
+.workbench-nav{top:0;z-index:30;height:auto;border-right:none;padding:0 18px;overflow:visible;border-bottom:1px solid var(--line)}
+.brand,.nav-head,.nav-note{display:none}
+.tabs{flex-direction:row;gap:4px;overflow-x:auto;flex-wrap:nowrap;padding:8px 0}
+.tab{flex:0 0 auto;width:auto;white-space:nowrap;padding:10px 12px}
+.tab[data-v="plat"]{margin-top:0}
+.workbench-main{padding:0 24px 24px}
+.masthead{min-height:66px;padding:14px 0}
+.view-head{margin-top:24px}
+}
 @media(max-width:760px){
 .imp-grid{grid-template-columns:1fr}
 .imppanel,.glpanel{padding:22px 18px}
@@ -289,10 +453,41 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 .imp-rowfile{flex-direction:row;align-items:center;width:100%;min-width:0;margin-top:9px;padding-left:41px}
 .imp-chip{max-width:46vw}
 #glpop{max-width:calc(100vw - 24px)}
-.wrap{padding:0 15px 60px}
-.masthead{grid-template-columns:1fr;gap:16px;padding:24px 0 16px}
-.spec{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:12px;min-width:0}
-h1{font-size:29px}
+.workbench-main{padding:0 16px 24px}
+.masthead{gap:12px;flex-wrap:wrap;padding:14px 0}
+.workspace-label{font-size:11px}
+.mast-actions .btn{min-height:40px}
+.project-panel>summary{padding:12px;gap:10px}
+.project-name{font-size:10px}
+.status-strip{order:3;flex-basis:100%;gap:10px}
+.status-strip .tag+.tag{padding-left:10px}
+.view-head{margin:24px 0 18px;gap:12px}
+.view-head h2{font-size:23px}
+.view-index{font-size:9px}
+.register-map{padding:14px}
+.register-map .section-head{align-items:flex-start;flex-direction:column;gap:8px}
+.bits{gap:7px}
+.bit{padding:12px 3px}
+.bit .bv{font-size:22px}
+.snapshot-empty{padding:30px 16px}
+.snapshot-empty h3{font-size:16px}
+.snapshot-empty .empty-metrics{margin-top:24px}
+.view-foot{align-items:flex-start;flex-direction:column;gap:5px}
+.tab-icon .ic{width:16px!important;height:16px!important}
+.scheduler-lists>div{padding:16px}
+.spec{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 0;padding:12px 0}
+.spec .row{padding:0 12px}
+.spec .row:nth-child(odd){border-left:none;padding-left:0}
+.identity-panel>summary{gap:7px;padding:10px 12px}
+.identity-state{flex-basis:100%;order:3}
+.identity-hint{font-size:9px}
+.readout-grid{gap:16px;grid-template-columns:1fr 1fr}
+.readout{padding:0}
+.readout+.readout{padding-left:16px}
+.readout-value{font-size:18px}
+.readout-label{font-size:9px;letter-spacing:0}
+.term-deep{padding:18px}
+.data-contract>summary{font-size:11px}
 .grid2{grid-template-columns:1fr}
 .bits{grid-template-columns:repeat(4,1fr)}
 .card{padding:18px}
@@ -314,7 +509,7 @@ h1{font-size:29px}
 body.landing-on{overflow:hidden}
 #landing{position:fixed;inset:0;z-index:70;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);grid-template-rows:1fr auto;background:var(--paper);overflow:hidden}
 #landing[hidden]{display:none}
-#ldgrid{position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(120% 100% at 62% 38%,#000 45%,transparent 100%);mask-image:radial-gradient(120% 100% at 62% 38%,#000 45%,transparent 100%)}
+#ldgrid{position:absolute;inset:0;pointer-events:none;opacity:.5;-webkit-mask-image:radial-gradient(120% 100% at 62% 38%,#000 45%,transparent 100%);mask-image:radial-gradient(120% 100% at 62% 38%,#000 45%,transparent 100%)}
 .ld-rail{position:absolute;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-family:var(--mono);font-size:9px;letter-spacing:.34em;color:var(--faint);user-select:none}
 .ld-rail.l{left:16px;rotate:180deg}
 .ld-rail.r{right:16px}
@@ -340,15 +535,17 @@ body.landing-on{overflow:hidden}
 .ld-meta span{display:flex;flex-direction:column;gap:3px;min-width:128px}
 .ld-meta b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-2);font-weight:600}
 .ld-build{margin-top:16px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--faint)}
-.ld-stage{grid-row:1;grid-column:2;position:relative;margin:8px 8px 8px 0;display:grid;place-items:center;perspective:900px}
+.ld-stage{--line:rgba(168,196,213,.16);--accent:#95cddd;--accent-tint:rgba(149,205,221,.2);--muted:#a5b8c3;--faint:#748d9d;--surface:#192c3a;grid-row:1;grid-column:2;position:relative;min-width:0;margin:24px 24px 24px 0;display:grid;place-items:center;perspective:900px;overflow:hidden;border:1px solid rgba(52,79,95,.7);border-radius:16px;background:radial-gradient(ellipse at 40% 30%,#243e50 0,#142936 42%,#091722 88%);box-shadow:0 20px 45px -28px rgba(8,22,32,.65),inset 0 1px rgba(211,231,242,.08)}
+.ld-stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.14;background-image:linear-gradient(rgba(138,178,202,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(138,178,202,.16) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(#000,transparent 78%)}
 #ldgl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
 #ldgl:active{cursor:grabbing}
-.ld-zoom{position:absolute;right:12px;bottom:44px;display:flex;gap:6px;z-index:3}
-.ld-zoom button{font-family:var(--mono);font-size:11px;line-height:1;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:2px;min-width:24px;height:24px;padding:0 6px;cursor:pointer}
+.ld-zoom{position:absolute;right:22px;bottom:54px;display:none;gap:7px;z-index:3}
+.ld-stage.gl-ok .ld-zoom{display:flex}
+.ld-zoom button{font-family:var(--mono);font-size:11px;line-height:1;color:#c5d5dd;background:rgba(29,51,66,.85);border:1px solid var(--line);border-radius:5px;min-width:34px;height:34px;padding:0 10px;cursor:pointer;box-shadow:inset 0 1px rgba(217,236,247,.04)}
 .ld-zoom button:hover{color:var(--accent);border-color:var(--accent)}
 .ld-stage.gl-ok .ld-scope{display:none}
 .ld-q{position:absolute;left:66%;top:22%;font-family:var(--mono);font-size:12px;color:var(--faint);display:none;pointer-events:none;animation:ldq 7s ease-in-out infinite}
-.ld-stage.gl-ok .ld-q{display:block}
+.ld-stage.gl-ok .ld-q{display:none}
 @keyframes ldq{0%,100%{opacity:.28}50%{opacity:.85}}
 .ld-stage-tag{position:absolute;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--faint);z-index:2}
 .ld-stage-tag.tl{left:12px;top:12px}
@@ -376,13 +573,13 @@ body.landing-on{overflow:hidden}
 .ld-secret{font-family:var(--mono);font-size:11px;fill:var(--faint)}
 .ld-sweep{position:absolute;inset:8.5%;border-radius:50%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 74%,rgba(20,64,107,.05) 90%,rgba(20,64,107,.12) 97.5%,transparent 100%);animation:ldsweep 10s linear infinite}
 @keyframes ldsweep{to{rotate:360deg}}
-.ld-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:var(--muted);padding:4px 8px;border:1px solid var(--line);border-radius:2px;background:rgba(250,248,242,.88);z-index:2}
+.ld-tag{position:absolute;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:#b1c5d1;padding:6px 9px;border:1px solid var(--line);border-radius:3px;background:rgba(14,32,44,.72);z-index:2;pointer-events:none}
 .ld-tag i{width:4px;height:4px;border-radius:50%;background:var(--accent);flex:0 0 auto}
 .ld-tag.t1{right:11%;top:15%}
 .ld-tag.t2{left:9%;top:29%}
 .ld-tag.t3{right:8%;bottom:27%}
 .ld-tag.t4{left:11%;bottom:15%}
-.ld-wave{position:absolute;left:30px;right:30px;bottom:48px;height:30px;width:auto;z-index:2;opacity:.42;pointer-events:none}
+.ld-wave{position:absolute;left:24px;right:168px;bottom:54px;height:26px;width:calc(100% - 192px);z-index:2;opacity:.22;pointer-events:none}
 .ld-wave polyline{fill:none;stroke:var(--accent);stroke-width:1.1;stroke-dasharray:6 5;animation:ldwave 3.4s linear infinite}
 @keyframes ldwave{to{stroke-dashoffset:-44}}
 .ld-stage-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--faint);z-index:2}
@@ -402,15 +599,21 @@ body.landing-on #ldhome{display:none}
 #ldhome .ic{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
 @media(max-width:900px){
 .ld-rail{display:none}
-#landing{grid-template-columns:1fr}
-.ld-main{padding:clamp(22px,6vw,40px);max-width:none}
-.ld-stage{position:absolute;right:-22%;bottom:2%;width:88vw;height:88vw;margin:0;opacity:.3;pointer-events:none;z-index:0}
-.ld-tag,.ld-trace,.ld-eggtoast,.ld-wave,.ld-stage-foot,.ld-ruler,.ld-stage-tag,.ld-zoom{display:none}
+#landing{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto;align-content:start}
+.ld-main{padding:clamp(24px,6vw,40px);max-width:none}
+.ld-stage{grid-row:2;grid-column:1;height:clamp(370px,70vw,550px);margin:0 18px 24px;perspective:none}
+#ldgl{touch-action:pan-y}
+.ld-tag,.ld-wave,.ld-ruler{display:none}
+.ld-stage-tag{font-size:8px}
+.ld-stage-foot{font-size:7px;letter-spacing:.06em;padding:12px}
+.ld-stage-foot span:first-child{display:none}
+.ld-zoom{right:16px;bottom:50px}
+.ld-zoom button{min-width:44px;height:44px}
 .ld-sweep{display:none}
-.ld-title{font-size:clamp(46px,13vw,72px)}
-.ld-meta{gap:14px}
+.ld-title{font-size:clamp(46px,10vw,72px)}
+.ld-meta{gap:14px;margin-top:28px}
 .ld-meta span{min-width:104px}
-.ld-marquee{padding:10px 0}
+.ld-marquee{grid-row:3;padding:10px 0}
 }
 </style></head><body class="landing-on">
 <div id="landing" aria-label="EmbeddedLens 介绍页">
@@ -433,8 +636,8 @@ body.landing-on #ldhome{display:none}
     <div class="ld-build" id="ldbuild"></div>
   </div>
   <div class="ld-stage" id="ldstage" aria-hidden="true">
-    <span class="ld-stage-tag tl">INSTRUMENT No.01</span>
-    <span class="ld-stage-tag tr">FIELD UNIT · STANDBY</span>
+    <span class="ld-stage-tag tl">ASSEMBLY / 001</span>
+    <span class="ld-stage-tag tr">STM32 · CORTEX-M3</span>
     <div class="ld-ruler l"></div>
     <div class="ld-ruler r"></div>
     <canvas id="ldgl"></canvas>
@@ -466,12 +669,12 @@ body.landing-on #ldhome{display:none}
       </svg>
       <div class="ld-sweep" aria-hidden="true"></div>
     </div>
-    <span class="ld-tag t1"><i></i>TICK</span>
-    <span class="ld-tag t2"><i></i>READY</span>
-    <span class="ld-tag t3"><i></i>DELAYED</span>
-    <span class="ld-tag t4"><i></i>ODR</span>
+    <span class="ld-tag t1"><i></i>LQFP-64</span>
+    <span class="ld-tag t2"><i></i>SWD</span>
+    <span class="ld-tag t3"><i></i>GPIO</span>
+    <span class="ld-tag t4"><i></i>3D ASSEMBLY</span>
     <svg class="ld-wave" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,34 12,34 14,18 18,18 20,34 42,34 46,26 50,26 52,34 78,34 80,10 84,10 86,34 104,34 108,30 112,30 114,34 150,34 152,22 156,22 158,34 186,34 190,38 194,38 196,34 230,34 232,14 236,14 238,34 260,34 264,28 268,28 270,34 300,34 302,20 306,20 308,34 336,34 340,32 344,32 346,34 380,34 382,12 386,12 388,34 420,34"/></svg>
-    <div class="ld-stage-foot"><span>SWD · 2-WIRE</span><span>DRAG ROTATE · WHEEL ZOOM</span><span>HALT → READ → RESUME</span></div>
+    <div class="ld-stage-foot"><span>MODEL / DETAIL STUDY</span><span>拖动旋转 · 滚轮 / 双指缩放</span><span>3D 示意 · 非实时读数</span></div>
     <div class="ld-trace" id="ldtrace"><span>HALT</span><i></i><span>READ</span><i></i><span>RESUME</span><div class="ld-scanbar" id="ldscan"></div></div>
     <div class="ld-eggtoast" id="ldeggtoast">彩蛋 · 停核采样演练（示意）</div>
   </div>
@@ -481,34 +684,43 @@ body.landing-on #ldhome{display:none}
 <div id="ldiris" aria-hidden="true"></div>
 <button id="ldhome" aria-label="返回介绍页"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>介绍页</button>
 <div class="wrap">
-<header class="masthead">
-  <div class="brand">
+<div class="workbench" id="workbench">
+<aside class="workbench-nav">
+  <div class="brand"><div class="brand-lockup">
     <div class="mark" aria-hidden="true"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="15"/><circle cx="22" cy="22" r="5.5"/><path d="M22 2v8M22 34v8M2 22h8M34 22h8"/><path d="M11.4 11.4l3 3M29.6 29.6l3 3M32.6 11.4l-3 3M14.4 29.6l-3 3"/></svg></div>
-    <div class="kicker">Field Instrument · SWD Probe · Honest Provenance</div>
-    <h1>EmbeddedLens <span class="zh">嵌入式透视镜</span></h1>
-    <div class="sub">把芯片里真实运行的状态，画成初学者看得懂的图。不改你的固件、不加代码、不用串口——接上调试器读一拍即可。</div>
-    <div class="mast-actions">
-      <button class="btn" id="impopen"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>导入我的工程</button>
-      <button class="btn sec" id="glopen"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>名词小词典</button>
-    </div>
+    <div class="brand-text"><div class="brand-name">Embedded<span>Lens</span></div><div class="brand-caption">嵌入式透视镜</div></div>
+  </div></div>
+  <div class="nav-head"><div class="nav-label">观察与理解</div>
+    <button class="nav-toggle" id="navtoggle" type="button" aria-expanded="true" aria-controls="tabs nav-note" aria-label="收起功能导航" title="收起功能导航"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path class="nav-chevron" d="m17 9-3 3 3 3"/></svg></button>
   </div>
-  <div class="spec" id="spec"></div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="视图切换"></nav>
+  <div class="nav-note" id="nav-note"><b>只读观察，安心探索</b>不写入 · 不烧录 · 不改固件<br>每个数字，都能找到来源。<p>EMBEDDED LENS / WORKSPACE</p></div>
+</aside>
+<main class="workbench-main" aria-label="嵌入式状态与教学视图">
+<header class="masthead">
+  <div class="workspace-label"><b>工作空间</b><span class="slash">/</span><span>观察工作台</span></div>
+  <div class="mast-actions">
+    <button class="btn sec" id="glopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>名词小词典</button>
+    <button class="btn" id="impopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>导入我的工程</button>
+  </div>
 </header>
-<div class="rule"></div>
-<div class="badges" id="topbadges"></div>
-<div class="card" id="identitycard"></div>
-<nav class="tabs" id="tabs" aria-label="视图切换"></nav>
-<div class="view on" id="view-sched"></div>
-<div class="view" id="view-reg"></div>
-<div class="view" id="view-term"></div>
-<div class="view" id="view-plat"></div>
-<div class="view" id="view-replay"></div>
-<div class="card"><div class="note" id="contract"></div>
+<details class="project-panel" id="projectpanel">
+  <summary><span class="project-name" id="projectname"></span><span class="status-strip" id="topbadges"></span><span class="project-detail-label">工程详情</span></summary>
+  <div class="project-body"><div class="spec" id="spec"></div><details class="identity-panel" id="identitycard"></details></div>
+</details>
+<div class="view on" id="view-sched" role="tabpanel" aria-labelledby="tab-sched" tabindex="0"></div>
+<div class="view" id="view-reg" role="tabpanel" aria-labelledby="tab-reg" tabindex="0"></div>
+<div class="view" id="view-term" role="tabpanel" aria-labelledby="tab-term" tabindex="0"></div>
+<div class="view" id="view-plat" role="tabpanel" aria-labelledby="tab-plat" tabindex="0"></div>
+<div class="view replay-layout" id="view-replay" role="tabpanel" aria-labelledby="tab-replay" tabindex="0"></div>
+<details class="data-contract"><summary><b>数据与溯源约定</b><span>实测 · 权威 · 推导 · 不可知</span></summary><div class="note" id="contract"></div>
 <div class="note" style="margin:10px 0 8px">每个数字都标了「它从哪来」。点下面带虚线的词，看大白话解释：</div>
 <div class="legend"><span><b class="v m">实测值<i class="bdg">实测</i></b> <span class="gl" data-gl="实测值" tabindex="0" role="button">真的从芯片读出来的数</span></span>
 <span><b class="v a">权威定义<i class="bdg">权威</i></b> <span class="gl" data-gl="权威定义" tabindex="0" role="button">厂商说明书/编译信息的标准答案</span></span>
 <span><b class="v d">推导值<i class="bdg">推导</i></b> <span class="gl" data-gl="推导值" tabindex="0" role="button">实测+定义算出来，附公式</span></span>
-<span><b class="v u">不可知<i class="bdg">不可知</i></b> <span class="gl" data-gl="不可知" tabindex="0" role="button">证据不够，老实说不知道</span></span></div></div>
+<span><b class="v u">不可知<i class="bdg">不可知</i></b> <span class="gl" data-gl="不可知" tabindex="0" role="button">证据不够，老实说不知道</span></span></div></details>
+</main>
+</div>
 </div>
 <div id="impwrap" role="dialog" aria-modal="true" aria-label="导入我的工程">
   <div class="imppanel">
@@ -787,73 +999,93 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('glwrap').classLis
 function renderTop(){
   const b=LENS.build,d=LENS.device;
   $('spec').innerHTML=[['DEVICE',d.name],['CORE',d.core],['RTOS',b.rtos],['KERNEL',b.kernel?b.kernel.version:'?'],['BUILD',b.axf_sha?b.axf_sha.slice(0,12):'未提供 AXF']].map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="val">${esc(r[1])}</span></div>`).join('');
-  $('topbadges').innerHTML=
-    `<span class="tag ${b.rtos_linked?'ok':'bad'}">${g('RTOS')} ${b.rtos_linked?'已链接':'未链接'}</span>`+
-    `<span class="tag acc">${g('停核采样','停核离散采样')}</span>`+
-    `<span class="tag">${g('离散快照','快照')} ${validSnaps.length} 有效 / ${LENS.snapshots.length} 采集</span>`;
+  $('projectname').innerHTML=`${ic('reg')}<b>${esc(d.name)}</b>`;
   const id=LENS.identity;
   const cls=id.status==='verified'?'ok':(id.status==='mismatch'?'bad':'warn');
   const sealIc={verified:'check',mismatch:'alert',unverified:'shield','no-sample':'shield'}[id.status]||'shield';
   const txt={verified:'固件身份已核验',mismatch:'固件身份不匹配',unverified:'身份未核验','no-sample':'尚未采样'}[id.status]||id.status;
-  $('identitycard').innerHTML=`<h2><span class="n">§6.3</span>${g('固件身份核验')} <span class="seal ${cls}">${ic(sealIc)}</span><span class="tag ${cls}">${txt}</span></h2>
-    <div class="plain"><span class="ptag">大白话</span><span>确认「芯片里烧的程序」和「你这次编译的程序」是不是同一个。只有对得上，工具才敢解释内核状态；对不上就只给原始读数，避免张冠李戴。</span></div>
+  $('topbadges').innerHTML=`<span class="tag ${b.rtos_linked?'ok':'bad'}">${esc(b.rtos)} ${b.rtos_linked?'已链接':'未链接'}</span><span class="tag ${cls}">${esc(txt)}</span><span class="tag">${validSnaps.length} 有效帧 / ${LENS.snapshots.length} 次采集</span>`;
+  $('identitycard').innerHTML=`<summary><span class="identity-label"><span class="seal ${cls}">${ic(sealIc)}</span><b>固件身份</b><span class="tag ${cls}">${esc(txt)}</span></span>
+    <span class="identity-state${id.status==='verified'?' verified':''}">${id.status==='verified'?'固件与构建产物已匹配':'未核验：仅展示定义与原始读数'}</span><span class="identity-hint">核验详情</span></summary>
+    <div class="identity-body"><div class="plain"><span class="ptag">${g('固件身份核验')}</span><span>确认「芯片里烧的程序」和「你这次编译的程序」是不是同一个。只有对得上，工具才敢解释内核状态；对不上就只给原始读数，避免张冠李戴。</span></div>
     <div class="note">${esc(id.reason||'')}${id.range?` · 比对范围 ${esc(id.range)}`:''}</div>
     <div style="margin-top:9px"><span class="fp">${g('AXF')} sha256 ${b.axf_sha?esc(b.axf_sha.slice(0,20))+'…':'未提供'}</span><span class="fp">${g('map 文件','map')} sha256 ${b.map_sha?esc(b.map_sha.slice(0,20))+'…':'未提供'}</span></div>
-    ${id.status!=='verified'?'<div class="snote" style="margin-top:11px">身份未通过核验时，界面只展示原始读数与权威定义，停止解释 RTOS 对象。</div>':''}`;
+    ${id.status!=='verified'?'<div class="snote" style="margin-top:11px">身份未通过核验时，界面只展示原始读数与权威定义，停止解释 RTOS 对象。</div>':''}</div>`;
   $('contract').textContent=LENS.honesty.contract;
 }
 
 /* ---- Tab 切换 ---- */
 const TABS=[['sched','调度快照'],['reg','寄存器位段'],['term','术语溯源'],['plat','平台对照'],['replay','回放/导出']];
-$('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i===0?' on':''}" data-v="${t[0]}" role="tab" tabindex="0" aria-selected="${i===0}"><span class="num">0${i+1}</span><span>${t[1]}</span></div>`).join('');
-function selTab(t){document.querySelectorAll('.tab').forEach(x=>{const on=x===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);});
+$('tabs').innerHTML=TABS.map((t,i)=>`<button type="button" class="tab${i===0?' on':''}" id="tab-${t[0]}" data-v="${t[0]}" role="tab" tabindex="${i===0?0:-1}" aria-selected="${i===0}" aria-controls="view-${t[0]}" aria-label="${t[1]}" title="${t[1]}"><span class="tab-icon" aria-hidden="true">${ic(t[0],17)}</span><span class="tab-label">${t[1]}</span></button>`).join('');
+const compactNav=matchMedia('(max-width:900px)'),navToggle=$('navtoggle');
+function syncNavToggle(){
+  const expanded=!$('workbench').classList.contains('is-nav-collapsed'),label=expanded?'收起功能导航':'展开功能导航';
+  navToggle.setAttribute('aria-expanded',String(expanded));navToggle.setAttribute('aria-label',label);navToggle.title=label;
+}
+navToggle.addEventListener('click',()=>{$('workbench').classList.toggle('is-nav-collapsed');syncNavToggle();});syncNavToggle();
+function revealNavTab(tab){
+  if(!compactNav.matches)return;
+  const nav=$('tabs'),left=tab.offsetLeft,right=left+tab.offsetWidth;
+  if(left<nav.scrollLeft)nav.scrollLeft=left;else if(right>nav.scrollLeft+nav.clientWidth)nav.scrollLeft=right-nav.clientWidth;
+}
+function navOrientation(){
+  $('tabs').setAttribute('aria-orientation',compactNav.matches?'horizontal':'vertical');
+  const selected=document.querySelector('.tab.on');
+  if(compactNav.matches&&document.activeElement===navToggle)selected.focus({preventScroll:true});
+  revealNavTab(selected);
+}
+compactNav.addEventListener('change',navOrientation);addEventListener('resize',navOrientation);navOrientation();
+function selTab(t){document.querySelectorAll('.tab').forEach(x=>{const on=x===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;});
   const view=$('view-'+t.dataset.v);
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v===view));
+  const workspace=$('workbench'),y=workspace.getBoundingClientRect().top;
+  if(y<-16)window.scrollTo({top:window.scrollY+y-16,behavior:'instant'});
+  revealNavTab(t);
   if(window.__onTabShown)window.__onTabShown(view,t);
   history.replaceState(null,'','#'+t.dataset.v);}
 $('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)selTab(t);});
 $('tabs').addEventListener('keydown',e=>{const t=e.target.closest('.tab');if(!t)return;
   if(e.key==='Enter'||e.key===' '){e.preventDefault();selTab(t);}
-  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const all=[...document.querySelectorAll('.tab')];const i=all.indexOf(t);const n=all[(i+(e.key==='ArrowRight'?1:all.length-1))%all.length];n.focus();selTab(n);}});
+  else if(['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+    e.preventDefault();const all=[...document.querySelectorAll('.tab')],i=all.indexOf(t);
+    const index=e.key==='Home'?0:e.key==='End'?all.length-1:(i+(['ArrowRight','ArrowDown'].includes(e.key)?1:all.length-1))%all.length;
+    const n=all[index];n.focus({preventScroll:true});selTab(n);}});
 
 /* ---- V1 调度快照 ---- */
-function taskBlock(e,cls){const t=e.tcb||{};return{k:(t.addr||e.item.addr),cls:cls,task:(t.name||''),l:`${t.name||'?'} p${t.priority??'?'}`,lt:`${t.name||'?'} · 到期 ${e.wake_tick??''}`};}
+function taskBlock(e,cls){const t=e.tcb||{};return{k:(t.addr||e.item.addr),s:1,cls:cls,task:(t.name||''),l:`${t.name||'?'} p${t.priority??'?'}`,lt:`${t.name||'?'} · 到期 ${e.wake_tick??''}`};}
 function renderSched(){
   const root=$('view-sched');
+  const heading=`<div class="view-head"><div><h2>调度快照</h2><p>看清任务的就绪、延时与当前选中状态。</p></div><span class="view-index">01 / SCHEDULER</span></div>`;
   if(!validSnaps.length){
-    root.innerHTML=`<div class="card"><h2><span class="n">V1</span>调度快照</h2>
-      <div class="empty"><b>未采集到身份已核验的板上数据</b><br><br>
-      结构定义（SVD/DWARF）与工程事实（源码/配置）已就绪并可查看；<br>
-      实测调度状态需连接 ST-LINK 运行 <span class="mono">elens sample</span>，或导入 Keil 手工采集。<br><br>
-      <span class="note">真实数据契约：不编造任何数值。当前任务 / tick / 到期 tick 均标为不可知。</span></div></div>`;
+    root.innerHTML=heading+`<div class="card snapshot-empty"><div class="empty-symbol" aria-hidden="true">${ic('sched')}</div>
+      <h3>等待第一帧真实快照</h3><p>当前没有身份已核验的板上数据。<br>你仍然可以查看寄存器定义与源码解读，实测状态会在采样后呈现。</p>
+      <div class="btns"><button class="btn" data-jump="reg">查看寄存器定义${ic('arrow')}</button><button class="btn sec" data-jump="term">查看源码解读</button></div>
+      <dl class="empty-metrics"><div><dt>当前任务</dt><dd>不可知</dd></div><div><dt>系统 tick</dt><dd>不可知</dd></div><div><dt>到期 tick</dt><dd>不可知</dd></div></dl>
+      <details class="learn-more"><summary>如何获得真实快照？</summary><div class="lesson-body note" style="text-align:left">连接 ST-LINK 后运行 <span class="mono">elens sample</span>，或导入 Keil 手工采集，再重新导出网页。固件身份核验通过后，才会解释任务与调度状态；没有证据的数值始终标为「不可知」。</div></details></div>`;
     const ls=LENS.snapshots[LENS.snapshots.length-1];
     const raw=[...((ls&&ls.notes)||[]), ...((ls&&ls.identity&&ls.identity.reason)?[ls.identity.reason]:[])];
     const msgs=[...new Set(raw)];
     if(msgs.length){
-      const head=msgs.map(m=>m.split('：')[0].split('\n')[0]).join('；');
       const full=msgs.join('\n\n');
-      root.insertAdjacentHTML('beforeend',`<div class="snote"><b>最近一次采样未产出可用帧</b><div style="margin-top:5px">${esc(head)}</div>
-        <details style="margin-top:7px"><summary class="note" style="cursor:pointer;color:var(--accent-700)">展开完整探针日志</summary>
-        <div class="mono note" style="margin-top:7px;white-space:pre-wrap;word-break:break-word">${esc(full)}</div></details></div>`);
+      root.insertAdjacentHTML('beforeend',`<details class="sample-log"><summary>最近一次采样未产出可用帧 · 查看探针日志</summary><div class="mono note">${esc(full)}</div></details>`);
     }
     return;
   }
-  root.innerHTML=`<div class="card"><h2><span class="n">V1</span>${g('调度','调度快照')} <span class="note">${g('停核采样','停核快照')} · ${g('离散快照')}</span></h2>
-    <div class="plain"><span class="ptag">大白话</span><span>把芯片「暂停一瞬间」拍下的快照画出来：左边是<b>准备好能跑</b>的任务，右边是<b>正在延时睡觉</b>的任务。点任务块可跳回源码。没接调试器时，这里诚实显示「不可知」。</span></div>
+  root.innerHTML=heading+`<div class="card"><div class="section-head"><h3>任务状态</h3><span class="note">${g('停核采样','停核快照')} · ${g('离散快照')}</span></div>
     <div class="demo-head"><div class="note" id="sdesc"></div>
       <div class="btns"><span class="idx" id="sidx"></span>
       <button class="btn sec" id="sprev">${ic('prev')}上一帧</button><button class="btn" id="snext">下一帧${ic('next')}</button><button class="btn sec" id="sreset">${ic('reset')}重置</button></div></div>
     <div id="snotes"></div>
-    <div id="scur" class="card" style="background:var(--accent-soft)"></div>
-    <div class="grid2">
+    <div id="scur" class="current-task"></div>
+    <div class="grid2 scheduler-lists">
       <div><div class="note mono">优先级 1 ${g('就绪链表')} <span id="raddr"></span></div>
         <div class="heapbar" id="rbar"></div><div id="rlbl" style="display:flex"></div><div class="cap" id="rcap"></div></div>
       <div><div class="note mono">当前${g('延时链表')} <span id="daddr"></span></div>
         <div class="heapbar" id="dbar"></div><div id="dlbl" style="display:flex"></div><div class="cap" id="dcap"></div></div>
     </div>
-    <div class="note" style="margin-top:10px">语义边界 (§6.2)：${g('到期 tick','延时到期')} = 具备重新就绪条件 ≠ 实际开始执行 ≠ GPIO 动作发生。当前运行任务可同时位于${g('就绪链表')} → 标「当前选中」。</div>
-    <div class="note mono" style="margin-top:8px">采样时间轴（标出间隔与可能漏采）</div><div class="tl" id="stl"></div>
-    <div id="sraw" style="margin-top:10px"></div></div>`;
+    <div class="scheduler-timeline"><div class="section-head"><h3>采样时间轴</h3><span class="note">离散采样 · 帧间可能漏采</span></div><div class="tl" id="stl"></div></div>
+    <div class="note">到期 ≠ 实际执行 ≠ GPIO 动作；当前选中任务可同时位于就绪链表。</div>
+    <details class="learn-more"><summary>读懂调度视图与内核原始值</summary><div class="plain"><span>左边是<b>准备好能跑</b>的任务，右边是<b>正在延时</b>的任务。点任务块可跳回源码。${g('到期 tick','延时到期')}只代表具备重新就绪条件，并不保证立即执行。</span></div><div id="sraw" class="lesson-body"></div></details></div>`;
   const rb=bar($('rbar'),$('rlbl')),db=bar($('dbar'),$('dlbl'));
   const st=stepper(validSnaps.length,i=>{
     const s=validSnaps[i],dec=s.decoded;
@@ -899,19 +1131,23 @@ function renderReg(){
     const set=odr&&odr.state==='measured'?((odr.value>>b)&1):null;
     const hi=pinBits[b]!==undefined;
     bits+=`<div class="bit${hi?' hi':''}${set?' set':''}" title="${esc(f?f.description:'')}">
-      <span class="bn">${esc(f?f.name:'b'+b)}${hi?' · '+pinBits[b]:''}</span>
-      <span class="bv">${set===null?'?':set}</span></div>`;
+      <span class="bn">${esc(f?f.name:'b'+b)}</span><span class="bv">${set===null?'?':set}</span><span class="bit-pin">${hi?esc(pinBits[b]):'—'}</span></div>`;
   }
   let pintab='';for(const[k,p]of Object.entries(pins))pintab+=`<tr><td>${k}</td><td class="m">${esc(p.port)} · bit ${p.bit}</td><td>${p.confirmed_from_source?'<span class="tag ok">源码已确认</span>':'未确认'}</td><td class="m note">${esc(p.file)}:${p.Pin?p.Pin.line:''}</td></tr>`;
-  $('view-reg').innerHTML=`<div class="card"><h2><span class="n">V2</span>${esc(per.name)} ${esc(r.name)} ${g('位段')}</h2>
-    <div class="plain"><span class="ptag">大白话</span><span>把控制引脚的「开关格子」（${g('寄存器')}）一位一位画出来。这里看的是 ${g('ODR')}：某位是 1，对应引脚就输出高电平（灯亮不亮取决于硬件接法，这里只能保证电平）。高亮的位是源码里确认接了灯的引脚。没采样时每位标「?」，不瞎猜。</span></div>
-    <div class="note">地址 ${val({state:'authoritative',value:r.address,prov:{file:LENS.structure.svd.file,version:LENS.structure.svd.version,offset:r.offset}})} · ${esc(r.description)} · 定义来自 ${esc(r.defined_in)}${per.derivedFrom?` (${g('derivedFrom')} ${esc(per.derivedFrom)})`:''}</div>
-    <div style="margin:10px 0">${g('实测值','实测值：')}${odr?val(odr,true):'<span class="v u">不可知<i class="bdg">不可知</i></span>'} <span class="note">未采样时各位标 ?，不编造</span></div>
-    <div class="bits">${bits}</div>
-    <div class="note">高亮位 = 引脚映射经源码确认后才关联到板上灯（${Object.keys(pinBits).map(b=>'bit'+b+'→'+pinBits[b]).join(', ')||'无'}）。GPIO_PIN_SET 是置位操作，置哪一位由 pin 参数决定。</div>
-    <h2 style="margin-top:16px"><span class="n">${g('GPIO','引脚')}</span>映射（权威：设备头 + 源码）</h2>
-    <table><tr><th>符号</th><th>端口/位</th><th>确认</th><th>来源</th></tr>${pintab}</table>
-    <div class="note mono" style="margin-top:8px">${g('GPIO_TypeDef')} 布局来自 ${esc(LENS.structure.header.file)} · SVD/头文件一致性：${LENS.structure.cross_check&&LENS.structure.cross_check.svd_header_agree?'✓':'需复核'}</div></div>`;
+  $('view-reg').innerHTML=`<div class="view-head"><div><h2>寄存器位段</h2><p>从一个寄存器，看清每一位与引脚的对应关系。</p></div><span class="view-index">02 / REGISTER</span></div>
+    <div class="card"><div class="section-head"><h3 class="mono">${esc(per.name)} <span style="color:var(--faint)">/</span> ${esc(r.name)}</h3><span class="note mono">${esc(r.size_bits)}-BIT REGISTER</span></div>
+    <div class="readout-grid"><div class="readout"><div class="readout-label">定义地址 / ADDRESS</div>
+      <div class="readout-value">${val({state:'authoritative',value:r.address,prov:{file:LENS.structure.svd.file,version:LENS.structure.svd.version,offset:r.offset}})}</div>
+      <div class="note">定义来自 ${esc(r.defined_in)}${per.derivedFrom?` (${g('derivedFrom')} ${esc(per.derivedFrom)})`:''}</div></div>
+      <div class="readout"><div class="readout-label">采样读数 / VALUE</div>
+      <div class="readout-value">${odr?val(odr,true):'<span class="v u">不可知<i class="bdg">不可知</i></span>'}</div><div class="note">${odr&&odr.state==='measured'?'来自最近一次可用采样':'尚无实测读数，不推测引脚状态'}</div></div></div>
+    <div class="register-map"><div class="section-head"><h3>引脚位图</h3><div class="map-legend"><span><i></i>源码确认</span><span><i class="unknown"></i>? 未采样</span></div></div>
+      <div class="bits">${bits}</div><div class="note">高亮映射：${Object.keys(pinBits).map(b=>'bit '+b+' → '+esc(pinBits[b])).join(' · ')||'无已确认引脚'}${r.size_bits>16?' · 当前展示低 16 位':''}</div></div>
+    <div class="view-foot"><span>位值不代表灯的亮灭，实际效果取决于硬件接法。</span><span class="mono">${esc(r.description)}</span></div>
+    <details class="learn-more"><summary>如何阅读寄存器位图？</summary><div class="plain"><span>每个格子对应${g('寄存器')}中的一位。对于 ${g('ODR')}，位值 1 表示输出锁存器置位，0 表示复位；实际引脚电平还取决于引脚模式。高亮只表示源码已确认映射，不代表已测得电平。GPIO_PIN_SET 是置位操作，置哪一位由 pin 参数决定。没采样时显示「?」。</span></div></details></div>
+    <details class="card mapping-details"><summary><b>引脚映射与来源</b><span class="note">设备头 + 源码 · ${Object.keys(pins).length} 项</span></summary>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="引脚映射表"><table class="pin-table"><tr><th>符号</th><th>端口/位</th><th>确认</th><th>来源</th></tr>${pintab}</table></div>
+      <div class="note mono" style="margin-top:12px">${g('GPIO_TypeDef')} 布局来自 ${esc(LENS.structure.header.file)} · SVD/头文件一致性：${LENS.structure.cross_check&&LENS.structure.cross_check.svd_header_agree?'一致':'需复核'}</div></details>`;
 }
 
 /* ---- V3 术语溯源 ---- */
@@ -959,13 +1195,13 @@ function delayTermCard(grp,gi){
   const hz2=hz*10;
   return `<div class="term term-deep" data-fn="${esc(fns.join(' '))}">
     <div class="thead"><h3>vTaskDelay(${esc(ticks)})</h3><span class="tag acc">${byFn.size} 个函数 · ${grp.length} 处调用</span></div>
-    <div class="srcrow">${srcs}</div>
     <p class="tlead">这行代码让任务睡 <b>${ticks} 个节拍</b>，不是 ${ticks} 毫秒。本工程心跳 <b>${hz} Hz</b>，名义上是 <b>${secFmt(sec)} 秒</b>；而且它只决定「最早什么时候能再跑」，不保证准时执行。</p>
     <div class="tq">
       <div><span class="k">① 传了什么</span><span class="big">${val(t.passed)}<em>tick</em></span><span class="n">节拍数。代码里看不出实际时长——单位换算由 ② 决定。</span></div>
       <div><span class="k">② 谁决定效果</span><span class="big">${val(t.decider)}<em>Hz</em></span><span class="n">${g('configTICK_RATE_HZ')}（${esc(cfgLoc)}）→ 1 tick = ${dval(msFmt(period)+' ms',`1 s ÷ ${hz} = ${msFmt(period)} ms`,{hz:hz})}。</span></div>
       <div><span class="k">③ 等于多久</span><span class="big">${val(t.derived)}<em>s</em></span><span class="n">${esc(t.derived.prov&&t.derived.prov.formula||'')}；按心跳边界唤醒，实际落在 ${dval(msFmt(lo)+'–'+msFmt(hi)+' ms',`(${ticks}−1) × ${msFmt(period)} ms ～ ${ticks} × ${msFmt(period)} ms；不含调度延迟`,{ticks:ticks,period_ms:msFmt(period)})}。</span></div>
     </div>
+    <details class="term-details"><summary>查看调用来源、内核过程与换算依据</summary><div class="term-detail-grid"><div class="srcrow">${srcs}</div>
     <div class="tsec"><div class="hd">内核里发生了什么（FreeRTOS 相对延时）</div>
       <ol class="flow">
         <li>先把当前任务从<b>就绪链表</b>摘下——它暂时退出「谁来跑」的竞争。</li>
@@ -1004,7 +1240,7 @@ function delayTermCard(grp,gi){
       <b>到期 ≠ 执行 ≠ 点灯。</b>到期只代表任务重新具备运行条件；真正执行要等调度器选中，GPIO 动作又发生在执行之后。三者之间可能隔着若干 tick，离散快照还可能完全漏掉中间过程。<br>
       <b>相对延时。</b>周期 = 延时 + 本圈执行时间，逐圈累积会漂移；固定节拍用 ${g('vTaskDelayUntil')}。<br>
       <b>证据边界。</b>「到期 tick 是多少」必须以采样读到的链表值或内核变量为准；推导只解释公式，不能替代实测。
-    </div></details>
+    </div></details></div></details>
   </div>`;
 }
 
@@ -1038,13 +1274,13 @@ function gpioTermCard(t){
   const onlyOne=states.length===1;
   return `<div class="term term-deep">
     <div class="thead"><h3>${esc(t.title)}</h3><span class="tag acc">${t.writes.length} 处写入 · ${onlyOne?'同一电平':'电平有变化'}</span></div>
-    <div class="srcrow">${srcs}</div>
     <p class="tlead">同一个函数里 ${t.writes.length} 处调用，传的是同一个引脚、同一个状态：<b>${esc(w.pin_macro)} · ${esc(w.state)}</b>；已提取的写入里没有相反电平，所以这个引脚的电平不会切换。若它接着灯，灯的状态也不会跟着变——但任务是否还在调度，不能靠看灯，要靠 V1 采样。</p>
     <div class="tq">
       <div><span class="k">① 写了什么</span><span class="big">${stateV}</span><span class="n">${sem}</span></div>
       <div><span class="k">② 写到哪里</span><span class="big">${pinV}</span><span class="n">引脚映射来自源码宏，不是猜的；未确认就标不可知。</span></div>
       <div><span class="k">③ 输出会变吗</span><span class="big">${dval('不变',`${t.writes.length} 处调用都写 ${w.state}，没有相反电平，输出不会切换`,{sites:t.writes.length,state:w.state})}</span><span class="n">实际电平：${odrV}（${g(regName==='ODR'?'ODR':regName)} 对应位，采样后可见）。</span></div>
     </div>
+    <details class="term-details"><summary>查看源码位置、硬件行为与验证方法</summary><div class="term-detail-grid"><div class="srcrow">${srcs}</div>
     <div class="tsec"><div class="hd">内核与硬件之间发生了什么</div>
       <ol class="flow">
         <li><code>HAL_GPIO_WritePin(port, pin, state)</code> 的第 3 个参数是目标电平：${sem}</li>
@@ -1064,14 +1300,13 @@ function gpioTermCard(t){
       <b>源码只能证明「写了哪个端口、哪一位、什么电平」。</b>高电平到底点亮还是熄灭，取决于硬件接法（共阴/共阳、是否反相），本页不猜。<br>
       <b>亮灯 ≠ 调度。</b>GPIO 动作发生在任务执行之后；灯的状态不能证明任务在跑、也不能证明它准时醒。<br>
       <b>数据出处。</b>${esc(t.note||'')} 引脚宏若被重定义或板子改线，需重新核对映射。
-    </div></details>
+    </div></details></div></details>
   </div>`;
 }
 
 function renderTerm(){
   const terms=LENS.terms||[];
-  let h=`<div class="card"><h2><span class="n">V3</span>术语卡 + 三向联动</h2>
-    <div class="plain"><span class="ptag">大白话</span><span>这不是名词表，而是把每处关键调用按固定顺序讲透：<b>传了什么单位</b> → <b>哪个工程事实决定效果</b> → <b>换算成多少</b> → <b>内核里发生了什么</b> → <b>图上在哪一格验证、哪里必须标「不可知」</b>。数字都带四态标记，点虚线下划线可看名词解释。</span></div>`;
+  let h=`<div class="view-head"><div><h2>术语溯源</h2><p>从代码参数，到工程事实，再到芯片上的实际效果。</p></div><span class="view-index">03 / EXPLAIN</span></div><div class="term-list">`;
   const delayGroups=new Map();
   terms.forEach(t=>{if(t.kind==='delay'){const k=t.passed.value+'|'+t.decider.value;if(!delayGroups.has(k))delayGroups.set(k,[]);delayGroups.get(k).push(t);}});
   const rendered=new Set();let gi=0;
@@ -1084,6 +1319,7 @@ function renderTerm(){
       h+=gpioTermCard(t);
     }
   });
+  if(!terms.some(t=>t.kind==='delay'||t.kind==='gpio_dual'))h+=`<div class="card empty"><b>尚无可解读的调用</b><p>导入工程源码与配置后，这里会呈现已识别的关键调用及其依据。</p></div>`;
   h+=`</div>`;
   $('view-term').innerHTML=h;
 }
@@ -1101,23 +1337,24 @@ function renderPlat(){
   const cols=['freertos','rtthread','threadx','zephyr','stm32hal','esp'];
   const heads={freertos:'FreeRTOS',rtthread:'RT-Thread',threadx:'ThreadX',zephyr:'Zephyr',stm32hal:'STM32 HAL',esp:'ESP-IDF'};
   let rows=LENS.concepts.map(c=>`<tr><td><b>${esc(c.concept)}</b></td>${cols.map(k=>`<td class="m">${esc(c[k]||'—')}</td>`).join('')}</tr>`).join('');
-  $('view-plat').innerHTML=`<div class="card"><h2><span class="n">§13</span>跨平台概念对照</h2>
-    <div class="plain"><span class="ptag">大白话</span><span>同一个概念（比如「延时」「建任务」），在不同系统里写法不同，这张表帮你对照。目前只有 ${g('FreeRTOS')} 能读真实数据，其余先给写法对照，不假装支持。</span></div>
-    <div class="note">同一概念的多平台写法。MVP 仅 FreeRTOS 提供真实数据解析${g('适配器')}；其余为概念对照卡（concept-only），导入对应真实构建后方可解析，不假装支持。</div>
-    <div style="overflow-x:auto"><table class="cmp"><tr><th>概念</th>${cols.map(k=>`<th>${heads[k]}</th>`).join('')}</tr>${rows}</table></div></div>`;
+  $('view-plat').innerHTML=`<div class="view-head"><div><h2>平台对照</h2><p>同一个概念，在不同嵌入式生态中的表达。</p></div><span class="view-index">04 / REFERENCE</span></div>
+    <div class="card"><div class="section-head"><h3>跨平台概念索引</h3><span class="note">6 个平台</span></div>
+    <div class="note">仅 ${g('FreeRTOS')} 支持真实数据解析，其余平台仅作概念与 API 写法对照，不代表已支持采样。</div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="跨平台概念对照表"><table class="cmp"><tr><th>概念</th>${cols.map(k=>`<th>${heads[k]}</th>`).join('')}</tr>${rows}</table></div></div>`;
 }
 
 /* ---- V4 回放/导出 ---- */
 function renderReplay(){
-  $('view-replay').innerHTML=`<div class="card"><h2><span class="n">V4</span>离线回放与导出</h2>
-    <div class="plain"><span class="ptag">大白话</span><span>这个网页本身就是导出成果：一个文件、不依赖网络，双击就能离线看。下面可调「回放速度」，把多张${g('离散快照','快照')}按间隔自动播放。注意：只能改回放/采样间隔，不会去改芯片里的真实参数。</span></div>
-    <div class="note">本文件即导出产物：单文件 HTML、零外部依赖，数据与来源内嵌同一文件，双击即可离线回放并${g('溯源')}。</div>
-    <div style="margin:14px 0">回放间隔（仅回放设置，真实数据模式下不得修改目标参数）：<br>
-      <input type="range" id="rint" min="200" max="3000" step="100" value="1000" style="width:min(320px,100%);margin-top:9px"> <span class="chip" id="rintv">1000 ms</span></div>
-    <div class="btns"><button class="btn" id="rplay">${ic('play')}自动回放</button><button class="btn sec" id="rstop">${ic('stop')}停止</button>
-      <span class="note">有效快照 ${validSnaps.length} 帧</span></div>
-    <div class="note mono" style="margin-top:12px">内嵌数据：device/build/identity/structure/facts/offsets/symbols/snapshots/concepts/terms · 每个数字带四态溯源</div>
-    <div class="note" style="margin-top:6px">「改参」仅指采样间隔与回放设置；写内存/改固件/烧录/复位/单步均为非目标。</div></div>`;
+  $('view-replay').innerHTML=`<div class="view-head"><div><h2>回放与导出</h2><p>按自己的节奏观察快照，将证据保存在一个文件里。</p></div><span class="view-index">05 / REPLAY</span></div>
+    <div class="card"><div class="section-head"><h3>快照回放</h3><span class="tag">${validSnaps.length} 有效帧</span></div><div class="note">按间隔重放已采集的离散快照，不改变芯片参数。</div>
+    <div class="replay-settings"><label for="rint">回放间隔</label><div class="note">仅回放设置，真实数据模式下不得修改目标参数。</div>
+      <div class="replay-range"><input type="range" id="rint" min="200" max="3000" step="100" value="1000"><span class="chip" id="rintv">1000 ms</span></div></div>
+    <div class="btns"><button class="btn" id="rplay" ${validSnaps.length?'':'disabled'}>${ic('play')}开始回放</button><button class="btn sec" id="rstop" ${validSnaps.length?'':'disabled'}>${ic('stop')}停止</button></div>
+    ${validSnaps.length?'':'<p class="replay-empty">尚无有效快照，完成采样后即可回放。</p>'}</div>
+    <div class="card delivery-note"><div class="section-head"><h3>随文件一起带走</h3><span class="note mono">.HTML</span></div>
+    <div class="note">当前网页就是一份离线成果。数据与来源内嵌在同一文件中，双击即可查看，不依赖网络。</div>
+    <div class="delivery-item">${ic('check')}完整视图与交互</div><div class="delivery-item">${ic('check')}工程定义与采样记录</div><div class="delivery-item">${ic('check')}每个数字的来源与依据</div>
+    <details class="learn-more"><summary>导出方式与数据边界</summary><div class="lesson-body note">导入工程并完成解读后，可在「导入我的工程」中导出网页或数据。当前文件也可直接保存、复制与分享。内嵌 device / build / identity / structure / facts / offsets / symbols / snapshots / concepts / terms；只改变回放设置，不写内存、不改固件、不烧录。</div></details></div>`;
   $('rint').oninput=e=>$('rintv').textContent=e.target.value+' ms';
   $('rplay').onclick=()=>{if(!validSnaps.length)return;const tab=document.querySelector('.tab[data-v="sched"]');tab.click();
     let i=0;const nextBtn=$('snext');clearInterval(replayTimer);
@@ -1128,7 +1365,7 @@ function renderReplay(){
 let replayTimer=null;
 function renderAll(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}refreshSnaps();renderTop();renderSched();renderReg();renderTerm();renderPlat();renderReplay();
   const on=document.querySelector('.tab.on');if(on&&window.__enterView)window.__enterView($('view-'+on.dataset.v));}
-$('view-term').addEventListener('click',termClick);
+document.querySelector('.workbench-main').addEventListener('click',termClick);
 renderAll();
 const h0=location.hash.slice(1);if(h0){const t0=document.querySelector('.tab[data-v="'+h0+'"]');if(t0)selTab(t0);}
 
@@ -1145,7 +1382,7 @@ const accent=(getComputedStyle(document.documentElement).getPropertyValue('--acc
 const mark=document.querySelectorAll('.mark svg > *');
 function playAppIntro(){
   if(mark.length)gsap.fromTo(mark,{drawSVG:'0% 0%'},{drawSVG:'0% 100%',duration:d(1),stagger:d(.08),ease:'power2.inOut',overwrite:'auto'});
-  gsap.from('.kicker, .brand h1, .sub, .mast-actions, .spec',{opacity:0,y:d(9),duration:d(.55),stagger:d(.05),ease:EASE,clearProps:'opacity,transform',overwrite:'auto'});
+  gsap.from('.brand-text, .workspace-label, .mast-actions, .project-panel',{opacity:0,y:d(6),duration:d(.4),stagger:d(.04),ease:EASE,clearProps:'opacity,transform',overwrite:'auto'});
   const on=document.querySelector('.tab.on');
   if(on)enterView($('view-'+on.dataset.v));
 }
@@ -1156,20 +1393,24 @@ const tabsEl=$('tabs');
 const ink=document.createElement('span');ink.className='tab-ink';ink.setAttribute('aria-hidden','true');tabsEl.appendChild(ink);
 function moveInk(tab,animate){
   if(!tab)return;
-  const o={x:tab.offsetLeft,y:tab.offsetTop+tab.offsetHeight-2,width:tab.offsetWidth};
+  const o=compactNav.matches
+    ?{x:tab.offsetLeft,y:tab.offsetTop+tab.offsetHeight-2,width:tab.offsetWidth,height:2}
+    :{x:0,y:tab.offsetTop+8,width:3,height:tab.offsetHeight-16};
   if(animate&&!RM.matches)gsap.to(ink,{...o,duration:.36,ease:'power3.out',overwrite:'auto'});
-  else gsap.set(ink,o);
+  else{gsap.killTweensOf(ink);gsap.set(ink,o);}
 }
+// 同一帧往返折叠可能不触发尺寸观察器。
+navToggle.addEventListener('click',()=>moveInk(document.querySelector('.tab.on'),false));
+const navObserver=new ResizeObserver(()=>moveInk(document.querySelector('.tab.on'),false));navObserver.observe(tabsEl);
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>moveInk(document.querySelector('.tab.on'),false),120);});
 
 /* 视图入场：卡片分层浮现（V2 位格、V3 术语卡再细分） */
 function enterView(view){
   if(!view)return;
-  const cards=[...view.querySelectorAll(':scope > .card')];
+  const cards=[...view.querySelectorAll(':scope > .card, :scope > .term-list > .term')];
   if(!cards.length)return;
   gsap.fromTo(cards,{opacity:0,y:d(12)},{opacity:1,y:0,duration:d(.5),stagger:d(.07),ease:EASE,overwrite:'auto',clearProps:'transform,opacity'});
   if(view.id==='view-reg')gsap.fromTo(view.querySelectorAll('.bit'),{opacity:0,scale:.95},{opacity:1,scale:1,duration:d(.32),stagger:d(.008),ease:'power2.out',delay:d(.06),overwrite:'auto',clearProps:'transform,opacity'});
-  if(view.id==='view-term')gsap.fromTo(view.querySelectorAll('.term'),{opacity:0,y:d(10)},{opacity:1,y:0,duration:d(.42),stagger:d(.08),delay:d(.06),ease:EASE,overwrite:'auto',clearProps:'transform,opacity'});
 }
 
 /* 目标脉冲 + 平滑滚动（三向联动） */
@@ -1252,23 +1493,26 @@ function init3D(){
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
   renderer.outputEncoding=T.sRGBEncoding;
-  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;
+  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.14;
   const scene=new T.Scene();
   const camera=new T.PerspectiveCamera(32,1,1,2200);
 
   function makeEnv(){
     const faces=[];
     for(let i=0;i<6;i++){
-      const c=document.createElement('canvas');c.width=c.height=64;
-      const x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,64);
-      g.addColorStop(0,'#eee7d8');g.addColorStop(.55,'#aeb9c6');g.addColorStop(1,'#33404d');
-      x.fillStyle=g;x.fillRect(0,0,64,64);
-      if(i===0||i===2){x.fillStyle='rgba(255,255,255,.95)';x.fillRect(18,6,28,20);}
+      const c=document.createElement('canvas');c.width=c.height=128;
+      const x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,128);
+      g.addColorStop(0,'#7793a5');g.addColorStop(.4,'#344e60');g.addColorStop(1,'#111c26');
+      x.fillStyle=g;x.fillRect(0,0,128,128);
+      if(i===0||i===2||i===4){
+        x.shadowColor=i===2?'#fff1d8':'#b4dcf7';x.shadowBlur=18;
+        x.fillStyle=i===2?'#fff3df':'#c9e4f5';x.fillRect(i===4?84:18,12,i===2?82:18,92);
+      }
       faces.push(c);
     }
-    const cube=new T.CubeTexture(faces);cube.needsUpdate=true;
+    const cube=new T.CubeTexture(faces);cube.encoding=T.sRGBEncoding;cube.needsUpdate=true;
     const pm=new T.PMREMGenerator(renderer);
-    const env=pm.fromCubemap(cube).texture;pm.dispose();return env;
+    const env=pm.fromCubemap(cube).texture;cube.dispose();pm.dispose();return env;
   }
   scene.environment=makeEnv();
   function noiseTex(){
@@ -1281,105 +1525,177 @@ function init3D(){
   const rough=noiseTex();
 
   function col(h){return new T.Color(h).convertSRGBToLinear();}
-  scene.add(new T.HemisphereLight(0xf7f2e7,0x2c3d50,0.4));
-  const key=new T.DirectionalLight(0xffffff,0.95);key.position.set(150,250,140);key.castShadow=true;
-  key.shadow.mapSize.set(1024,1024);
-  key.shadow.camera.left=-200;key.shadow.camera.right=200;key.shadow.camera.top=200;key.shadow.camera.bottom=-200;
-  key.shadow.camera.near=1;key.shadow.camera.far=800;key.shadow.bias=-0.0006;scene.add(key);
-  const rim=new T.DirectionalLight(0x9cc4e8,0.35);rim.position.set(-170,130,-120);scene.add(rim);
-  const fill=new T.DirectionalLight(0xffffff,0.15);fill.position.set(-60,70,220);scene.add(fill);
+  scene.add(new T.HemisphereLight(0xd8eaf4,0x142534,.55));
+  const key=new T.DirectionalLight(0xffeed6,1.65);key.position.set(-110,230,160);key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048);
+  key.shadow.camera.left=-185;key.shadow.camera.right=185;key.shadow.camera.top=185;key.shadow.camera.bottom=-185;
+  key.shadow.camera.near=1;key.shadow.camera.far=650;key.shadow.bias=-.00025;key.shadow.normalBias=.16;key.shadow.radius=3;scene.add(key);
+  const rim=new T.DirectionalLight(0x8cccf2,.95);rim.position.set(130,100,-160);scene.add(rim);
+  const fill=new T.DirectionalLight(0xd8eaf7,.45);fill.position.set(100,70,200);scene.add(fill);
 
-  const ground=new T.Mesh(new T.CircleGeometry(320,72),new T.ShadowMaterial({opacity:.16}));
-  ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
-  const grid=new T.GridHelper(540,36,0x14406b,0xcfc9b8);
-  grid.material.transparent=true;grid.material.opacity=.28;grid.position.y=-.2;scene.add(grid);
+  const ground=new T.Mesh(new T.CircleGeometry(270,64),new T.ShadowMaterial({opacity:.36}));
+  ground.rotation.x=-Math.PI/2;ground.position.y=-3.5;ground.receiveShadow=true;scene.add(ground);
+  const grid=new T.GridHelper(470,24,0x456b81,0x304a5b);
+  grid.material.transparent=true;grid.material.opacity=.055;grid.position.y=-3.55;scene.add(grid);
 
   const board=new T.Group();scene.add(board);
   function box(w,h,d,mat,x,y,z){const m=new T.Mesh(new T.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;board.add(m);return m;}
   function cyl(rt,rb,h,mat,x,y,z,seg){const m=new T.Mesh(new T.CylinderGeometry(rt,rb,h,seg||22),mat);m.position.set(x,y,z);m.castShadow=true;board.add(m);return m;}
-  const pcbMat=new T.MeshPhysicalMaterial({color:col(0x0f3a58),roughness:.6,metalness:.12,clearcoat:.2,clearcoatRoughness:.55,roughnessMap:rough,bumpMap:rough,bumpScale:.02,envMapIntensity:.25});
-  box(300,3.2,160,pcbMat,0,1.6,0).receiveShadow=true;
-  const chipMat=new T.MeshStandardMaterial({color:col(0x171d24),roughness:.8,metalness:.06,envMapIntensity:.2});
-  const goldMat=new T.MeshStandardMaterial({color:col(0xd8b25a),metalness:1,roughness:.26,envMapIntensity:.9});
-  const tinMat=new T.MeshStandardMaterial({color:col(0xd6dde3),metalness:1,roughness:.22,envMapIntensity:.9});
-  const blackMat=new T.MeshStandardMaterial({color:col(0x14181c),roughness:.8,metalness:.05,envMapIntensity:.2});
-  const canMat=new T.MeshStandardMaterial({color:col(0xcfd6dc),metalness:1,roughness:.32,envMapIntensity:1});
-  const whiteMat=new T.MeshStandardMaterial({color:col(0xe6e2d8),roughness:.6,metalness:.05});
-  const potMat=new T.MeshStandardMaterial({color:col(0x1c4f8a),roughness:.5,metalness:.2});
-  const traceMat=new T.MeshBasicMaterial({color:col(0x2f6c99)});
-  const silkMat=new T.MeshBasicMaterial({color:col(0x9db9cf)});
+  function roundedGeometry(w,h,d,r,holes=[]){
+    const b=Math.min(.16,h/4),x=w/2-b,z=d/2-b,shape=new T.Shape();
+    shape.moveTo(-x+r,-z);shape.lineTo(x-r,-z);shape.quadraticCurveTo(x,-z,x,-z+r);
+    shape.lineTo(x,z-r);shape.quadraticCurveTo(x,z,x-r,z);shape.lineTo(-x+r,z);
+    shape.quadraticCurveTo(-x,z,-x,z-r);shape.lineTo(-x,-z+r);shape.quadraticCurveTo(-x,-z,-x+r,-z);
+    shape.holes=holes;
+    const geometry=new T.ExtrudeGeometry(shape,{depth:h-2*b,bevelEnabled:true,bevelThickness:b,bevelSize:b,bevelSegments:1,steps:1,curveSegments:holes.length?12:4});
+    geometry.rotateX(-Math.PI/2);geometry.translate(0,b-h/2,0);return geometry;
+  }
+  const pcbMat=new T.MeshPhysicalMaterial({color:col(0x0d2e3d),roughness:.42,metalness:.08,clearcoat:.4,clearcoatRoughness:.32,roughnessMap:rough,bumpMap:rough,bumpScale:.015,envMapIntensity:.6});
+  const pcbShape=new T.Shape(),px=149.88,pz=79.88,pr=7;
+  pcbShape.moveTo(-px+pr,-pz);pcbShape.lineTo(px-pr,-pz);pcbShape.quadraticCurveTo(px,-pz,px,-pz+pr);
+  pcbShape.lineTo(px,pz-pr);pcbShape.quadraticCurveTo(px,pz,px-pr,pz);pcbShape.lineTo(-px+pr,pz);
+  pcbShape.quadraticCurveTo(-px,pz,-px,pz-pr);pcbShape.lineTo(-px,-pz+pr);pcbShape.quadraticCurveTo(-px,-pz,-px+pr,-pz);
+  [[-142,-68],[142,-68],[-142,68],[142,68]].forEach(q=>{
+    const hole=new T.Path();hole.absarc(q[0],-q[1],1.85,0,Math.PI*2,true);pcbShape.holes.push(hole);
+  });
+  const pcb=new T.Mesh(new T.ExtrudeGeometry(pcbShape,{depth:2.96,bevelEnabled:true,bevelThickness:.12,bevelSize:.12,bevelSegments:2,steps:1,curveSegments:8}),pcbMat);
+  pcb.name='pcb';pcb.rotation.x=-Math.PI/2;pcb.position.y=.12;pcb.receiveShadow=true;pcb.castShadow=true;board.add(pcb);
+  const chipMat=new T.MeshStandardMaterial({color:col(0x131b23),roughness:.82,metalness:.03,envMapIntensity:.22,roughnessMap:rough,bumpMap:rough,bumpScale:.02});
+  const goldMat=new T.MeshStandardMaterial({color:col(0xd2ad63),metalness:1,roughness:.3,envMapIntensity:1.05});
+  const tinMat=new T.MeshStandardMaterial({color:col(0xc7d1d9),metalness:1,roughness:.34,envMapIntensity:.9});
+  const blackMat=new T.MeshStandardMaterial({color:col(0x151d25),roughness:.7,metalness:.04,envMapIntensity:.22});
+  const canMat=new T.MeshStandardMaterial({color:col(0xb9c5ce),metalness:.95,roughness:.3,envMapIntensity:.85});
+  const whiteMat=new T.MeshStandardMaterial({color:col(0xc6c7bb),roughness:.75,metalness:0});
+  const potMat=new T.MeshStandardMaterial({color:col(0x2e6d89),roughness:.5,metalness:.1});
+  const traceMat=new T.MeshStandardMaterial({color:col(0x1b4757),roughness:.7,metalness:.08});
+  const silkMat=new T.MeshBasicMaterial({color:col(0xa8c3cc)});
 
-  /* 主控：LQFP-64，占板比例按实物缩小 */
   const bodyMat=chipMat;
-  const sh=new T.Shape(),s=20,r=3;
-  sh.moveTo(-s+r,-s);sh.lineTo(s-r,-s);sh.quadraticCurveTo(s,-s,s,-s+r);
+  const sh=new T.Shape(),s=20,r=1.3;
+  sh.moveTo(-s+3.6,-s);sh.lineTo(s-r,-s);sh.quadraticCurveTo(s,-s,s,-s+r);
   sh.lineTo(s,s-r);sh.quadraticCurveTo(s,s,s-r,s);sh.lineTo(-s+r,s);
-  sh.quadraticCurveTo(-s,s,-s,s-r);sh.lineTo(-s,-s+r);sh.quadraticCurveTo(-s,-s,-s+r,-s);
-  const body=new T.Mesh(new T.ExtrudeGeometry(sh,{depth:7,bevelEnabled:true,bevelThickness:1.1,bevelSize:1,bevelSegments:3,steps:1,curveSegments:8}),bodyMat);
-  body.rotation.x=-Math.PI/2;body.position.set(-10,3.6,-4);body.castShadow=true;body.receiveShadow=true;board.add(body);
+  sh.quadraticCurveTo(-s,s,-s,s-r);sh.lineTo(-s,-s+3.6);sh.closePath();
+  const body=new T.Mesh(new T.ExtrudeGeometry(sh,{depth:4.6,bevelEnabled:true,bevelThickness:.55,bevelSize:.55,bevelSegments:3,steps:1,curveSegments:6}),bodyMat);
+  body.rotation.x=-Math.PI/2;body.position.set(-10,4.9,-4);body.castShadow=true;body.receiveShadow=true;board.add(body);
 
-  const leadG=new T.BoxGeometry(1,.9,8),bendG=new T.BoxGeometry(1,2,1.1);
+  const leadProfile=new T.Shape();
+  leadProfile.moveTo(19.8,6.75);leadProfile.lineTo(21.35,6.75);
+  leadProfile.quadraticCurveTo(22.25,6.75,22.7,5.8);leadProfile.lineTo(23.4,4.5);
+  leadProfile.quadraticCurveTo(23.7,3.96,24.35,3.96);leadProfile.lineTo(27.4,3.96);
+  leadProfile.lineTo(27.4,3.46);leadProfile.lineTo(24.15,3.46);
+  leadProfile.quadraticCurveTo(23.05,3.46,22.6,4.35);leadProfile.lineTo(21.95,5.65);
+  leadProfile.quadraticCurveTo(21.65,6.25,21.25,6.25);leadProfile.lineTo(19.8,6.25);leadProfile.closePath();
+  const leadG=new T.ExtrudeGeometry(leadProfile,{depth:1,bevelEnabled:true,bevelThickness:.06,bevelSize:.06,bevelSegments:1,steps:1,curveSegments:4});
+  leadG.rotateY(-Math.PI/2);leadG.translate(.5,0,0);
+  const padG=new T.BoxGeometry(1.7,.2,5.2);padG.translate(0,3.3,25.3);
+  const solderG=new T.SphereGeometry(1,10,6);solderG.scale(.72,.37,2.15);solderG.translate(0,3.53,25.35);
+  const leads=new T.InstancedMesh(leadG,tinMat,64),pads=new T.InstancedMesh(padG,goldMat,64),solder=new T.InstancedMesh(solderG,tinMat,64);
+  leads.name='mcu-leads';pads.name='mcu-pads';solder.name='mcu-solder';
+  leads.castShadow=true;solder.castShadow=true;
   for(let side=0;side<4;side++){
-    const g=new T.Group();g.rotation.y=side*Math.PI/2;g.position.set(-10,0,-4);board.add(g);
+    const anchor=new T.Matrix4().makeRotationY(side*Math.PI/2);anchor.setPosition(-10,0,-4);
     for(let i=0;i<16;i++){
-      const off=-20+2.5*(i+.5);
-      const lead=new T.Mesh(leadG,tinMat);lead.position.set(off,3.8,20+4);lead.castShadow=true;g.add(lead);
-      const bend=new T.Mesh(bendG,tinMat);bend.position.set(off,3.5,20.2);g.add(bend);
+      const matrix=new T.Matrix4().makeTranslation(-20+2.5*(i+.5),0,0).premultiply(anchor);
+      const index=side*16+i;
+      leads.setMatrixAt(index,matrix);pads.setMatrixAt(index,matrix);solder.setMatrixAt(index,matrix);
     }
   }
+  [leads,pads,solder].forEach(m=>{m.instanceMatrix.needsUpdate=true;board.add(m);});
 
   function topTexture(){
     const c=document.createElement('canvas');c.width=c.height=1024;
     const x=c.getContext('2d');
-    x.strokeStyle='rgba(198,224,248,.94)';x.lineWidth=5;
-    x.beginPath();x.arc(512,262,86,0,Math.PI*2);x.stroke();
-    x.beginPath();x.arc(512,262,34,0,Math.PI*2);x.stroke();
-    x.lineWidth=4;x.beginPath();x.moveTo(512,146);x.lineTo(512,378);x.moveTo(396,262);x.lineTo(628,262);x.stroke();
-    x.fillStyle='rgba(216,235,252,.96)';x.textAlign='center';
-    x.font='600 60px "Segoe UI",Arial,sans-serif';x.fillText('STM32F103RCT6',512,506);
-    x.font='500 46px "Segoe UI",Arial,sans-serif';x.fillText('ARM',512,592);
-    x.fillStyle='rgba(176,205,232,.75)';x.font='400 34px Consolas,monospace';
-    x.fillText('LQFP-64 · CORTEX-M3',512,672);
+    x.fillStyle='rgba(190,196,199,.82)';x.textAlign='left';
+    x.font='600 112px "Segoe UI",Arial,sans-serif';x.fillText('STM32',164,354);
+    x.font='500 92px Consolas,monospace';x.fillText('F103RCT6',164,482);
+    x.strokeStyle='rgba(173,181,188,.34)';x.lineWidth=2;
+    x.beginPath();x.moveTo(166,548);x.lineTo(858,548);x.stroke();
+    x.fillStyle='rgba(177,187,193,.7)';x.font='500 45px Consolas,monospace';
+    x.fillText('ARM  CORTEX-M3',164,644);
+    x.font='400 34px Consolas,monospace';x.fillText('LQFP-64',164,714);
+    const dot=x.createRadialGradient(114,880,3,122,888,24);
+    dot.addColorStop(0,'rgba(0,0,0,.8)');dot.addColorStop(.72,'rgba(0,0,0,.7)');dot.addColorStop(1,'rgba(151,163,173,.5)');
+    x.fillStyle=dot;x.beginPath();x.arc(122,888,24,0,Math.PI*2);x.fill();
     const t=new T.CanvasTexture(c);t.anisotropy=4;t.encoding=T.sRGBEncoding;return t;
   }
-  const top=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshBasicMaterial({map:topTexture(),transparent:true,depthWrite:false}));
-  top.rotation.x=-Math.PI/2;top.position.set(-10,11.85,-4);board.add(top);
+  const top=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshStandardMaterial({map:topTexture(),transparent:true,depthWrite:false,roughness:.86,metalness:.04}));
+  top.rotation.x=-Math.PI/2;top.position.set(-10,10.08,-4);board.add(top);
 
-  /* 两侧 2×24 排针 */
-  [-72,72].forEach(z=>{
-    box(272,3,5,blackMat,0,4.7,z);
-    for(let i=0;i<24;i++)box(1.8,6,1.8,goldMat,-134.5+i*11.7,9,z);
+  const headerBody=new T.InstancedMesh(roundedGeometry(11.2,3,4.8,.55),blackMat,48);
+  const headerPins=new T.InstancedMesh(new T.BoxGeometry(1.6,5.1,1.6),goldMat,48);
+  const tipGeometry=new T.CylinderGeometry(.52,1.13,1.2,4);tipGeometry.rotateY(Math.PI/4);
+  const headerTips=new T.InstancedMesh(tipGeometry,goldMat,48);
+  headerBody.name='header-housings';headerPins.name='header-pins';headerTips.name='header-tips';
+  [-72,72].forEach((z,row)=>{
+    for(let i=0;i<24;i++){
+      const index=row*24+i,x=-134.5+i*11.7;
+      const housingMatrix=new T.Matrix4().makeScale((i===0||i===23)?.72:1,1,1);housingMatrix.setPosition(x,4.7,z);
+      headerBody.setMatrixAt(index,housingMatrix);
+      headerPins.setMatrixAt(index,new T.Matrix4().makeTranslation(x,8.7,z));
+      headerTips.setMatrixAt(index,new T.Matrix4().makeTranslation(x,11.85,z));
+    }
   });
-  /* Micro-USB + CH340 串口桥（SSOP-16） */
-  box(15,7,12,canMat,-141,6,0);
-  box(.8,4.6,8,blackMat,-149,6,0);
-  [-3,-1,1,3].forEach(z=>box(.8,.9,1.4,goldMat,-148.4,6,z));
-  box(10,2.2,6,blackMat,-104,4.3,18);
+  [headerBody,headerPins,headerTips].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.castShadow=true;board.add(m);});
+
+  const usbSection=new T.Shape();
+  usbSection.moveTo(-4.8,-2.8);usbSection.lineTo(4.8,-2.8);usbSection.lineTo(6,2.8);usbSection.lineTo(-6,2.8);usbSection.closePath();
+  const usbCavity=new T.Path();
+  usbCavity.moveTo(-4.35,-2.25);usbCavity.lineTo(-5.35,2.25);usbCavity.lineTo(5.35,2.25);usbCavity.lineTo(4.35,-2.25);usbCavity.closePath();usbSection.holes.push(usbCavity);
+  const usbGeometry=new T.ExtrudeGeometry(usbSection,{depth:14,bevelEnabled:true,bevelThickness:.12,bevelSize:.12,bevelSegments:1,steps:1});usbGeometry.rotateY(-Math.PI/2);
+  const usbShell=new T.Mesh(usbGeometry,canMat);usbShell.name='usb-shell';usbShell.position.set(-135.2,6.35,0);usbShell.castShadow=true;board.add(usbShell);
+  box(.55,4.4,9.3,blackMat,-135.2,6.35,0);
+  box(10.5,.6,7,blackMat,-141,5.35,0);
+  for(let i=0;i<5;i++){const contact=box(5.5,.18,.65,goldMat,-144,5.75,-2.6+i*1.3);contact.name='usb-contact';}
+  [-1,1].forEach(side=>box(3.2,.45,1.4,tinMat,-138.5,3.45,side*6.4));
+  [-2.7,2.7].forEach(z=>box(2.3,.08,.75,blackMat,-140.8,9.28,z));
+  const bridge=new T.Mesh(roundedGeometry(18,2.2,6,.45),blackMat);bridge.position.set(-104,4.3,18);bridge.castShadow=true;board.add(bridge);
   for(let i=0;i<8;i++){
     const x=-104-7.7+i*2.2;
     [13,23].forEach(z=>box(1,.8,4,tinMat,x,3.6,z));
   }
-  /* 双晶振：8 MHz 大罐 + 32.768 kHz 小罐 */
-  box(20,7,10,canMat,-56,5.7,-30);
-  box(8,3,4,canMat,-56,4.7,22);
+  [{x:-56,z:-30,w:18,d:8.4,h:5.2},{x:-56,z:22,w:8,d:4,h:2.6}].forEach(q=>{
+    [-1,1].forEach(side=>{
+      const px=q.x+side*q.w*.28;
+      cyl(.85,.85,.2,goldMat,px,3.3,q.z,12);
+      cyl(.3,.3,1.3,tinMat,px,3.85,q.z,10);
+    });
+    box(q.w+1,.3,q.d+.8,canMat,q.x,4.4,q.z);
+    const outline=new T.Shape(),a=q.w/2,b=q.d/2,r=.9;
+    outline.moveTo(-a+r,-b);outline.lineTo(a-r,-b);outline.quadraticCurveTo(a,-b,a,-b+r);
+    outline.lineTo(a,b-r);outline.quadraticCurveTo(a,b,a-r,b);outline.lineTo(-a+r,b);
+    outline.quadraticCurveTo(-a,b,-a,b-r);outline.lineTo(-a,-b+r);outline.quadraticCurveTo(-a,-b,-a+r,-b);
+    const shell=new T.Mesh(new T.ExtrudeGeometry(outline,{depth:q.h,bevelEnabled:true,bevelThickness:.2,bevelSize:.25,bevelSegments:2,steps:1,curveSegments:5}),canMat);
+    shell.rotation.x=-Math.PI/2;shell.position.set(q.x,4.55,q.z);shell.castShadow=true;board.add(shell);
+  });
   /* LDO + 两颗电解电容（黑壳银顶 + 负极白条） */
   box(11,3.2,7,blackMat,-66,4.8,34);
   box(6,1.6,4,canMat,-66,4.2,39);
   [[-112,48],[-94,48]].forEach(q=>{
     cyl(4.5,4.5,9,blackMat,q[0],7.7,q[1]);
     cyl(4.5,4.5,.6,canMat,q[0],12.4,q[1]);
+    [-1,1].forEach(sign=>{
+      const vent=box(5.7,.08,.22,blackMat,q[0],12.72,q[1]);vent.rotation.y=sign*Math.PI/4;vent.castShadow=false;
+    });
     box(1,6,.5,silkMat,q[0]+4.2,7.7,q[1]);
   });
   /* 电源拨动开关 */
   box(10,3,6,blackMat,-134,4.7,48);
   box(3,2,2,canMat,-134,6.7,48);
-  /* 复位键 / BOOT0 跳线 / 用户按键 KEY1 KEY2 */
-  box(9,3,9,blackMat,-42,4.7,48);
-  const plunger=cyl(2.2,2.2,1.6,canMat,-42,6.6,48);
+  function tactile(x,z,size,radius){
+    box(size,.4,size,blackMat,x,3.4,z);
+    const well=new T.Path();well.absarc(0,0,2.7,0,Math.PI*2,true);
+    const base=new T.Mesh(roundedGeometry(size,2.65,size,.55,[well]),blackMat);
+    base.name='switch-housing';base.position.set(x,4.925,z);base.castShadow=true;board.add(base);
+    const aperture=new T.Path();aperture.absarc(0,0,radius>2?2.6:2.25,0,Math.PI*2,true);
+    const lid=new T.Mesh(roundedGeometry(size-.8,.4,size-.8,.5,[aperture]),canMat);
+    lid.name='switch-cover';lid.position.set(x,6.45,z);lid.castShadow=true;board.add(lid);
+    [-1,1].forEach(side=>[-2.4,2.4].forEach(dz=>box(2.5,.35,1.1,tinMat,x+side*(size/2+.4),3.45,z+dz)));
+    return cyl(radius,radius,1.6,blackMat,x,6.9,z,40);
+  }
+  const plunger=tactile(-42,48,9,2.2);
   box(12,3,8,blackMat,-42,4.7,-48);
   [-46,-38].forEach(x=>[-51,-45].forEach(z=>box(1.8,5,1.8,goldMat,x,8,z)));
-  const key1Top=box(2,1.6,2,canMat,36,6.9,-50),key2Top=box(2,1.6,2,canMat,62,6.9,-50);
-  box(8,3,8,blackMat,36,4.7,-50);box(8,3,8,blackMat,62,4.7,-50);
+  const key1Top=tactile(36,-50,8,1.8),key2Top=tactile(62,-50,8,1.8);
   /* 蜂鸣器（顶开孔） */
   cyl(7,7,7,blackMat,36,6.7,50);
   cyl(2,2,.4,new T.MeshStandardMaterial({color:col(0x05070a),roughness:.9}),36,10.3,50);
@@ -1387,19 +1703,32 @@ function init3D(){
   box(9,6,9,potMat,62,6.2,50);
   cyl(2,2,1,canMat,62,9.7,50);
   box(2.6,.4,.6,blackMat,62,10.3,50);
-  /* microSD 卡槽（含半插卡） */
-  box(20,3.5,17,canMat,52,5,14);
-  box(.8,2.4,13,blackMat,62.4,5,14);
-  box(8,.8,12,blackMat,67,5,14);
-  /* EEPROM SOIC-8 */
-  box(6,2,5,blackMat,36,4.2,-26);
+  box(19.6,.55,16.2,blackMat,52,3.475,14);
+  box(12,.9,10,blackMat,50,4.2,14);
+  [6,22].forEach(z=>box(20,2.6,.5,canMat,52,4.9,z));
+  box(.5,2.6,16,canMat,42.25,4.9,14);
+  const sdWindows=[-4.8,4.8].map(z=>{
+    const cut=new T.Path();cut.moveTo(-3,z-1.25);cut.lineTo(-3,z+1.25);cut.lineTo(1,z+1.25);cut.lineTo(1,z-1.25);cut.closePath();return cut;
+  });
+  const sdCover=new T.Mesh(roundedGeometry(20,.45,17,.7,sdWindows),canMat);
+  sdCover.name='sd-cover';sdCover.position.set(52,6.35,14);sdCover.castShadow=true;board.add(sdCover);
+  [-1,1].forEach(side=>box(2.6,.35,1.7,tinMat,47,3.45,14+side*8.5));
+  const cardShape=new T.Shape();
+  cardShape.moveTo(-10,-6);cardShape.lineTo(7.8,-6);cardShape.lineTo(10,-3.8);cardShape.lineTo(10,6);cardShape.lineTo(-10,6);cardShape.closePath();
+  const cardGeometry=new T.ExtrudeGeometry(cardShape,{depth:.8,bevelEnabled:true,bevelThickness:.08,bevelSize:.08,bevelSegments:1,steps:1});cardGeometry.rotateX(-Math.PI/2);
+  const card=new T.Mesh(cardGeometry,blackMat);card.name='sd-card';card.position.set(61,4.75,14);card.castShadow=true;board.add(card);
+  [10,12,14,16,18].forEach(z=>box(4,.12,.25,silkMat,67,5.7,z));
+  const memory=new T.Mesh(roundedGeometry(8,2,5,.35),blackMat);memory.position.set(36,4.2,-26);memory.castShadow=true;board.add(memory);
   for(let i=0;i<4;i++){
     const x=36-3+i*2;
     [-29.5,-22.5].forEach(z=>box(.8,.7,2.4,tinMat,x,3.6,z));
   }
-  /* JST 电池座 */
-  box(12,6,9,whiteMat,-134,6.2,32);
-  [-137,-131].forEach(x=>box(1.6,4,1.6,goldMat,x,9.5,32));
+  box(12,1.25,9,whiteMat,-134,3.825,32);
+  const jstCavity=new T.Path();jstCavity.moveTo(-4.9,-3.1);jstCavity.lineTo(-4.9,3.1);jstCavity.lineTo(4.9,3.1);jstCavity.lineTo(4.9,-3.1);jstCavity.closePath();
+  const jst=new T.Mesh(roundedGeometry(12,4.7,9,.55,[jstCavity]),whiteMat);
+  jst.name='jst-housing';jst.position.set(-134,6.8,32);jst.castShadow=true;board.add(jst);
+  [-137,-131].forEach(x=>{const pin=box(1.2,3.7,1.2,goldMat,x,6.25,32);pin.name='jst-contact';});
+  box(2,1,1.2,whiteMat,-134,8.65,28.3);
   /* 晶振负载电容 / 去耦电容（0603 MLCC）与 0805 */
   const resMat=new T.MeshStandardMaterial({color:col(0x1b1e22),roughness:.7,metalness:.1});
   const mlccMat=new T.MeshStandardMaterial({color:col(0xc7a86a),roughness:.55,metalness:.15});
@@ -1460,10 +1789,11 @@ function init3D(){
   /* 测试焊盘 + 右侧原型焊盘区 */
   for(let i=0;i<8;i++)box(3,.4,3,goldMat,20+i*10,3.5,64);
   for(let r=0;r<4;r++)for(let c=0;c<6;c++)box(2.2,.35,2.2,tinMat,84+c*8,3.4,30+r*8);
-  /* 固定孔 */
   [[-142,-68],[142,-68],[-142,68],[142,68]].forEach(q=>{
-    cyl(3.2,3.2,1.6,canMat,q[0],3.6,q[1]);
-    cyl(1.5,1.5,1.8,blackMat,q[0],3.9,q[1]);
+    const ring=new T.Mesh(new T.RingGeometry(1.85,3.4,32),goldMat);
+    ring.rotation.x=-Math.PI/2;ring.position.set(q[0],3.24,q[1]);board.add(ring);
+    const wall=new T.Mesh(new T.CylinderGeometry(1.85,1.85,3.2,24,1,true),new T.MeshStandardMaterial({color:col(0xb99b61),metalness:1,roughness:.36,side:T.DoubleSide}));
+    wall.position.set(q[0],1.6,q[1]);board.add(wall);
   });
   /* 走线：USB→串口桥→主控、主控→排针 */
   [6,10].forEach(z=>box(18,.4,1.2,traceMat,-122,3.4,z));
@@ -1491,15 +1821,42 @@ function init3D(){
     x.fillStyle='rgba(156,196,232,.72)';x.font='400 24px Consolas,monospace';x.fillText('SWD · 2-WIRE',22,178);
     const t=new T.CanvasTexture(c);t.anisotropy=4;t.encoding=T.sRGBEncoding;return t;
   }
-  const oled=new T.Mesh(new T.PlaneGeometry(58,26),new T.MeshBasicMaterial({map:oledTexture(),transparent:false}));
+  const oledMap=oledTexture();
+  const oled=new T.Mesh(new T.PlaneGeometry(58,26),new T.MeshPhysicalMaterial({map:oledMap,emissiveMap:oledMap,emissive:col(0x9dd8e2),emissiveIntensity:.4,roughness:.26,metalness:.08,clearcoat:1,clearcoatRoughness:.18}));
   oled.rotation.x=-Math.PI/2;oled.position.set(-100,5.75,-38);board.add(oled);
   /* 丝印位号与名称 */
   function pcbTexture(){
     const c=document.createElement('canvas');c.width=1536;c.height=816;
     const x=c.getContext('2d');
+    x.save();x.scale(c.width/300,c.height/160);x.translate(150,80);
+    [[-10,-4,31,31],[-100,-38,39,23],[-112,48,7,7],[-94,48,7,7],[52,14,15,13],[36,50,10,10],[-56,-30,13,8]].forEach(q=>{
+      x.save();x.translate(q[0],q[1]);x.scale(q[2],q[3]);
+      const shade=x.createRadialGradient(0,0,.35,0,0,1);shade.addColorStop(0,'rgba(0,8,15,.4)');shade.addColorStop(.62,'rgba(0,8,15,.2)');shade.addColorStop(1,'rgba(0,8,15,0)');
+      x.fillStyle=shade;x.fillRect(-1,-1,2,2);x.restore();
+    });
+    x.restore();
+    x.save();x.scale(c.width/300,c.height/160);x.translate(140,76);
+    for(let side=0;side<4;side++){
+      x.save();x.rotate(-side*Math.PI/2);
+      for(let i=0;i<16;i+=2){
+        const off=-20+2.5*(i+.5),end=32.2+(i%3)*.8,fan=off+(i<8?-.8:.8);
+        x.strokeStyle='rgba(82,141,170,.62)';x.lineWidth=.28;
+        x.beginPath();x.moveTo(off,27.9);x.lineTo(off,29.2);x.lineTo(fan,30.3);x.lineTo(fan,end);x.stroke();
+        x.fillStyle='rgba(193,178,134,.82)';x.beginPath();x.arc(fan,end,.58,0,Math.PI*2);x.fill();
+        x.fillStyle='#0a2333';x.beginPath();x.arc(fan,end,.28,0,Math.PI*2);x.fill();
+      }
+      x.restore();
+    }
+    x.strokeStyle='rgba(216,231,237,.72)';x.lineWidth=.34;
+    [-1,1].forEach(sx=>[-1,1].forEach(sz=>{
+      x.beginPath();x.moveTo(sx*24.8,sz*29.8);x.lineTo(sx*29.8,sz*29.8);x.lineTo(sx*29.8,sz*24.8);x.stroke();
+    }));
+    x.fillStyle='rgba(216,231,237,.86)';
+    x.beginPath();x.moveTo(-32.5,29.6);x.lineTo(-29.6,32.5);x.lineTo(-32.5,32.5);x.closePath();x.fill();
+    x.restore();
     function label(txt,wx,wz,size,col){x.fillStyle=col||'rgba(214,232,248,.85)';x.font='500 '+size+'px Consolas,monospace';x.textAlign='center';
       x.fillText(txt,(wx+150)/300*1536,816*(.5+wz/160));}
-    label('U1',28,32,24);
+    label('U1',28,32,24);label('1',-37,29,15);
     label('Y1',-56,-44,20);label('Y2',-64,22,20);
     label('U2',-104,30,20);label('U3',-66,54,20);
     label('OLED',-100,-16,22);
@@ -1533,14 +1890,14 @@ function init3D(){
 
   const ringGroup=new T.Group();ringGroup.position.set(-10,22,-4);scene.add(ringGroup);
   const ring=new T.Mesh(new T.TorusGeometry(38,.4,8,120),
-    new T.MeshBasicMaterial({color:0x14406b,transparent:true,opacity:.45}));
+    new T.MeshBasicMaterial({color:col(0x71b2c2),transparent:true,opacity:.16}));
   ring.rotation.x=-Math.PI/2+.26;ringGroup.add(ring);
 
-  const state={yaw:.72,pitch:.95,radius:420,zoom:1,lookX:0,lookY:0,auto:!RM2.matches,freeze:false,dragging:false,pinching:false};
+  const state={yaw:.56,pitch:.87,radius:420,zoom:1,lookX:0,lookY:0,auto:!RM2.matches,freeze:false,dragging:false,pinching:false};
   function fit(){
     const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
-    const tan=Math.tan(16*Math.PI/180),half=184;
+    const tan=Math.tan(16*Math.PI/180),half=178;
     state.radius=Math.max(half/tan,half/(tan*camera.aspect));
   }
   fit();
@@ -1577,10 +1934,10 @@ function init3D(){
   }
   function resetView(){
     targetZoom=1;
-    if(G&&!RM2.matches)G.to(state,{yaw:.72,pitch:.95,zoom:1,duration:.6,ease:'power3.inOut',overwrite:'auto'});
-    else{state.yaw=.72;state.pitch=.95;state.zoom=1;}
+    if(G&&!RM2.matches)G.to(state,{yaw:.56,pitch:.87,zoom:1,duration:.6,ease:'power3.inOut',overwrite:'auto'});
+    else{state.yaw=.56;state.pitch=.87;state.zoom=1;}
   }
-  const pts=new Map();let pinchDist=0;
+  const pts=new Map();let pinchDist=0,touchAxis=null;
   function twoDist(){const a=[...pts.values()];return a.length<2?0:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);}
   canvas.addEventListener('pointerdown',e=>{
     pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -1588,7 +1945,7 @@ function init3D(){
     if(pts.size===2){state.pinching=true;state.dragging=false;state.auto=false;pinchDist=twoDist();clearTimeout(idle);}
     else if(pts.size===1){
       state.dragging=true;state.auto=false;clearTimeout(idle);
-      downX=lastX=e.clientX;downY=lastY=e.clientY;
+      downX=lastX=e.clientX;downY=lastY=e.clientY;touchAxis=e.pointerType==='touch'?null:'rotate';
     }
   });
   canvas.addEventListener('pointermove',e=>{
@@ -1598,6 +1955,12 @@ function init3D(){
       return;
     }
     if(state.dragging){
+      if(touchAxis===null){
+        const dx=e.clientX-downX,dy=e.clientY-downY;
+        if(Math.hypot(dx,dy)<6)return;
+        touchAxis=Math.abs(dx)>=Math.abs(dy)?'rotate':'scroll';
+      }
+      if(touchAxis==='scroll')return;
       state.yaw-=(e.clientX-lastX)*.006;
       state.pitch=Math.max(.45,Math.min(1.38,state.pitch-(e.clientY-lastY)*.005));
       lastX=e.clientX;lastY=e.clientY;
@@ -1613,7 +1976,7 @@ function init3D(){
     if(!state.dragging)return;
     state.dragging=false;
     idle=setTimeout(()=>{state.auto=!RM2.matches;},2600);
-    if(Math.hypot(e.clientX-downX,e.clientY-downY)<6){
+    if(e.type!=='pointercancel'&&touchAxis!=='scroll'&&Math.hypot(e.clientX-downX,e.clientY-downY)<6){
       const h=hitAt(e);
       if(h==='chip')registerEggClick();
       else if(h==='key1'||h==='key2'||h==='reset')pressFeedback(h);
@@ -1635,12 +1998,12 @@ function init3D(){
   renderer.setAnimationLoop(t=>{
     if(document.hidden||host.offsetParent===null)return;
     const dt=prev?Math.min(.06,(t-prev)/1000):0;prev=t;
-    if(state.auto&&!state.dragging&&!state.freeze)state.yaw+=dt*.11;
+    if(state.auto&&!state.dragging&&!state.freeze)state.yaw+=dt*.035;
     const yaw=state.yaw+state.lookX*.22,pitch=state.pitch+state.lookY*.07;
     const sp=Math.sin(pitch),rad=state.radius*state.zoom;
     camera.position.set(rad*sp*Math.sin(yaw),rad*Math.cos(pitch)+12,rad*sp*Math.cos(yaw));
     camera.lookAt(0,12,0);
-    if(!state.freeze&&!RM2.matches){board.position.y=Math.sin(t/1600)*1.6;board.rotation.z=Math.sin(t/2400)*.012;ringGroup.rotation.y+=dt*.5;}
+    if(!state.freeze&&!RM2.matches){board.position.y=Math.sin(t/2100)*.65;board.rotation.z=Math.sin(t/3200)*.005;ringGroup.rotation.y+=dt*.2;}
     led.material.emissiveIntensity=state.freeze?.7+Math.sin(t/90)*.6:.7+Math.sin(t/700)*.35;
     led3.material.emissiveIntensity=.9;
     for(let i=fx.length-1;i>=0;i--){
@@ -1704,6 +2067,7 @@ if(G&&!RM2.matches){
   const tx=G.quickTo('.ld-main','x',{duration:.9,ease:'power3.out'});
   const ty=G.quickTo('.ld-main','y',{duration:.9,ease:'power3.out'});
   landing.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch')return;
     probe.style.opacity=1;xq(e.clientX-4.5);yq(e.clientY-4.5);
     const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;
     if(gl)gl.setLook(nx,ny);else{ry(nx*7);rx(-ny*6);}
@@ -1746,7 +2110,7 @@ document.addEventListener('keydown',e=>{if(!landing.hidden&&e.key==='Enter'){e.p
 
 function showLanding(){
   if(!landing.hidden)return;
-  landing.hidden=false;document.body.classList.add('landing-on');setAppHidden(true);window.scrollTo(0,0);
+  landing.hidden=false;landing.scrollTop=0;document.body.classList.add('landing-on');setAppHidden(true);window.scrollTo(0,0);
   if(eggOn)eggOff(false);
   if(G){G.set(['.ld-main','.ld-stage','.ld-marquee'],{opacity:1,y:0});G.set(enterBtn,{x:0,y:0});
     const ring=document.querySelector('.ld-cta-ring');if(ring)G.set(ring,{opacity:0,scale:1});}
