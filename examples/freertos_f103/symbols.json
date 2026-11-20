@@ -1,0 +1,734 @@
+{
+ "source": {
+  "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\MDK-ARM\\FREERTOS_2\\FREERTOS_2.map",
+  "sha256": "8cb1d8cbd659d1d1c4ecec9a2cf117d4680710a4eaa7b992cf17ebfbb25f2ef7"
+ },
+ "format": "keil",
+ "symbols": {
+  "../clib/angel/boardlib.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "boardinit1.o ABSOLUTE"
+  },
+  "../clib/angel/handlers.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "__scatter_copy.o ABSOLUTE"
+  },
+  "../clib/angel/kernel.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "__rtentry.o ABSOLUTE"
+  },
+  "../clib/angel/rt.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "rt_raise.o ABSOLUTE"
+  },
+  "../clib/angel/scatter.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "__scatter.o ABSOLUTE"
+  },
+  "../clib/angel/startup.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "__main.o ABSOLUTE"
+  },
+  "../clib/angel/sys.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "sys_stackheap_outer.o ABSOLUTE"
+  },
+  "../clib/angel/sysapp.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "sys_exit.o ABSOLUTE"
+  },
+  "../clib/armsys.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "argv_veneer.o ABSOLUTE"
+  },
+  "../clib/heapalloc.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "hrguard.o ABSOLUTE"
+  },
+  "../clib/heapaux.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "heapauxi.o ABSOLUTE"
+  },
+  "../clib/libinit.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "libinit.o ABSOLUTE"
+  },
+  "../clib/memcpset.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "rt_memcpy_v6.o ABSOLUTE"
+  },
+  "../clib/signal.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "defsig_rtmem_outer.o ABSOLUTE"
+  },
+  "../clib/signal.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "defsig.o ABSOLUTE"
+  },
+  "../clib/stdlib.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "exit.o ABSOLUTE"
+  },
+  "../fplib/fpinit.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "fpinit.o ABSOLUTE"
+  },
+  "../fplib/fpinit_empty.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "fpinit_empty.o ABSOLUTE"
+  },
+  "croutine.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "croutine.o ABSOLUTE"
+  },
+  "dc.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "dc.o ABSOLUTE"
+  },
+  "event_groups.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "event_groups.o ABSOLUTE"
+  },
+  "gpio.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "gpio.o ABSOLUTE"
+  },
+  "heap_4.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "heap_4.o ABSOLUTE"
+  },
+  "list.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "list.o ABSOLUTE"
+  },
+  "main.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "main.o ABSOLUTE"
+  },
+  "port.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "port.o ABSOLUTE"
+  },
+  "queue.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "queue.o ABSOLUTE"
+  },
+  "startup_stm32f103xe.s": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "startup_stm32f103xe.o ABSOLUTE"
+  },
+  "stm32f1xx_hal.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_cortex.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_cortex.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_dma.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_dma.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_exti.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_exti.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_flash.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_flash.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_flash_ex.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_flash_ex.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_gpio.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_gpio.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_gpio_ex.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_gpio_ex.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_msp.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_msp.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_pwr.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_pwr.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_rcc.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_rcc.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_rcc_ex.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_rcc_ex.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_tim.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_tim.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_tim_ex.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_tim_ex.o ABSOLUTE"
+  },
+  "stm32f1xx_hal_timebase_tim.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_hal_timebase_tim.o ABSOLUTE"
+  },
+  "stm32f1xx_it.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stm32f1xx_it.o ABSOLUTE"
+  },
+  "stream_buffer.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "stream_buffer.o ABSOLUTE"
+  },
+  "system_stm32f1xx.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "system_stm32f1xx.o ABSOLUTE"
+  },
+  "tasks.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "tasks.o ABSOLUTE"
+  },
+  "timers.c": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "timers.o ABSOLUTE"
+  },
+  "__tagsym$$used.0": {
+   "addr": "0x080021a8",
+   "size": 0,
+   "kind": "Number",
+   "object": "tasks.o(.text.vTaskSwitchContext)"
+  },
+  "HAL_RCC_GetSysClockFreq.aPredivFactorTable": {
+   "addr": "0x08002e58",
+   "size": 2,
+   "kind": "Data",
+   "object": "stm32f1xx_hal_rcc.o(.rodata.HAL_RCC_GetSysClockFreq.aPredivFactorTable)"
+  },
+  "HAL_RCC_GetSysClockFreq.aPLLMULFactorTable": {
+   "addr": "0x08002e5a",
+   "size": 16,
+   "kind": "Data",
+   "object": "stm32f1xx_hal_rcc.o(.rodata.cst16)"
+  },
+  "uxTopUsedPriority": {
+   "addr": "0x08002e6c",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.rodata.uxTopUsedPriority)"
+  },
+  ".L_MergedGlobals": {
+   "addr": "0x20000000",
+   "size": 8,
+   "kind": "Data",
+   "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"
+  },
+  "uxCriticalNesting": {
+   "addr": "0x2000000c",
+   "size": 4,
+   "kind": "Data",
+   "object": "port.o(.data.uxCriticalNesting)"
+  },
+  "pxEnd": {
+   "addr": "0x20000070",
+   "size": 4,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "xFreeBytesRemaining": {
+   "addr": "0x20000074",
+   "size": 4,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "xMinimumEverFreeBytesRemaining": {
+   "addr": "0x20000078",
+   "size": 4,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "xNumberOfSuccessfulAllocations": {
+   "addr": "0x2000007c",
+   "size": 4,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "xNumberOfSuccessfulFrees": {
+   "addr": "0x20000080",
+   "size": 4,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "xStart": {
+   "addr": "0x20000084",
+   "size": 8,
+   "kind": "Data",
+   "object": "heap_4.o(.bss..L_MergedGlobals)"
+  },
+  "ucMaxSysCallPriority": {
+   "addr": "0x2000008c",
+   "size": 1,
+   "kind": "Data",
+   "object": "port.o(.bss..L_MergedGlobals)"
+  },
+  "ulMaxPRIGROUPValue": {
+   "addr": "0x20000090",
+   "size": 4,
+   "kind": "Data",
+   "object": "port.o(.bss..L_MergedGlobals)"
+  },
+  "uxTaskNumber": {
+   "addr": "0x20000094",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xSchedulerRunning": {
+   "addr": "0x20000098",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "uxDeletedTasksWaitingCleanUp": {
+   "addr": "0x2000009c",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "uxCurrentNumberOfTasks": {
+   "addr": "0x200000a0",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "uxSchedulerSuspended": {
+   "addr": "0x200000a4",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xTickCount": {
+   "addr": "0x200000a8",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "uxTopReadyPriority": {
+   "addr": "0x200000ac",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xYieldPendings": {
+   "addr": "0x200000b0",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xNextTaskUnblockTime": {
+   "addr": "0x200000b4",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xIdleTaskHandles.0": {
+   "addr": "0x200000b8",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xPendedTicks": {
+   "addr": "0x200000bc",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "pxDelayedTaskList": {
+   "addr": "0x200000c0",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "pxOverflowDelayedTaskList": {
+   "addr": "0x200000c4",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xNumOfOverflows": {
+   "addr": "0x200000c8",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xTasksWaitingTermination": {
+   "addr": "0x200000cc",
+   "size": 20,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xSuspendedTaskList": {
+   "addr": "0x200000e0",
+   "size": 20,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xPendingReadyList": {
+   "addr": "0x200000f4",
+   "size": 20,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals)"
+  },
+  "xTimerQueue": {
+   "addr": "0x20000108",
+   "size": 4,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "xTimerTaskHandle": {
+   "addr": "0x2000010c",
+   "size": 4,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "pxCurrentTimerList": {
+   "addr": "0x20000110",
+   "size": 4,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "pxOverflowTimerList": {
+   "addr": "0x20000114",
+   "size": 4,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "prvSampleTimeNow.xLastTime": {
+   "addr": "0x20000118",
+   "size": 4,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "xActiveTimerList1": {
+   "addr": "0x2000011c",
+   "size": 20,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  "xActiveTimerList2": {
+   "addr": "0x20000130",
+   "size": 20,
+   "kind": "Data",
+   "object": "timers.o(.bss..L_MergedGlobals)"
+  },
+  ".L_MergedGlobals.2": {
+   "addr": "0x20000144",
+   "size": 124,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals.2)"
+  },
+  "xDelayedTaskList1": {
+   "addr": "0x20000144",
+   "size": 20,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals.2)"
+  },
+  "xDelayedTaskList2": {
+   "addr": "0x20000158",
+   "size": 20,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals.2)"
+  },
+  "vApplicationGetIdleTaskMemory.xIdleTaskTCB": {
+   "addr": "0x2000016c",
+   "size": 84,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals.2)"
+  },
+  "prvCheckForValidListAndQueue.ucStaticTimerQueueStorage": {
+   "addr": "0x20000208",
+   "size": 120,
+   "kind": "Data",
+   "object": "timers.o(.bss.prvCheckForValidListAndQueue.ucStaticTimerQueueStorage)"
+  },
+  "prvCheckForValidListAndQueue.xStaticTimerQueue": {
+   "addr": "0x20000280",
+   "size": 72,
+   "kind": "Data",
+   "object": "timers.o(.bss.prvCheckForValidListAndQueue.xStaticTimerQueue)"
+  },
+  "__tagsym$$used.1": {
+   "addr": "0x200002c8",
+   "size": 0,
+   "kind": "Number",
+   "object": "tasks.o(.bss.pxCurrentTCB)"
+  },
+  "pxReadyTasksLists": {
+   "addr": "0x200002cc",
+   "size": 100,
+   "kind": "Data",
+   "object": "tasks.o(.bss.pxReadyTasksLists)"
+  },
+  "ucHeap": {
+   "addr": "0x20000330",
+   "size": 4096,
+   "kind": "Data",
+   "object": "heap_4.o(.bss.ucHeap)"
+  },
+  "vApplicationGetIdleTaskMemory.uxIdleTaskStack": {
+   "addr": "0x20001334",
+   "size": 512,
+   "kind": "Data",
+   "object": "tasks.o(.bss.vApplicationGetIdleTaskMemory.uxIdleTaskStack)"
+  },
+  "vApplicationGetTimerTaskMemory.uxTimerTaskStack": {
+   "addr": "0x20001534",
+   "size": 512,
+   "kind": "Data",
+   "object": "tasks.o(.bss.vApplicationGetTimerTaskMemory.uxTimerTaskStack)"
+  },
+  "vApplicationGetTimerTaskMemory.xTimerTaskTCB": {
+   "addr": "0x20001734",
+   "size": 84,
+   "kind": "Data",
+   "object": "tasks.o(.bss.vApplicationGetTimerTaskMemory.xTimerTaskTCB)"
+  },
+  "Heap_Mem": {
+   "addr": "0x20001788",
+   "size": 512,
+   "kind": "Data",
+   "object": "startup_stm32f103xe.o(HEAP)"
+  },
+  "Stack_Mem": {
+   "addr": "0x20001988",
+   "size": 1024,
+   "kind": "Data",
+   "object": "startup_stm32f103xe.o(STACK)"
+  },
+  "__initial_sp": {
+   "addr": "0x20001d88",
+   "size": 0,
+   "kind": "Data",
+   "object": "startup_stm32f103xe.o(STACK)"
+  },
+  "BuildAttributes$$THM_ISAv4$P$D$K$B$S$PE$A:L22UL41UL21$X:L11$S22US41US21$IEEE1$IW$~IW$USESV6$~STKCKD$USESV7$~SHL$OTIME$ROPI$EBA8$UX$STANDARDLIB$REQ8$PRES8$EABIv2": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "anon$$obj.o ABSOLUTE"
+  },
+  "__fp_init_empty": {
+   "addr": "0x00000000",
+   "size": 0,
+   "kind": "Number",
+   "object": "fpinit_empty.o ABSOLUTE"
+  },
+  "__Vectors_Size": {
+   "addr": "0x00000130",
+   "size": 0,
+   "kind": "Number",
+   "object": "startup_stm32f103xe.o ABSOLUTE"
+  },
+  "__Vectors": {
+   "addr": "0x08000000",
+   "size": 4,
+   "kind": "Data",
+   "object": "startup_stm32f103xe.o(RESET)"
+  },
+  "__Vectors_End": {
+   "addr": "0x08000130",
+   "size": 0,
+   "kind": "Data",
+   "object": "startup_stm32f103xe.o(RESET)"
+  },
+  "AHBPrescTable": {
+   "addr": "0x08002e40",
+   "size": 16,
+   "kind": "Data",
+   "object": "system_stm32f1xx.o(.rodata.AHBPrescTable)"
+  },
+  "APBPrescTable": {
+   "addr": "0x08002e50",
+   "size": 8,
+   "kind": "Data",
+   "object": "system_stm32f1xx.o(.rodata.APBPrescTable)"
+  },
+  "Region$$Table$$Base": {
+   "addr": "0x08002e70",
+   "size": 0,
+   "kind": "Number",
+   "object": "anon$$obj.o(Region$$Table)"
+  },
+  "Region$$Table$$Limit": {
+   "addr": "0x08002e90",
+   "size": 0,
+   "kind": "Number",
+   "object": "anon$$obj.o(Region$$Table)"
+  },
+  "uwTickFreq": {
+   "addr": "0x20000000",
+   "size": 1,
+   "kind": "Data",
+   "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"
+  },
+  "uwTickPrio": {
+   "addr": "0x20000004",
+   "size": 4,
+   "kind": "Data",
+   "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"
+  },
+  "SystemCoreClock": {
+   "addr": "0x20000008",
+   "size": 4,
+   "kind": "Data",
+   "object": "system_stm32f1xx.o(.data.SystemCoreClock)"
+  },
+  "__libspace_start": {
+   "addr": "0x20000010",
+   "size": 96,
+   "kind": "Data",
+   "object": "libspace.o(.bss)"
+  },
+  "__temporary_stack_top$libspace": {
+   "addr": "0x20000070",
+   "size": 0,
+   "kind": "Data",
+   "object": "libspace.o(.bss)"
+  },
+  "htim6": {
+   "addr": "0x200001c0",
+   "size": 72,
+   "kind": "Data",
+   "object": "stm32f1xx_hal_timebase_tim.o(.bss.htim6)"
+  },
+  "pxCurrentTCB": {
+   "addr": "0x200002c8",
+   "size": 4,
+   "kind": "Data",
+   "object": "tasks.o(.bss.pxCurrentTCB)"
+  },
+  "uwTick": {
+   "addr": "0x20001330",
+   "size": 4,
+   "kind": "Data",
+   "object": "stm32f1xx_hal.o(.bss.uwTick)"
+  },
+  "static_idle_tcb": {
+   "addr": "0x2000016c",
+   "size": 84,
+   "kind": "Data",
+   "object": "tasks.o(.bss..L_MergedGlobals.2)",
+   "alias_of": "vApplicationGetIdleTaskMemory.xIdleTaskTCB"
+  },
+  "static_idle_stack": {
+   "addr": "0x20001334",
+   "size": 512,
+   "kind": "Data",
+   "object": "tasks.o(.bss.vApplicationGetIdleTaskMemory.uxIdleTaskStack)",
+   "alias_of": "vApplicationGetIdleTaskMemory.uxIdleTaskStack"
+  }
+ },
+ "rtos_linked": true,
+ "reason": null,
+ "removed_sections_count": 0
+}

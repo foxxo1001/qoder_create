@@ -1,0 +1,473 @@
+{
+ "config": {
+  "configCPU_CLOCK_HZ": {
+   "value": 72000000,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 56
+  },
+  "configTICK_RATE_HZ": {
+   "value": 100,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 80
+  },
+  "configUSE_PREEMPTION": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 85
+  },
+  "configUSE_TIME_SLICING": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 92
+  },
+  "configUSE_PORT_OPTIMISED_TASK_SELECTION": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 100
+  },
+  "configUSE_TICKLESS_IDLE": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 107
+  },
+  "configMAX_PRIORITIES": {
+   "value": 5,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 112
+  },
+  "configMINIMAL_STACK_SIZE": {
+   "value": 128,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 118
+  },
+  "configMAX_TASK_NAME_LEN": {
+   "value": 16,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 122
+  },
+  "configIDLE_SHOULD_YIELD": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 145
+  },
+  "configTASK_NOTIFICATION_ARRAY_ENTRIES": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 151
+  },
+  "configQUEUE_REGISTRY_SIZE": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 156
+  },
+  "configENABLE_BACKWARD_COMPATIBILITY": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 161
+  },
+  "configNUM_THREAD_LOCAL_STORAGE_POINTERS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 168
+  },
+  "configUSE_MINI_LIST_ITEM": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 175
+  },
+  "configHEAP_CLEAR_MEMORY_ON_FREE": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 193
+  },
+  "configSTATS_BUFFER_MAX_LENGTH": {
+   "value": 65535,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 200
+  },
+  "configUSE_NEWLIB_REENTRANT": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 212
+  },
+  "configUSE_TIMERS": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 223
+  },
+  "configTIMER_QUEUE_LENGTH": {
+   "value": 10,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 243
+  },
+  "configUSE_EVENT_GROUPS": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 254
+  },
+  "configUSE_STREAM_BUFFERS": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 265
+  },
+  "configSUPPORT_STATIC_ALLOCATION": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 276
+  },
+  "configSUPPORT_DYNAMIC_ALLOCATION": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 284
+  },
+  "configTOTAL_HEAP_SIZE": {
+   "value": 4096,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 290
+  },
+  "configAPPLICATION_ALLOCATED_HEAP": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 295
+  },
+  "configSTACK_ALLOCATION_FROM_SEPARATE_HEAP": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 303
+  },
+  "configENABLE_HEAP_PROTECTOR": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 308
+  },
+  "configMAX_API_CALL_INTERRUPT_PRIORITY": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 330
+  },
+  "configUSE_IDLE_HOOK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 340
+  },
+  "configUSE_TICK_HOOK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 341
+  },
+  "configUSE_MALLOC_FAILED_HOOK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 342
+  },
+  "configUSE_DAEMON_TASK_STARTUP_HOOK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 343
+  },
+  "configUSE_SB_COMPLETED_CALLBACK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 351
+  },
+  "configCHECK_FOR_STACK_OVERFLOW": {
+   "value": 2,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 365
+  },
+  "configGENERATE_RUN_TIME_STATS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 376
+  },
+  "configUSE_TRACE_FACILITY": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 382
+  },
+  "configUSE_STATS_FORMATTING_FUNCTIONS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 389
+  },
+  "configUSE_CO_ROUTINES": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 399
+  },
+  "configMAX_CO_ROUTINE_PRIORITIES": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 404
+  },
+  "configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 439
+  },
+  "configTOTAL_MPU_REGIONS": {
+   "value": 8,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 445
+  },
+  "configTEX_S_C_B_FLASH": {
+   "value": 7,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 452
+  },
+  "configTEX_S_C_B_SRAM": {
+   "value": 7,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 459
+  },
+  "configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 466
+  },
+  "configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 473
+  },
+  "configUSE_MPU_WRAPPERS_V1": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 479
+  },
+  "configPROTECTED_KERNEL_OBJECT_POOL_SIZE": {
+   "value": 10,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 487
+  },
+  "configSYSTEM_CALL_STACK_SIZE": {
+   "value": 128,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 495
+  },
+  "configENABLE_ACCESS_CONTROL_LIST": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 503
+  },
+  "configRUN_MULTIPLE_PRIORITIES": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 523
+  },
+  "configUSE_CORE_AFFINITY": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 531
+  },
+  "configUSE_TASK_PREEMPTION_DISABLE": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 547
+  },
+  "configUSE_PASSIVE_IDLE_HOOK": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 553
+  },
+  "configIDLE_AFFINITY": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 566
+  },
+  "configKERNEL_PROVIDED_STATIC_MEMORY": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 583
+  },
+  "configENABLE_TRUSTZONE": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 593
+  },
+  "configRUN_FREERTOS_SECURE_ONLY": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 600
+  },
+  "configENABLE_MPU": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 604
+  },
+  "configENABLE_FPU": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 608
+  },
+  "configENABLE_MVE": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 616
+  },
+  "configCHECK_HANDLER_INSTALLATION": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 637
+  },
+  "configUSE_TASK_NOTIFICATIONS": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 645
+  },
+  "configUSE_MUTEXES": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 646
+  },
+  "configUSE_RECURSIVE_MUTEXES": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 647
+  },
+  "configUSE_COUNTING_SEMAPHORES": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 648
+  },
+  "configUSE_QUEUE_SETS": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 649
+  },
+  "configUSE_APPLICATION_TASK_TAG": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 650
+  },
+  "configUSE_POSIX_ERRNO": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h",
+   "line": 654
+  }
+ },
+ "tasks": [
+  {
+   "name": "led1",
+   "entry": "vled1task",
+   "stack_words": 128,
+   "priority": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 112
+  },
+  {
+   "name": "led3",
+   "entry": "vled3task",
+   "stack_words": 128,
+   "priority": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 113
+  }
+ ],
+ "delay_calls": [
+  {
+   "ticks": 100,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 63,
+   "in_fn": "vled1task"
+  },
+  {
+   "ticks": 100,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 65,
+   "in_fn": "vled1task"
+  },
+  {
+   "ticks": 100,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 74,
+   "in_fn": "vled3task"
+  },
+  {
+   "ticks": 100,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 76,
+   "in_fn": "vled3task"
+  }
+ ],
+ "gpio_writes": [
+  {
+   "port_macro": "LED1_GPIO_Port",
+   "pin_macro": "LED1_Pin",
+   "state": "GPIO_PIN_SET",
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 62,
+   "in_fn": "vled1task"
+  },
+  {
+   "port_macro": "LED1_GPIO_Port",
+   "pin_macro": "LED1_Pin",
+   "state": "GPIO_PIN_SET",
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 64,
+   "in_fn": "vled1task"
+  },
+  {
+   "port_macro": "LED3_GPIO_Port",
+   "pin_macro": "LED3_Pin",
+   "state": "GPIO_PIN_SET",
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 73,
+   "in_fn": "vled3task"
+  },
+  {
+   "port_macro": "LED3_GPIO_Port",
+   "pin_macro": "LED3_Pin",
+   "state": "GPIO_PIN_SET",
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c",
+   "line": 75,
+   "in_fn": "vled3task"
+  }
+ ],
+ "pins": {
+  "LED3": {
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\main.h",
+   "Pin": {
+    "macro": "GPIO_PIN_1",
+    "line": 60
+   },
+   "GPIO_Port": {
+    "macro": "GPIOC",
+    "line": 61
+   },
+   "bit": 1,
+   "port": "GPIOC",
+   "confirmed_from_source": true
+  },
+  "LED1": {
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\main.h",
+   "Pin": {
+    "macro": "GPIO_PIN_3",
+    "line": 62
+   },
+   "GPIO_Port": {
+    "macro": "GPIOC",
+    "line": 63
+   },
+   "bit": 3,
+   "port": "GPIOC",
+   "confirmed_from_source": true
+  }
+ },
+ "hal_gpio_pin_state": {
+  "GPIO_PIN_RESET": {
+   "value": 0,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\stm32f1xx_hal_gpio.h",
+   "line": 66
+  },
+  "GPIO_PIN_SET": {
+   "value": 1,
+   "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\stm32f1xx_hal_gpio.h",
+   "line": 67
+  }
+ },
+ "kernel": {
+  "version": "V11.3.1",
+  "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\FreeRtos\\Inc\\task.h"
+ }
+}

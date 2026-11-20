@@ -1,0 +1,121 @@
+{
+ "source": {
+  "axf": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\MDK-ARM\\FREERTOS_2\\FREERTOS_2.axf",
+  "sha256": "4887fa0fbd3b73deb19e9153152d110b45f4b17f2e187e077bd228ad4dbb286f",
+  "method": "gdb ptype /o (DWARF, 仅读构建产物)"
+ },
+ "types": {
+  "List_t": {
+   "size": 20,
+   "fields": {
+    "uxNumberOfItems": {
+     "offset": 0,
+     "size": 4
+    },
+    "pxIndex": {
+     "offset": 4,
+     "size": 4
+    },
+    "xListEnd": {
+     "offset": 8,
+     "size": 12
+    }
+   }
+  },
+  "MiniListItem_t": {
+   "size": 12,
+   "fields": {
+    "xItemValue": {
+     "offset": 0,
+     "size": 4
+    },
+    "pxNext": {
+     "offset": 4,
+     "size": 4
+    },
+    "pxPrevious": {
+     "offset": 8,
+     "size": 4
+    }
+   }
+  },
+  "ListItem_t": {
+   "size": 20,
+   "fields": {
+    "xItemValue": {
+     "offset": 0,
+     "size": 4
+    },
+    "pxNext": {
+     "offset": 4,
+     "size": 4
+    },
+    "pxPrevious": {
+     "offset": 8,
+     "size": 4
+    },
+    "pvOwner": {
+     "offset": 12,
+     "size": 4
+    },
+    "pxContainer": {
+     "offset": 16,
+     "size": 4
+    }
+   }
+  },
+  "TCB_t": {
+   "size": 84,
+   "fields": {
+    "pxTopOfStack": {
+     "offset": 0,
+     "size": 4
+    },
+    "xStateListItem": {
+     "offset": 4,
+     "size": 20
+    },
+    "xEventListItem": {
+     "offset": 24,
+     "size": 20
+    },
+    "uxPriority": {
+     "offset": 44,
+     "size": 4
+    },
+    "pxStack": {
+     "offset": 48,
+     "size": 4
+    },
+    "pcTaskName": {
+     "offset": 52,
+     "size": 16
+    },
+    "uxBasePriority": {
+     "offset": 68,
+     "size": 4
+    },
+    "uxMutexesHeld": {
+     "offset": 72,
+     "size": 4
+    },
+    "ulNotifiedValue": {
+     "offset": 76,
+     "size": 4
+    },
+    "ucNotifyState": {
+     "offset": 80,
+     "size": 1
+    },
+    "ucStaticallyAllocated": {
+     "offset": 81,
+     "size": 1
+    }
+   }
+  }
+ },
+ "cross_check": {
+  "List_t_size_matches_map": true,
+  "TCB_size_matches_idle": true
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "bound_at": "2026-11-20T08:48:42+08:00",
+ "axf": {
+  "path": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\MDK-ARM\\FREERTOS_2\\FREERTOS_2.axf",
+  "sha256": "4887fa0fbd3b73deb19e9153152d110b45f4b17f2e187e077bd228ad4dbb286f"
+ },
+ "map": {
+  "path": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\MDK-ARM\\FREERTOS_2\\FREERTOS_2.map",
+  "sha256": "8cb1d8cbd659d1d1c4ecec9a2cf117d4680710a4eaa7b992cf17ebfbb25f2ef7"
+ },
+ "flash_image": {
+  "base": "0x8000000",
+  "size": 11936,
+  "sha256": "4dc68559ee84ca1fcb9261da6aba05c22615df3f867a351b3c5a83b0490d0d56",
+  "file": "D:\\QODER_CREATR\\examples\\freertos_f103\\flash_from_axf.bin"
+ },
+ "offsets_ref": "offsets.json",
+ "symbols_ref": "symbols.json",
+ "note": "固件包绑定为一体；采样前须与板上 Flash 比对 (§6.3)"
+}

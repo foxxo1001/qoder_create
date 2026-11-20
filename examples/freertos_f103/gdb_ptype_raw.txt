@@ -1,0 +1,39 @@
+type = struct xLIST {
+/*      0      |       4 */    UBaseType_t uxNumberOfItems;
+/*      4      |       4 */    ListItem_t *pxIndex;
+/*      8      |      12 */    MiniListItem_t xListEnd;
+
+                               /* total size (bytes):   20 */
+                             }
+type = struct xMINI_LIST_ITEM {
+/*      0      |       4 */    TickType_t xItemValue;
+/*      4      |       4 */    struct xLIST_ITEM *pxNext;
+/*      8      |       4 */    struct xLIST_ITEM *pxPrevious;
+
+                               /* total size (bytes):   12 */
+                             }
+type = struct xLIST_ITEM {
+/*      0      |       4 */    TickType_t xItemValue;
+/*      4      |       4 */    struct xLIST_ITEM *pxNext;
+/*      8      |       4 */    struct xLIST_ITEM *pxPrevious;
+/*     12      |       4 */    void *pvOwner;
+/*     16      |       4 */    struct xLIST *pxContainer;
+
+                               /* total size (bytes):   20 */
+                             }
+type = struct tskTaskControlBlock {
+/*      0      |       4 */    volatile StackType_t *pxTopOfStack;
+/*      4      |      20 */    ListItem_t xStateListItem;
+/*     24      |      20 */    ListItem_t xEventListItem;
+/*     44      |       4 */    UBaseType_t uxPriority;
+/*     48      |       4 */    StackType_t *pxStack;
+/*     52      |      16 */    char pcTaskName[16];
+/*     68      |       4 */    UBaseType_t uxBasePriority;
+/*     72      |       4 */    UBaseType_t uxMutexesHeld;
+/*     76      |       4 */    volatile uint32_t ulNotifiedValue[1];
+/*     80      |       1 */    volatile uint8_t ucNotifyState[1];
+/*     81      |       1 */    uint8_t ucStaticallyAllocated;
+/* XXX  2-byte padding   */
+
+                               /* total size (bytes):   84 */
+                             }

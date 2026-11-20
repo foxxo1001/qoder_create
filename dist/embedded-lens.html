@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EmbeddedLens · 嵌入式透视镜</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--paper:#f2efe7;--surface:#faf8f2;--surface-2:#f5f2ea;--surface-3:#ece8dd;
+--ink:#1b1e21;--ink-2:#40454b;--muted:#71706a;--faint:#a3a094;
+--line:#d8d3c4;--line-2:#e6e2d6;
+--accent:#14406b;--accent-2:#1d5a94;--accent-soft:#e8edf3;--accent-tint:#cfdce8;
+--ok:#2e6b34;--ok-soft:#e8f0e6;--warn:#96660f;--warn-soft:#f6eedb;--bad:#9e2b25;--bad-soft:#f6e7e4;
+--idle:#8a8578;--bar-a:#14406b;--bar-b:#1d5a94;--bar-cur:#2e6b34;
+--serif:Georgia,"Times New Roman","Songti SC","SimSun",serif;
+--mono:"Cascadia Code","JetBrains Mono",Consolas,ui-monospace,SFMono-Regular,monospace;
+--sans:"Segoe UI",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+--r:3px;--ease:cubic-bezier(.22,.61,.36,1)}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px 80px;position:relative}
+::selection{background:var(--accent-tint);color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--surface-2)}
+::-webkit-scrollbar-thumb{background:var(--line);border:3px solid var(--surface-2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-tint)}
+*{scrollbar-width:thin;scrollbar-color:var(--line) var(--surface-2)}
+.mono{font-family:var(--mono);font-feature-settings:"tnum" 1,"zero" 1}
+.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+svg.ic{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
+
+/* datasheet masthead */
+.masthead{display:grid;grid-template-columns:1fr auto;gap:26px;align-items:end;padding:34px 0 20px;border-bottom:2px solid var(--ink)}
+.mark{width:44px;height:44px;color:var(--accent);margin-bottom:12px}
+.mark svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:1.3;stroke-linecap:round}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+h1{font-family:var(--serif);font-size:37px;font-weight:700;letter-spacing:-.015em;line-height:1.05;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1 .zh{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--muted);letter-spacing:.06em}
+.sub{color:var(--muted);font-size:13px;margin-top:9px;max-width:58ch}
+.spec{font-family:var(--mono);font-size:11px;min-width:230px;border-left:1px solid var(--line);padding-left:20px}
+.spec .row{display:flex;justify-content:space-between;gap:16px;padding:4px 0;border-bottom:1px dotted var(--line)}
+.spec .row:last-child{border-bottom:none}
+.spec .k{color:var(--faint);letter-spacing:.08em}
+.spec .val{color:var(--ink);text-align:right}
+.rule{height:1px;background:var(--ink);opacity:.28;margin:3px 0 22px}
+
+/* badges */
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.tag{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:var(--r);padding:4px 10px;background:var(--surface);color:var(--ink-2);display:inline-flex;align-items:center;gap:7px}
+.tag::before{content:"";width:6px;height:6px;background:var(--faint);flex:0 0 auto}
+.tag.ok{border-color:#bcd3ba;color:var(--ok);background:var(--ok-soft)} .tag.ok::before{background:var(--ok)}
+.tag.warn{border-color:#e0cfa8;color:var(--warn);background:var(--warn-soft)} .tag.warn::before{background:var(--warn)}
+.tag.bad{border-color:#e0bdb8;color:var(--bad);background:var(--bad-soft)} .tag.bad::before{background:var(--bad)}
+.tag.acc{border-color:var(--accent-tint);color:var(--accent);background:var(--accent-soft)} .tag.acc::before{background:var(--accent)}
+
+/* ruled sections */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:18px;position:relative}
+h2{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:15px;padding-bottom:11px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px;letter-spacing:-.01em;flex-wrap:wrap}
+h2 .n{font-family:var(--mono);font-size:10.5px;font-weight:600;background:transparent;color:var(--accent);border:1px solid var(--accent-tint);border-radius:var(--r);padding:3px 7px;letter-spacing:.05em}
+.seal{width:26px;height:26px;border-radius:var(--r);display:inline-grid;place-items:center;flex:0 0 auto;border:1px solid var(--line)}
+.seal svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.seal.ok{background:var(--ok-soft);color:var(--ok);border-color:#bcd3ba}
+.seal.warn{background:var(--warn-soft);color:var(--warn);border-color:#e0cfa8}
+.seal.bad{background:var(--bad-soft);color:var(--bad);border-color:#e0bdb8}
+.fp{font-family:var(--mono);font-size:11px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);padding:3px 9px;color:var(--ink-2);display:inline-block;margin:3px 6px 0 0}
+
+/* index nav */
+.tabs{display:flex;gap:0;flex-wrap:wrap;margin-bottom:22px;position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding:0}
+.tab{border:none;border-bottom:2px solid transparent;background:none;border-radius:0;padding:13px 20px 11px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:9px;transition:color .2s,border-color .2s;user-select:none}
+.tab .num{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.05em}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab.on .num{color:var(--accent)}
+.view{display:none} .view.on{display:block;animation:viewIn .4s var(--ease)}
+@keyframes viewIn{from{transform:translateY(7px)}to{transform:none}}
+.view.on .card{animation:rise .5s var(--ease) both}
+.view.on .card:nth-child(2){animation-delay:.07s}
+.view.on .card:nth-child(3){animation-delay:.14s}
+@keyframes rise{from{transform:translateY(9px)}to{transform:none}}
+
+/* four-state values */
+.v{font-family:var(--mono);cursor:pointer;border-bottom:1px dotted var(--faint);white-space:nowrap;transition:color .18s,border-color .18s}
+.v:hover{border-bottom-color:var(--accent);color:var(--accent)}
+.v .bdg{font-style:normal;font-size:9.5px;font-family:var(--sans);font-weight:600;margin-left:5px;padding:1.5px 6px;border-radius:var(--r);vertical-align:1px}
+.v.m .bdg{background:var(--accent-soft);color:var(--accent)}
+.v.a .bdg{background:var(--surface-3);color:var(--ink-2)}
+.v.d .bdg{background:var(--ok-soft);color:var(--ok)}
+.v.u .bdg{background:var(--warn-soft);color:var(--warn)}
+.v.u{color:var(--warn)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:12.8px}
+th,td{border-bottom:1px solid var(--line-2);padding:9px 11px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:650;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;background:var(--surface-2)}
+tbody tr{transition:background .15s} tbody tr:hover{background:var(--accent-soft)}
+td.m{font-family:var(--mono)}
+.cmp{table-layout:fixed}
+.cmp th,.cmp td{padding:8px 9px}
+.cmp th:first-child,.cmp td:first-child{width:10%}
+.cmp td.m{font-size:11.3px;line-height:1.5;overflow-wrap:anywhere;word-break:break-word}
+
+/* controls */
+.demo-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.btns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--accent);border-radius:var(--r);padding:8px 16px;cursor:pointer;background:var(--accent);color:#fbfaf6;font-weight:650;font-size:13px;font-family:var(--sans);display:inline-flex;align-items:center;gap:7px;transition:background .18s,transform .18s var(--ease)}
+.btn:hover{background:var(--accent-2);transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn.sec{background:var(--surface);color:var(--ink-2);border:1px solid var(--line);font-weight:550}
+.btn.sec:hover{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.idx{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:52px;text-align:center;background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);padding:5px 8px}
+
+/* instrument readouts */
+.heapbar{display:flex;height:46px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--surface-3)}
+.blk{flex:0 0 0%;opacity:0;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;transition:flex-grow .55s var(--ease),opacity .4s,box-shadow .2s}
+.blk:hover{box-shadow:inset 0 0 0 2px rgba(250,248,242,.5)}
+.blk .lbl{font-family:var(--mono);font-size:10.5px;font-weight:600;color:#fbfaf6;white-space:nowrap;padding:0 5px}
+.blbl{flex:0 0 0%;opacity:0;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;overflow:hidden;white-space:nowrap;transition:flex-grow .55s var(--ease),opacity .4s;padding-top:5px}
+.c-a{background:var(--bar-a)} .c-b{background:var(--bar-b)} .c-c{background:var(--accent-2)}
+.c-idle{background:var(--idle)} .c-cur{background:var(--bar-cur)}
+.cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:9px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+/* empty + notes */
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:34px 26px;text-align:center;color:var(--muted);background:var(--surface-2)}
+.empty b{color:var(--warn);font-size:15px;font-family:var(--serif)}
+.snote{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--surface-2);border-radius:var(--r);padding:12px 15px;margin:11px 0;font-size:12.8px;color:var(--ink-2)}
+.snote b{color:var(--accent)}
+
+/* register map */
+.bits{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:15px 0}
+.bit{border:1px solid var(--line);border-radius:var(--r);padding:9px 4px 8px;text-align:center;font-family:var(--mono);font-size:11px;cursor:pointer;background:var(--surface);transition:all .18s var(--ease);position:relative}
+.bit:hover{border-color:var(--accent);transform:translateY(-2px)}
+.bit .bn{font-size:9px;color:var(--faint);display:block;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bit .bv{font-size:17px;font-weight:700;color:var(--faint);line-height:1}
+.bit.hi{border-color:var(--accent-tint);background:var(--accent-soft)}
+.bit.hi::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;background:var(--accent)}
+.bit.set{border-color:var(--accent);background:var(--accent-soft)}
+.bit.set .bv{color:var(--accent)}
+
+/* term cards */
+.term{border:1px solid var(--line);border-radius:var(--r);padding:17px;margin-bottom:12px;background:var(--surface);transition:all .3s var(--ease)}
+.term.lit{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-tint)}
+.term h3{font-size:13.5px;font-family:var(--mono);font-weight:650;margin-bottom:10px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.src{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:6px 10px;cursor:pointer;display:inline-block;margin:3px 5px 3px 0;color:var(--ink-2);transition:all .18s}
+.src:hover,.src.lit{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);border-radius:var(--r);padding:4px 10px;margin:3px 5px 3px 0;background:var(--surface);color:var(--ink-2);transition:all .18s}
+.chip[data-jump]{cursor:pointer} .chip[data-jump]:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.chip.lit{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+
+/* deep term cards */
+.term-deep{padding:19px 20px}
+.term .thead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:5px}
+.term .thead h3{margin:0}
+.srcrow{margin:4px 0 8px}
+.tlead{font-size:13.3px;color:var(--ink-2);line-height:1.7;margin:6px 0 12px}
+.tlead b{color:var(--accent);font-weight:650}
+.tq{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);margin:12px 0 0}
+.tq>div{padding:10px 13px 11px;border-right:1px solid var(--line-2);min-width:0}
+.tq>div:last-child{border-right:none}
+.tq .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.tq .big{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-family:var(--mono);font-size:15.5px;font-weight:700;color:var(--ink);line-height:1.35}
+.tq .big em{font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted)}
+.tq .n{display:block;font-size:11.3px;color:var(--muted);line-height:1.6;margin-top:5px}
+.tsec{margin-top:15px;padding-top:12px;border-top:1px solid var(--line-2)}
+.tsec .hd{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.flow{list-style:none;padding:0;margin:0;counter-reset:fl}
+.flow li{counter-increment:fl;position:relative;padding:0 0 9px 31px;font-size:12.8px;color:var(--ink-2);line-height:1.62}
+.flow li::before{content:counter(fl,decimal-leading-zero);position:absolute;left:0;top:0;font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-tint);border-radius:var(--r);padding:1px 4px}
+.flow li::after{content:"";position:absolute;left:11px;top:20px;bottom:0;width:1px;background:var(--line-2)}
+.flow li:last-child{padding-bottom:0} .flow li:last-child::after{display:none}
+.flow code,.tlead code,.calc code,.kv code{font-family:var(--mono);font-size:11.3px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);padding:1px 5px;color:var(--ink)}
+.flow b,.kv b{color:var(--ink);font-weight:650}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 15px;margin:0;font-size:12.6px}
+.kv dt{font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap;padding-top:1px}
+.kv dd{margin:0;color:var(--ink-2);line-height:1.62}
+.calc{font-family:var(--mono);font-size:11.6px;line-height:1.7;background:var(--surface-2);border:1px dashed var(--line);border-radius:var(--r);padding:9px 12px;color:var(--ink-2);margin:0 0 8px;overflow-wrap:anywhere}
+.tadv{margin-top:14px;border-top:1px solid var(--line-2);padding-top:9px}
+.tadv>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--muted)}
+.tadv>summary::-webkit-details-marker{display:none}
+.tadv>summary::before{content:"+";color:var(--accent);font-weight:700;font-size:13px}
+.tadv[open]>summary::before{content:"–"}
+.tadv>summary:hover{color:var(--accent)}
+.tadv .body{font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-top:8px}
+.tadv .body b{color:var(--accent)}
+
+/* timeline */
+.tl{display:flex;gap:5px;align-items:flex-end;height:52px;margin:11px 0}
+.tl .pt{flex:1;background:var(--accent-tint);border:1px solid var(--accent-tint);border-radius:2px 2px 0 0;min-width:18px;position:relative;transition:opacity .3s}
+.tl .gap{flex:0 0 28px;display:flex;align-items:center;justify-content:center;color:var(--warn);font-size:10px;font-family:var(--mono)}
+
+/* legend */
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend .v{cursor:default;border-bottom:none}
+
+/* range */
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;background:var(--line);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:var(--r);background:var(--accent);border:2px solid var(--surface);box-shadow:0 1px 4px rgba(27,30,33,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:var(--r);background:var(--accent);border:2px solid var(--surface);cursor:pointer}
+input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var(--line)}
+
+/* marginalia provenance */
+#scrim{position:fixed;inset:0;background:rgba(27,30,33,.3);opacity:0;pointer-events:none;transition:opacity .3s;z-index:49}
+#scrim.on{opacity:1;pointer-events:auto}
+#prov{position:fixed;right:0;top:0;height:100vh;width:350px;max-width:92vw;background:var(--surface);border-left:1px solid var(--line);padding:24px;box-shadow:-10px 0 34px rgba(27,30,33,.14);transform:translateX(102%);transition:transform .38s var(--ease);font-size:12.5px;z-index:50;overflow-y:auto}
+#prov.on{transform:none}
+#prov h4{font-family:var(--serif);font-size:16px;margin-bottom:15px;color:var(--accent);display:flex;align-items:center;gap:9px;font-weight:700}
+#prov .row{display:flex;gap:10px;padding:8px 0;border-bottom:1px dotted var(--line)}
+#prov .row b{font-family:var(--mono);min-width:82px;color:var(--muted);font-weight:600;font-size:11px}
+#prov .row span{word-break:break-word;color:var(--ink-2)}
+#prov .x{margin-left:auto;cursor:pointer;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);width:28px;height:28px;display:grid;place-items:center;transition:all .18s}
+#prov .x:hover{color:var(--bad);border-color:#e0bdb8;background:var(--bad-soft)}
+
+/* plain-language lede */
+.plain{display:flex;gap:11px;align-items:flex-start;background:var(--accent-soft);border:1px solid var(--accent-tint);border-radius:var(--r);padding:12px 15px;margin:0 0 17px;font-size:13px;color:var(--ink-2);line-height:1.65}
+.plain .ptag{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--accent);background:var(--surface);border:1px solid var(--accent-tint);border-radius:var(--r);padding:2px 7px;flex:0 0 auto;margin-top:2px}
+.plain b{color:var(--accent);font-weight:650}
+
+/* glossary term + tooltip */
+.gl{border-bottom:1px dotted var(--accent-2);cursor:help;color:inherit;border-radius:2px;padding:0 1px;transition:background .15s,color .15s}
+.gl:hover,.gl:focus-visible{background:var(--accent-soft);color:var(--accent)}
+#glpop{position:fixed;z-index:90;max-width:302px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);box-shadow:0 10px 34px rgba(27,30,33,.2);padding:12px 14px;font-size:12.8px;line-height:1.65;color:var(--ink-2);opacity:0;pointer-events:none;transform:translateY(4px);transition:opacity .18s,transform .18s}
+#glpop.on{opacity:1;transform:none}
+#glpop .gt{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);display:block;margin-bottom:5px}
+
+/* modal overlays (import + glossary) */
+#impwrap,#glwrap{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;padding:38px 16px;background:rgba(27,30,33,.34);overflow-y:auto}
+#impwrap.on,#glwrap.on{display:flex}
+.imppanel,.glpanel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);width:100%;padding:28px 30px;box-shadow:0 18px 60px rgba(27,30,33,.22);position:relative}
+.imppanel{max-width:680px} .glpanel{max-width:680px}
+.imp-x{position:absolute;top:18px;right:18px;cursor:pointer;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);width:30px;height:30px;display:grid;place-items:center;font-size:19px;line-height:1;transition:all .18s}
+.imp-x:hover{color:var(--bad);border-color:#e0bdb8}
+.imp-h{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--ink);margin:0 0 6px;letter-spacing:-.01em}
+.imp-lead{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0 0 16px;max-width:60ch}
+.imp-callout{background:var(--accent-soft);border:1px solid var(--accent-tint);border-radius:var(--r);padding:13px 15px;font-size:12.8px;color:var(--ink-2);line-height:1.65;margin-bottom:18px}
+.imp-callout b{color:var(--accent)}
+.imp-example{display:flex;align-items:center;gap:13px;flex-wrap:wrap;background:var(--surface-2);border:1px dashed var(--accent-tint);border-radius:var(--r);padding:13px 15px;margin-bottom:22px}
+.imp-example .txt{font-size:12.8px;color:var(--ink-2);flex:1;min-width:190px;line-height:1.55}
+.imp-example .txt b{color:var(--accent)}
+.imp-step{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--accent);margin:0 0 6px;display:flex;align-items:center;gap:9px}
+.imp-step::after{content:"";flex:1;height:1px;background:var(--line)}
+.imp-row{display:flex;gap:15px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line-2)}
+.imp-row:last-of-type{border-bottom:none}
+.imp-num{width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--accent);color:#fbfaf6;font-family:var(--mono);font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:2px}
+.imp-rowtxt{flex:1;min-width:0}
+.imp-rowtitle{font-size:14px;font-weight:650;color:var(--ink);margin-bottom:3px}
+.imp-rowtitle .ext{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-tint);border-radius:var(--r);padding:1px 6px;margin-left:7px}
+.imp-rowdesc{font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.imp-rowhint{font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono);word-break:break-all;line-height:1.5}
+.imp-rowfile{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:7px;min-width:118px}
+.imp-pick{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:var(--r);padding:8px 14px;font-size:12.5px;font-weight:650;cursor:pointer;overflow:hidden;transition:all .18s;white-space:nowrap}
+.imp-pick:hover{background:var(--accent-tint)}
+.imp-pick:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.imp-pick input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.imp-pick.done{border-color:#bcd3ba;background:var(--ok-soft);color:var(--ok)}
+.imp-chip{font-family:var(--mono);font-size:10.5px;color:var(--ok);background:var(--ok-soft);border:1px solid #bcd3ba;border-radius:var(--r);padding:2px 8px;max-width:158px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-adv{margin-top:20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2)}
+.imp-adv>summary{cursor:pointer;padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-2);list-style:none;display:flex;align-items:center;gap:9px}
+.imp-adv>summary::-webkit-details-marker{display:none}
+.imp-adv>summary::before{content:"+";font-family:var(--mono);color:var(--accent);font-weight:700;font-size:15px}
+.imp-adv[open]>summary::before{content:"\2013"}
+.imp-adv>summary:hover{color:var(--accent)}
+.imp-advbody{padding:2px 15px 16px}
+.imp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:10px 0}
+.imp-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.imp-field>label{font-size:12px;font-weight:600;color:var(--ink-2)}
+.imp-field .fh{font-size:11px;color:var(--muted);line-height:1.5;font-weight:400}
+.imp-field input[type=text],.imp-field select{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;background:var(--surface);color:var(--ink);width:100%}
+.imp-field input[type=text]:focus,.imp-field select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.imp-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.imp-mini .imp-pick{padding:6px 11px;font-size:11.5px}
+.imp-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.btn.big{padding:11px 22px;font-size:14px}
+#impstatus{font-size:12.8px;margin-top:14px;white-space:pre-wrap;word-break:break-word;color:var(--ink-2);line-height:1.7;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+#impstatus:empty{display:none}
+#impstatus.err{color:var(--bad);border-color:#e0bdb8;background:var(--bad-soft)}
+#impstatus.ok{border-left:3px solid var(--ok)}
+/* glossary dictionary */
+.gl-search{width:100%;font-family:var(--sans);font-size:13px;border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;background:var(--surface-2);color:var(--ink);margin:14px 0 4px}
+.gl-search:focus{outline:2px solid var(--accent);outline-offset:1px}
+.gl-cat{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin:16px 0 6px;border-bottom:1px dotted var(--line);padding-bottom:5px}
+.gl-item{padding:9px 0;border-bottom:1px solid var(--line-2)}
+.gl-item:last-child{border-bottom:none}
+.gl-item .t{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px}
+.gl-item .p{font-size:12.8px;color:var(--ink-2);line-height:1.6}
+.gl-empty{color:var(--muted);font-size:13px;padding:20px 0;text-align:center}
+.mast-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:760px){
+.imp-grid{grid-template-columns:1fr}
+.imppanel,.glpanel{padding:22px 18px}
+.imp-row{flex-wrap:wrap}
+.imp-rowfile{flex-direction:row;align-items:center;width:100%;min-width:0;margin-top:9px;padding-left:41px}
+.imp-chip{max-width:46vw}
+#glpop{max-width:calc(100vw - 24px)}
+.wrap{padding:0 15px 60px}
+.masthead{grid-template-columns:1fr;gap:16px;padding:24px 0 16px}
+.spec{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:12px;min-width:0}
+h1{font-size:29px}
+.grid2{grid-template-columns:1fr}
+.bits{grid-template-columns:repeat(4,1fr)}
+.card{padding:18px}
+#prov{width:100vw;max-width:100vw}
+.tabs{overflow-x:auto;flex-wrap:nowrap}
+.tab{padding:12px 14px 10px;white-space:nowrap}
+.cmp{table-layout:auto;min-width:680px}
+.tq{grid-template-columns:1fr}
+.tq>div{border-right:none;border-bottom:1px solid var(--line-2)}
+.tq>div:last-child{border-bottom:none}
+.kv{grid-template-columns:1fr;gap:2px}
+.kv dt{padding-top:5px}
+}
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style></head><body><div class="wrap">
+<header class="masthead">
+  <div class="brand">
+    <div class="mark" aria-hidden="true"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="15"/><circle cx="22" cy="22" r="5.5"/><path d="M22 2v8M22 34v8M2 22h8M34 22h8"/><path d="M11.4 11.4l3 3M29.6 29.6l3 3M32.6 11.4l-3 3M14.4 29.6l-3 3"/></svg></div>
+    <div class="kicker">Field Instrument · SWD Probe · Honest Provenance</div>
+    <h1>EmbeddedLens <span class="zh">嵌入式透视镜</span></h1>
+    <div class="sub">把芯片里真实运行的状态，画成初学者看得懂的图。不改你的固件、不加代码、不用串口——接上调试器读一拍即可。</div>
+    <div class="mast-actions">
+      <button class="btn" id="impopen"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>导入我的工程</button>
+      <button class="btn sec" id="glopen"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>名词小词典</button>
+    </div>
+  </div>
+  <div class="spec" id="spec"></div>
+</header>
+<div class="rule"></div>
+<div class="badges" id="topbadges"></div>
+<div class="card" id="identitycard"></div>
+<nav class="tabs" id="tabs" aria-label="视图切换"></nav>
+<div class="view on" id="view-sched"></div>
+<div class="view" id="view-reg"></div>
+<div class="view" id="view-term"></div>
+<div class="view" id="view-plat"></div>
+<div class="view" id="view-replay"></div>
+<div class="card"><div class="note" id="contract"></div>
+<div class="note" style="margin:10px 0 8px">每个数字都标了「它从哪来」。点下面带虚线的词，看大白话解释：</div>
+<div class="legend"><span><b class="v m">实测值<i class="bdg">实测</i></b> <span class="gl" data-gl="实测值" tabindex="0" role="button">真的从芯片读出来的数</span></span>
+<span><b class="v a">权威定义<i class="bdg">权威</i></b> <span class="gl" data-gl="权威定义" tabindex="0" role="button">厂商说明书/编译信息的标准答案</span></span>
+<span><b class="v d">推导值<i class="bdg">推导</i></b> <span class="gl" data-gl="推导值" tabindex="0" role="button">实测+定义算出来，附公式</span></span>
+<span><b class="v u">不可知<i class="bdg">不可知</i></b> <span class="gl" data-gl="不可知" tabindex="0" role="button">证据不够，老实说不知道</span></span></div></div>
+</div>
+<div id="impwrap" role="dialog" aria-modal="true" aria-label="导入我的工程">
+  <div class="imppanel">
+    <button class="imp-x" id="impclose" aria-label="关闭">&times;</button>
+    <div class="imp-h">导入我的工程</div>
+    <p class="imp-lead">把 Keil 编译出来的几个文件选进来，工具就能读懂你的芯片和代码，画成看得懂的图。文件只在你自己电脑里读取，<b>不会上传</b>。</p>
+    <div class="imp-callout">
+      <b>先说清楚：</b>这一步读懂的是「芯片说明书」和「你的代码」。至于芯片<b>此刻</b>的真实状态，要接上 ST-LINK 调试器采样才知道；没接的地方会老实标「不可知」，绝不瞎编。工具<b>只读不写</b>，不会改动或烧录你的芯片。
+    </div>
+    <div class="imp-example">
+      <div class="txt"><b>第一次用？</b>先看内置示例，立刻明白每个页面在讲什么，再换成你自己的文件。</div>
+      <button class="btn sec" id="impreset">先看内置示例</button>
+    </div>
+
+    <div class="imp-step">只需 3 个文件</div>
+    <div class="imp-row">
+      <div class="imp-num">1</div>
+      <div class="imp-rowtxt">
+        <div class="imp-rowtitle">地址清单<span class="ext">.map</span></div>
+        <div class="imp-rowdesc">Keil 编译后自动生成的「符号表」，记录每个变量/函数在内存里的地址。工具靠它找到操作系统内核。</div>
+        <div class="imp-rowhint">位置：MDK-ARM/工程名/工程名.map</div>
+      </div>
+      <div class="imp-rowfile">
+        <label class="imp-pick"><input type="file" id="f_map" accept=".map,.txt" aria-label="选择 map 文件"><span>选择文件</span></label>
+        <span class="imp-chip" id="c_map" hidden></span>
+      </div>
+    </div>
+    <div class="imp-row">
+      <div class="imp-num">2</div>
+      <div class="imp-rowtxt">
+        <div class="imp-rowtitle">芯片说明书<span class="ext">.svd</span></div>
+        <div class="imp-rowdesc">芯片厂商提供的寄存器说明（CMSIS-SVD），告诉工具每个引脚位的含义。载入后自动选好 GPIO 输出寄存器。</div>
+        <div class="imp-rowhint">位置：Keil 安装目录/…/STM32F1xx_DFP/…/SVD/STM32F103xx.svd</div>
+      </div>
+      <div class="imp-rowfile">
+        <label class="imp-pick"><input type="file" id="f_svd" accept=".svd,.xml" aria-label="选择 SVD 文件"><span>选择文件</span></label>
+        <span class="imp-chip" id="c_svd" hidden></span>
+      </div>
+    </div>
+    <div class="imp-row">
+      <div class="imp-num">3</div>
+      <div class="imp-rowtxt">
+        <div class="imp-rowtitle">你的主程序<span class="ext">main.c</span></div>
+        <div class="imp-rowdesc">你写的代码。工具从中读出创建了哪些任务、延时多久、在哪里点灯。</div>
+        <div class="imp-rowhint">位置：Core/Src/main.c</div>
+      </div>
+      <div class="imp-rowfile">
+        <label class="imp-pick"><input type="file" id="f_mainc" accept=".c" aria-label="选择 main.c"><span>选择文件</span></label>
+        <span class="imp-chip" id="c_mainc" hidden></span>
+      </div>
+    </div>
+
+    <details class="imp-adv">
+      <summary>更多选项（可选 · 让结果更完整）</summary>
+      <div class="imp-advbody">
+        <div class="imp-grid">
+          <div class="imp-field"><label>引脚定义 <span class="fh">main.h，确认哪个引脚接了灯</span></label>
+            <div class="imp-mini"><label class="imp-pick"><input type="file" id="f_mainh" accept=".h" aria-label="选择 main.h"><span>选择文件</span></label><span class="imp-chip" id="c_mainh" hidden></span></div></div>
+          <div class="imp-field"><label>节拍配置 <span class="fh">FreeRTOSConfig.h，把延时换算成秒</span></label>
+            <div class="imp-mini"><label class="imp-pick"><input type="file" id="f_cfg" accept=".h" aria-label="选择 FreeRTOSConfig.h"><span>选择文件</span></label><span class="imp-chip" id="c_cfg" hidden></span></div></div>
+          <div class="imp-field"><label>设备头文件 <span class="fh">如 stm32f103xe.h，和说明书交叉核对</span></label>
+            <div class="imp-mini"><label class="imp-pick"><input type="file" id="f_hdr" accept=".h" aria-label="选择设备头"><span>选择文件</span></label><span class="imp-chip" id="c_hdr" hidden></span></div></div>
+          <div class="imp-field"><label>程序文件 <span class="fh">.axf/.elf，提取固件指纹做身份核验</span></label>
+            <div class="imp-mini"><label class="imp-pick"><input type="file" id="f_axf" accept=".axf,.elf,.out" aria-label="选择 axf"><span>选择文件</span></label><span class="imp-chip" id="c_axf" hidden></span></div></div>
+          <div class="imp-field"><label>结构偏移 <span class="fh">offsets.json，命令行 gdb 核定的结果</span></label>
+            <div class="imp-mini"><label class="imp-pick"><input type="file" id="f_off" accept=".json" aria-label="选择 offsets.json"><span>选择文件</span></label><span class="imp-chip" id="c_off" hidden></span></div></div>
+          <div class="imp-field"><label>看哪个外设/寄存器 <span class="fh">默认 GPIOC 的输出寄存器 ODR</span></label>
+            <div class="imp-mini"><select id="sel_per" aria-label="外设"><option value="">先载入说明书…</option></select><select id="sel_reg" aria-label="寄存器"><option value="">先选外设…</option></select></div></div>
+          <div class="imp-field"><label>芯片型号</label><input type="text" id="p_device" value="STM32F103RCT6"></div>
+          <div class="imp-field"><label>内核</label><input type="text" id="p_core" value="Cortex-M3"></div>
+          <div class="imp-field"><label>Flash 起始地址</label><input type="text" id="p_flash" value="0x08000000"></div>
+          <div class="imp-field"><label>RAM 起始地址</label><input type="text" id="p_ram" value="0x20000000"></div>
+        </div>
+      </div>
+    </details>
+
+    <div class="imp-actions">
+      <button class="btn big" id="impgo"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>开始解读</button>
+      <button class="btn sec" id="impexphtml" disabled>导出网页</button>
+      <button class="btn sec" id="impexpjson" disabled>导出数据</button>
+      <label class="btn sec" style="cursor:pointer">导入数据文件<input type="file" id="f_json" accept=".json" hidden></label>
+    </div>
+    <div id="impstatus"></div>
+  </div>
+</div>
+
+<div id="glwrap" role="dialog" aria-modal="true" aria-label="名词小词典">
+  <div class="glpanel">
+    <button class="imp-x" id="glclose" aria-label="关闭">&times;</button>
+    <div class="imp-h">名词小词典</div>
+    <p class="imp-lead">看不懂的专业词，这里用大白话解释。页面里带虚线下划线的词，点一下也能随时看解释。</p>
+    <input type="text" class="gl-search" id="glsearch" placeholder="搜索名词，比如「任务」「寄存器」「tick」…" aria-label="搜索名词">
+    <div id="glbody"></div>
+  </div>
+</div>
+
+<div id="scrim" onclick="closeProv()"></div>
+<aside id="prov" aria-label="数据溯源"><h4><svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>溯源<button class="x" onclick="closeProv()" aria-label="关闭溯源"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></h4><div id="provbody"></div></aside>
+<script>
+let LENS = {"meta": {"tool": "EmbeddedLens", "version": "0.1.0-mvp", "example": "freertos_f103"}, "device": {"name": "STM32F103RCT6", "core": "Cortex-M3", "svd": {"file": "D:\\KELI_MDK\\Keil\\STM32F1xx_DFP\\2.4.1\\SVD\\STM32F103xx.svd", "version": "1.3"}, "flash_base": "0x8000000", "ram_base": "0x20000000"}, "build": {"rtos": "FreeRTOS", "rtos_linked": true, "axf_sha": "4887fa0fbd3b73deb19e9153152d110b45f4b17f2e187e077bd228ad4dbb286f", "map_sha": "8cb1d8cbd659d1d1c4ecec9a2cf117d4680710a4eaa7b992cf17ebfbb25f2ef7", "kernel": {"version": "V11.3.1", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\FreeRtos\\Inc\\task.h"}}, "identity": {"status": "no-sample", "reason": "尚未采集板上数据"}, "structure": {"svd": {"file": "D:\\KELI_MDK\\Keil\\STM32F1xx_DFP\\2.4.1\\SVD\\STM32F103xx.svd", "version": "1.3"}, "peripheral": {"name": "GPIOC", "base_address": "0x40011000", "derivedFrom": "GPIOA"}, "register": {"name": "ODR", "address": "0x4001100c", "offset": 12, "size_bits": 32, "description": "Port output data register\n          (GPIOn_ODR)", "defined_in": "GPIOA", "fields": [{"name": "ODR0", "bit_offset": 0, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR1", "bit_offset": 1, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR2", "bit_offset": 2, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR3", "bit_offset": 3, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR4", "bit_offset": 4, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR5", "bit_offset": 5, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR6", "bit_offset": 6, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR7", "bit_offset": 7, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR8", "bit_offset": 8, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR9", "bit_offset": 9, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR10", "bit_offset": 10, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR11", "bit_offset": 11, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR12", "bit_offset": 12, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR13", "bit_offset": 13, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR14", "bit_offset": 14, "bit_width": 1, "description": "Port output data", "access": "read-write"}, {"name": "ODR15", "bit_offset": 15, "bit_width": 1, "description": "Port output data", "access": "read-write"}]}, "header": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include\\stm32f103xe.h"}, "GPIO_TypeDef": {"fields": [{"name": "CRL", "offset": 0, "size": 4}, {"name": "CRH", "offset": 4, "size": 4}, {"name": "IDR", "offset": 8, "size": 4}, {"name": "ODR", "offset": 12, "size": 4}, {"name": "BSRR", "offset": 16, "size": 4}, {"name": "BRR", "offset": 20, "size": 4}, {"name": "LCKR", "offset": 24, "size": 4}], "size": 28}, "gpio_bases": {"GPIOA_BASE": "0x40010800", "GPIOB_BASE": "0x40010c00", "GPIOC_BASE": "0x40011000", "GPIOD_BASE": "0x40011400", "GPIOE_BASE": "0x40011800", "GPIOF_BASE": "0x40011c00", "GPIOG_BASE": "0x40012000"}, "cross_check": {"svd_header_agree": true}}, "facts": {"config": {"configCPU_CLOCK_HZ": {"value": 72000000, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 56}, "configTICK_RATE_HZ": {"value": 100, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 80}, "configUSE_PREEMPTION": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 85}, "configUSE_TIME_SLICING": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 92}, "configUSE_PORT_OPTIMISED_TASK_SELECTION": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 100}, "configUSE_TICKLESS_IDLE": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 107}, "configMAX_PRIORITIES": {"value": 5, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 112}, "configMINIMAL_STACK_SIZE": {"value": 128, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 118}, "configMAX_TASK_NAME_LEN": {"value": 16, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 122}, "configIDLE_SHOULD_YIELD": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 145}, "configTASK_NOTIFICATION_ARRAY_ENTRIES": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 151}, "configQUEUE_REGISTRY_SIZE": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 156}, "configENABLE_BACKWARD_COMPATIBILITY": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 161}, "configNUM_THREAD_LOCAL_STORAGE_POINTERS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 168}, "configUSE_MINI_LIST_ITEM": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 175}, "configHEAP_CLEAR_MEMORY_ON_FREE": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 193}, "configSTATS_BUFFER_MAX_LENGTH": {"value": 65535, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 200}, "configUSE_NEWLIB_REENTRANT": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 212}, "configUSE_TIMERS": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 223}, "configTIMER_QUEUE_LENGTH": {"value": 10, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 243}, "configUSE_EVENT_GROUPS": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 254}, "configUSE_STREAM_BUFFERS": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 265}, "configSUPPORT_STATIC_ALLOCATION": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 276}, "configSUPPORT_DYNAMIC_ALLOCATION": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 284}, "configTOTAL_HEAP_SIZE": {"value": 4096, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 290}, "configAPPLICATION_ALLOCATED_HEAP": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 295}, "configSTACK_ALLOCATION_FROM_SEPARATE_HEAP": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 303}, "configENABLE_HEAP_PROTECTOR": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 308}, "configMAX_API_CALL_INTERRUPT_PRIORITY": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 330}, "configUSE_IDLE_HOOK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 340}, "configUSE_TICK_HOOK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 341}, "configUSE_MALLOC_FAILED_HOOK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 342}, "configUSE_DAEMON_TASK_STARTUP_HOOK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 343}, "configUSE_SB_COMPLETED_CALLBACK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 351}, "configCHECK_FOR_STACK_OVERFLOW": {"value": 2, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 365}, "configGENERATE_RUN_TIME_STATS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 376}, "configUSE_TRACE_FACILITY": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 382}, "configUSE_STATS_FORMATTING_FUNCTIONS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 389}, "configUSE_CO_ROUTINES": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 399}, "configMAX_CO_ROUTINE_PRIORITIES": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 404}, "configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 439}, "configTOTAL_MPU_REGIONS": {"value": 8, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 445}, "configTEX_S_C_B_FLASH": {"value": 7, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 452}, "configTEX_S_C_B_SRAM": {"value": 7, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 459}, "configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 466}, "configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 473}, "configUSE_MPU_WRAPPERS_V1": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 479}, "configPROTECTED_KERNEL_OBJECT_POOL_SIZE": {"value": 10, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 487}, "configSYSTEM_CALL_STACK_SIZE": {"value": 128, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 495}, "configENABLE_ACCESS_CONTROL_LIST": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 503}, "configRUN_MULTIPLE_PRIORITIES": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 523}, "configUSE_CORE_AFFINITY": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 531}, "configUSE_TASK_PREEMPTION_DISABLE": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 547}, "configUSE_PASSIVE_IDLE_HOOK": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 553}, "configIDLE_AFFINITY": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 566}, "configKERNEL_PROVIDED_STATIC_MEMORY": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 583}, "configENABLE_TRUSTZONE": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 593}, "configRUN_FREERTOS_SECURE_ONLY": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 600}, "configENABLE_MPU": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 604}, "configENABLE_FPU": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 608}, "configENABLE_MVE": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 616}, "configCHECK_HANDLER_INSTALLATION": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 637}, "configUSE_TASK_NOTIFICATIONS": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 645}, "configUSE_MUTEXES": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 646}, "configUSE_RECURSIVE_MUTEXES": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 647}, "configUSE_COUNTING_SEMAPHORES": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 648}, "configUSE_QUEUE_SETS": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 649}, "configUSE_APPLICATION_TASK_TAG": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 650}, "configUSE_POSIX_ERRNO": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "line": 654}}, "tasks": [{"name": "led1", "entry": "vled1task", "stack_words": 128, "priority": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 112}, {"name": "led3", "entry": "vled3task", "stack_words": 128, "priority": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 113}], "delay_calls": [{"ticks": 100, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 63, "in_fn": "vled1task"}, {"ticks": 100, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 65, "in_fn": "vled1task"}, {"ticks": 100, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 74, "in_fn": "vled3task"}, {"ticks": 100, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 76, "in_fn": "vled3task"}], "gpio_writes": [{"port_macro": "LED1_GPIO_Port", "pin_macro": "LED1_Pin", "state": "GPIO_PIN_SET", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 62, "in_fn": "vled1task"}, {"port_macro": "LED1_GPIO_Port", "pin_macro": "LED1_Pin", "state": "GPIO_PIN_SET", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 64, "in_fn": "vled1task"}, {"port_macro": "LED3_GPIO_Port", "pin_macro": "LED3_Pin", "state": "GPIO_PIN_SET", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 73, "in_fn": "vled3task"}, {"port_macro": "LED3_GPIO_Port", "pin_macro": "LED3_Pin", "state": "GPIO_PIN_SET", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 75, "in_fn": "vled3task"}], "pins": {"LED3": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\main.h", "Pin": {"macro": "GPIO_PIN_1", "line": 60}, "GPIO_Port": {"macro": "GPIOC", "line": 61}, "bit": 1, "port": "GPIOC", "confirmed_from_source": true}, "LED1": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\main.h", "Pin": {"macro": "GPIO_PIN_3", "line": 62}, "GPIO_Port": {"macro": "GPIOC", "line": 63}, "bit": 3, "port": "GPIOC", "confirmed_from_source": true}}, "hal_gpio_pin_state": {"GPIO_PIN_RESET": {"value": 0, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\stm32f1xx_hal_gpio.h", "line": 66}, "GPIO_PIN_SET": {"value": 1, "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\stm32f1xx_hal_gpio.h", "line": 67}}, "kernel": {"version": "V11.3.1", "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\FreeRtos\\Inc\\task.h"}}, "offsets": {"source": {"axf": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\MDK-ARM\\FREERTOS_2\\FREERTOS_2.axf", "sha256": "4887fa0fbd3b73deb19e9153152d110b45f4b17f2e187e077bd228ad4dbb286f", "method": "gdb ptype /o (DWARF, 仅读构建产物)"}, "types": {"List_t": {"size": 20, "fields": {"uxNumberOfItems": {"offset": 0, "size": 4}, "pxIndex": {"offset": 4, "size": 4}, "xListEnd": {"offset": 8, "size": 12}}}, "MiniListItem_t": {"size": 12, "fields": {"xItemValue": {"offset": 0, "size": 4}, "pxNext": {"offset": 4, "size": 4}, "pxPrevious": {"offset": 8, "size": 4}}}, "ListItem_t": {"size": 20, "fields": {"xItemValue": {"offset": 0, "size": 4}, "pxNext": {"offset": 4, "size": 4}, "pxPrevious": {"offset": 8, "size": 4}, "pvOwner": {"offset": 12, "size": 4}, "pxContainer": {"offset": 16, "size": 4}}}, "TCB_t": {"size": 84, "fields": {"pxTopOfStack": {"offset": 0, "size": 4}, "xStateListItem": {"offset": 4, "size": 20}, "xEventListItem": {"offset": 24, "size": 20}, "uxPriority": {"offset": 44, "size": 4}, "pxStack": {"offset": 48, "size": 4}, "pcTaskName": {"offset": 52, "size": 16}, "uxBasePriority": {"offset": 68, "size": 4}, "uxMutexesHeld": {"offset": 72, "size": 4}, "ulNotifiedValue": {"offset": 76, "size": 4}, "ucNotifyState": {"offset": 80, "size": 1}, "ucStaticallyAllocated": {"offset": 81, "size": 1}}}}, "cross_check": {"List_t_size_matches_map": true, "TCB_size_matches_idle": true}}, "symbols": {"../clib/angel/boardlib.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "boardinit1.o ABSOLUTE"}, "../clib/angel/handlers.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "__scatter_copy.o ABSOLUTE"}, "../clib/angel/kernel.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "__rtentry.o ABSOLUTE"}, "../clib/angel/rt.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "rt_raise.o ABSOLUTE"}, "../clib/angel/scatter.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "__scatter.o ABSOLUTE"}, "../clib/angel/startup.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "__main.o ABSOLUTE"}, "../clib/angel/sys.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "sys_stackheap_outer.o ABSOLUTE"}, "../clib/angel/sysapp.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "sys_exit.o ABSOLUTE"}, "../clib/armsys.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "argv_veneer.o ABSOLUTE"}, "../clib/heapalloc.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "hrguard.o ABSOLUTE"}, "../clib/heapaux.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "heapauxi.o ABSOLUTE"}, "../clib/libinit.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "libinit.o ABSOLUTE"}, "../clib/memcpset.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "rt_memcpy_v6.o ABSOLUTE"}, "../clib/signal.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "defsig_rtmem_outer.o ABSOLUTE"}, "../clib/signal.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "defsig.o ABSOLUTE"}, "../clib/stdlib.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "exit.o ABSOLUTE"}, "../fplib/fpinit.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "fpinit.o ABSOLUTE"}, "../fplib/fpinit_empty.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "fpinit_empty.o ABSOLUTE"}, "croutine.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "croutine.o ABSOLUTE"}, "dc.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "dc.o ABSOLUTE"}, "event_groups.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "event_groups.o ABSOLUTE"}, "gpio.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "gpio.o ABSOLUTE"}, "heap_4.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "heap_4.o ABSOLUTE"}, "list.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "list.o ABSOLUTE"}, "main.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "main.o ABSOLUTE"}, "port.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "port.o ABSOLUTE"}, "queue.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "queue.o ABSOLUTE"}, "startup_stm32f103xe.s": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "startup_stm32f103xe.o ABSOLUTE"}, "stm32f1xx_hal.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal.o ABSOLUTE"}, "stm32f1xx_hal_cortex.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_cortex.o ABSOLUTE"}, "stm32f1xx_hal_dma.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_dma.o ABSOLUTE"}, "stm32f1xx_hal_exti.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_exti.o ABSOLUTE"}, "stm32f1xx_hal_flash.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_flash.o ABSOLUTE"}, "stm32f1xx_hal_flash_ex.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_flash_ex.o ABSOLUTE"}, "stm32f1xx_hal_gpio.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_gpio.o ABSOLUTE"}, "stm32f1xx_hal_gpio_ex.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_gpio_ex.o ABSOLUTE"}, "stm32f1xx_hal_msp.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_msp.o ABSOLUTE"}, "stm32f1xx_hal_pwr.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_pwr.o ABSOLUTE"}, "stm32f1xx_hal_rcc.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_rcc.o ABSOLUTE"}, "stm32f1xx_hal_rcc_ex.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_rcc_ex.o ABSOLUTE"}, "stm32f1xx_hal_tim.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_tim.o ABSOLUTE"}, "stm32f1xx_hal_tim_ex.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_tim_ex.o ABSOLUTE"}, "stm32f1xx_hal_timebase_tim.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_hal_timebase_tim.o ABSOLUTE"}, "stm32f1xx_it.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stm32f1xx_it.o ABSOLUTE"}, "stream_buffer.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "stream_buffer.o ABSOLUTE"}, "system_stm32f1xx.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "system_stm32f1xx.o ABSOLUTE"}, "tasks.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "tasks.o ABSOLUTE"}, "timers.c": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "timers.o ABSOLUTE"}, "__tagsym$$used.0": {"addr": "0x080021a8", "size": 0, "kind": "Number", "object": "tasks.o(.text.vTaskSwitchContext)"}, "HAL_RCC_GetSysClockFreq.aPredivFactorTable": {"addr": "0x08002e58", "size": 2, "kind": "Data", "object": "stm32f1xx_hal_rcc.o(.rodata.HAL_RCC_GetSysClockFreq.aPredivFactorTable)"}, "HAL_RCC_GetSysClockFreq.aPLLMULFactorTable": {"addr": "0x08002e5a", "size": 16, "kind": "Data", "object": "stm32f1xx_hal_rcc.o(.rodata.cst16)"}, "uxTopUsedPriority": {"addr": "0x08002e6c", "size": 4, "kind": "Data", "object": "tasks.o(.rodata.uxTopUsedPriority)"}, ".L_MergedGlobals": {"addr": "0x20000000", "size": 8, "kind": "Data", "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"}, "uxCriticalNesting": {"addr": "0x2000000c", "size": 4, "kind": "Data", "object": "port.o(.data.uxCriticalNesting)"}, "pxEnd": {"addr": "0x20000070", "size": 4, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "xFreeBytesRemaining": {"addr": "0x20000074", "size": 4, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "xMinimumEverFreeBytesRemaining": {"addr": "0x20000078", "size": 4, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "xNumberOfSuccessfulAllocations": {"addr": "0x2000007c", "size": 4, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "xNumberOfSuccessfulFrees": {"addr": "0x20000080", "size": 4, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "xStart": {"addr": "0x20000084", "size": 8, "kind": "Data", "object": "heap_4.o(.bss..L_MergedGlobals)"}, "ucMaxSysCallPriority": {"addr": "0x2000008c", "size": 1, "kind": "Data", "object": "port.o(.bss..L_MergedGlobals)"}, "ulMaxPRIGROUPValue": {"addr": "0x20000090", "size": 4, "kind": "Data", "object": "port.o(.bss..L_MergedGlobals)"}, "uxTaskNumber": {"addr": "0x20000094", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xSchedulerRunning": {"addr": "0x20000098", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "uxDeletedTasksWaitingCleanUp": {"addr": "0x2000009c", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "uxCurrentNumberOfTasks": {"addr": "0x200000a0", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "uxSchedulerSuspended": {"addr": "0x200000a4", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xTickCount": {"addr": "0x200000a8", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "uxTopReadyPriority": {"addr": "0x200000ac", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xYieldPendings": {"addr": "0x200000b0", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xNextTaskUnblockTime": {"addr": "0x200000b4", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xIdleTaskHandles.0": {"addr": "0x200000b8", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xPendedTicks": {"addr": "0x200000bc", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "pxDelayedTaskList": {"addr": "0x200000c0", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "pxOverflowDelayedTaskList": {"addr": "0x200000c4", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xNumOfOverflows": {"addr": "0x200000c8", "size": 4, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xTasksWaitingTermination": {"addr": "0x200000cc", "size": 20, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xSuspendedTaskList": {"addr": "0x200000e0", "size": 20, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xPendingReadyList": {"addr": "0x200000f4", "size": 20, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals)"}, "xTimerQueue": {"addr": "0x20000108", "size": 4, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "xTimerTaskHandle": {"addr": "0x2000010c", "size": 4, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "pxCurrentTimerList": {"addr": "0x20000110", "size": 4, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "pxOverflowTimerList": {"addr": "0x20000114", "size": 4, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "prvSampleTimeNow.xLastTime": {"addr": "0x20000118", "size": 4, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "xActiveTimerList1": {"addr": "0x2000011c", "size": 20, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, "xActiveTimerList2": {"addr": "0x20000130", "size": 20, "kind": "Data", "object": "timers.o(.bss..L_MergedGlobals)"}, ".L_MergedGlobals.2": {"addr": "0x20000144", "size": 124, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals.2)"}, "xDelayedTaskList1": {"addr": "0x20000144", "size": 20, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals.2)"}, "xDelayedTaskList2": {"addr": "0x20000158", "size": 20, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals.2)"}, "vApplicationGetIdleTaskMemory.xIdleTaskTCB": {"addr": "0x2000016c", "size": 84, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals.2)"}, "prvCheckForValidListAndQueue.ucStaticTimerQueueStorage": {"addr": "0x20000208", "size": 120, "kind": "Data", "object": "timers.o(.bss.prvCheckForValidListAndQueue.ucStaticTimerQueueStorage)"}, "prvCheckForValidListAndQueue.xStaticTimerQueue": {"addr": "0x20000280", "size": 72, "kind": "Data", "object": "timers.o(.bss.prvCheckForValidListAndQueue.xStaticTimerQueue)"}, "__tagsym$$used.1": {"addr": "0x200002c8", "size": 0, "kind": "Number", "object": "tasks.o(.bss.pxCurrentTCB)"}, "pxReadyTasksLists": {"addr": "0x200002cc", "size": 100, "kind": "Data", "object": "tasks.o(.bss.pxReadyTasksLists)"}, "ucHeap": {"addr": "0x20000330", "size": 4096, "kind": "Data", "object": "heap_4.o(.bss.ucHeap)"}, "vApplicationGetIdleTaskMemory.uxIdleTaskStack": {"addr": "0x20001334", "size": 512, "kind": "Data", "object": "tasks.o(.bss.vApplicationGetIdleTaskMemory.uxIdleTaskStack)"}, "vApplicationGetTimerTaskMemory.uxTimerTaskStack": {"addr": "0x20001534", "size": 512, "kind": "Data", "object": "tasks.o(.bss.vApplicationGetTimerTaskMemory.uxTimerTaskStack)"}, "vApplicationGetTimerTaskMemory.xTimerTaskTCB": {"addr": "0x20001734", "size": 84, "kind": "Data", "object": "tasks.o(.bss.vApplicationGetTimerTaskMemory.xTimerTaskTCB)"}, "Heap_Mem": {"addr": "0x20001788", "size": 512, "kind": "Data", "object": "startup_stm32f103xe.o(HEAP)"}, "Stack_Mem": {"addr": "0x20001988", "size": 1024, "kind": "Data", "object": "startup_stm32f103xe.o(STACK)"}, "__initial_sp": {"addr": "0x20001d88", "size": 0, "kind": "Data", "object": "startup_stm32f103xe.o(STACK)"}, "BuildAttributes$$THM_ISAv4$P$D$K$B$S$PE$A:L22UL41UL21$X:L11$S22US41US21$IEEE1$IW$~IW$USESV6$~STKCKD$USESV7$~SHL$OTIME$ROPI$EBA8$UX$STANDARDLIB$REQ8$PRES8$EABIv2": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "anon$$obj.o ABSOLUTE"}, "__fp_init_empty": {"addr": "0x00000000", "size": 0, "kind": "Number", "object": "fpinit_empty.o ABSOLUTE"}, "__Vectors_Size": {"addr": "0x00000130", "size": 0, "kind": "Number", "object": "startup_stm32f103xe.o ABSOLUTE"}, "__Vectors": {"addr": "0x08000000", "size": 4, "kind": "Data", "object": "startup_stm32f103xe.o(RESET)"}, "__Vectors_End": {"addr": "0x08000130", "size": 0, "kind": "Data", "object": "startup_stm32f103xe.o(RESET)"}, "AHBPrescTable": {"addr": "0x08002e40", "size": 16, "kind": "Data", "object": "system_stm32f1xx.o(.rodata.AHBPrescTable)"}, "APBPrescTable": {"addr": "0x08002e50", "size": 8, "kind": "Data", "object": "system_stm32f1xx.o(.rodata.APBPrescTable)"}, "Region$$Table$$Base": {"addr": "0x08002e70", "size": 0, "kind": "Number", "object": "anon$$obj.o(Region$$Table)"}, "Region$$Table$$Limit": {"addr": "0x08002e90", "size": 0, "kind": "Number", "object": "anon$$obj.o(Region$$Table)"}, "uwTickFreq": {"addr": "0x20000000", "size": 1, "kind": "Data", "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"}, "uwTickPrio": {"addr": "0x20000004", "size": 4, "kind": "Data", "object": "stm32f1xx_hal.o(.data..L_MergedGlobals)"}, "SystemCoreClock": {"addr": "0x20000008", "size": 4, "kind": "Data", "object": "system_stm32f1xx.o(.data.SystemCoreClock)"}, "__libspace_start": {"addr": "0x20000010", "size": 96, "kind": "Data", "object": "libspace.o(.bss)"}, "__temporary_stack_top$libspace": {"addr": "0x20000070", "size": 0, "kind": "Data", "object": "libspace.o(.bss)"}, "htim6": {"addr": "0x200001c0", "size": 72, "kind": "Data", "object": "stm32f1xx_hal_timebase_tim.o(.bss.htim6)"}, "pxCurrentTCB": {"addr": "0x200002c8", "size": 4, "kind": "Data", "object": "tasks.o(.bss.pxCurrentTCB)"}, "uwTick": {"addr": "0x20001330", "size": 4, "kind": "Data", "object": "stm32f1xx_hal.o(.bss.uwTick)"}, "static_idle_tcb": {"addr": "0x2000016c", "size": 84, "kind": "Data", "object": "tasks.o(.bss..L_MergedGlobals.2)", "alias_of": "vApplicationGetIdleTaskMemory.xIdleTaskTCB"}, "static_idle_stack": {"addr": "0x20001334", "size": 512, "kind": "Data", "object": "tasks.o(.bss.vApplicationGetIdleTaskMemory.uxIdleTaskStack)", "alias_of": "vApplicationGetIdleTaskMemory.uxIdleTaskStack"}}, "snapshots": [{"id": "sample-1795098812", "host_time": "2026-11-19T22:33:32.396+08:00", "source": "openocd", "status": "probe_failed", "identity": {"status": "unverified", "reason": "OpenOCD 退出（探针未连接/被独占/供电异常）：xPack Open On-Chip Debugger 0.12.0+dev-02228-ge5888bda3-dirty (2025-10-04-22:44)\nLicensed under GNU GPL v2\nFor bug reports, read\n\thttp://openocd.org/doc/doxygen/bugs.html\nWarn : DEPRECATED: auto-selecting transport \"swd (dapdirect)\". Use 'transport select swd' to suppress this message.\nDEPRECATED! use 'tcl port' not 'tcl_port'\nError: open failed\n\n"}, "valid": false, "decoded": null, "raw_scalars": {}, "notes": ["OpenOCD 退出（探针未连接/被独占/供电异常）：xPack Open On-Chip Debugger 0.12.0+dev-02228-ge5888bda3-dirty (2025-10-04-22:44)\nLicensed under GNU GPL v2\nFor bug reports, read\n\thttp://openocd.org/doc/doxygen/bugs.html\nWarn : DEPRECATED: auto-selecting transport \"swd (dapdirect)\". Use 'transport select swd' to suppress this message.\nDEPRECATED! use 'tcl port' not 'tcl_port'\nError: open failed\n\n"]}], "concepts": [{"concept": "系统节拍 tick", "freertos": "configTICK_RATE_HZ + xTickCount", "rtthread": "RT_TICK_PER_SECOND + rt_tick_get()", "threadx": "TX_TIMER_TICKS_PER_SECOND + tx_time_get()", "zephyr": "CONFIG_SYS_CLOCK_TICKS_PER_SEC + k_uptime_ticks()", "stm32hal": "HAL_GetTick() (uwTick, 默认 1kHz)", "esp": "CONFIG_FREERTOS_HZ + xTaskGetTickCount()"}, {"concept": "相对延时", "freertos": "vTaskDelay(ticks)", "rtthread": "rt_thread_delay(ticks)", "threadx": "tx_thread_sleep(ticks)", "zephyr": "k_sleep(K_TICKS(t))", "stm32hal": "HAL_Delay(ms) (忙等, 非 RTOS)", "esp": "vTaskDelay(pdMS_TO_TICKS(ms))"}, {"concept": "创建任务", "freertos": "xTaskCreate(fn,name,stack,arg,prio,handle)", "rtthread": "rt_thread_create(name,entry,arg,stack,prio,timeslice)", "threadx": "tx_thread_create(&t,name,entry,arg,stack,prio,...)", "zephyr": "k_thread_create(&t,stack,SIZE,entry,...)", "stm32hal": "— (裸机无任务)", "esp": "xTaskCreatePinnedToCore(...)"}, {"concept": "GPIO 置位", "freertos": "— (RTOS 不管 GPIO)", "rtthread": "rt_pin_write(pin, PIN_HIGH)", "threadx": "— (依赖厂商 BSP)", "zephyr": "gpio_pin_set_dt(&spec, 1)", "stm32hal": "HAL_GPIO_WritePin(port,pin,GPIO_PIN_SET)", "esp": "gpio_set_level(pin, 1)"}], "terms": [{"kind": "delay", "title": "vTaskDelay(100)", "source": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 63, "fn": "vled1task"}, "passed": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "version": null, "line": 63}}, "decider": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "version": null, "line": 80}}, "derived": {"state": "derived", "value": 1.0, "prov": {"formula": "100 tick ÷ 100 Hz ≈ 1 s", "inputs": {"ticks": 100, "hz": 100}}}, "visible": "延时链表中的实测到期 tick（采样后可见）", "links": {"config": "configTICK_RATE_HZ", "graph": "delayed"}}, {"kind": "delay", "title": "vTaskDelay(100)", "source": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 65, "fn": "vled1task"}, "passed": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "version": null, "line": 65}}, "decider": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "version": null, "line": 80}}, "derived": {"state": "derived", "value": 1.0, "prov": {"formula": "100 tick ÷ 100 Hz ≈ 1 s", "inputs": {"ticks": 100, "hz": 100}}}, "visible": "延时链表中的实测到期 tick（采样后可见）", "links": {"config": "configTICK_RATE_HZ", "graph": "delayed"}}, {"kind": "delay", "title": "vTaskDelay(100)", "source": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 74, "fn": "vled3task"}, "passed": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "version": null, "line": 74}}, "decider": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "version": null, "line": 80}}, "derived": {"state": "derived", "value": 1.0, "prov": {"formula": "100 tick ÷ 100 Hz ≈ 1 s", "inputs": {"ticks": 100, "hz": 100}}}, "visible": "延时链表中的实测到期 tick（采样后可见）", "links": {"config": "configTICK_RATE_HZ", "graph": "delayed"}}, {"kind": "delay", "title": "vTaskDelay(100)", "source": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 76, "fn": "vled3task"}, "passed": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "version": null, "line": 76}}, "decider": {"state": "authoritative", "value": 100, "prov": {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Inc\\FreeRTOSConfig.h", "version": null, "line": 80}}, "derived": {"state": "derived", "value": 1.0, "prov": {"formula": "100 tick ÷ 100 Hz ≈ 1 s", "inputs": {"ticks": 100, "hz": 100}}}, "visible": "延时链表中的实测到期 tick（采样后可见）", "links": {"config": "configTICK_RATE_HZ", "graph": "delayed"}}, {"kind": "gpio_dual", "title": "vled1task: 2 处写入都是 GPIO_PIN_SET", "writes": [{"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 62, "state": "GPIO_PIN_SET", "pin_macro": "LED1_Pin"}, {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 64, "state": "GPIO_PIN_SET", "pin_macro": "LED1_Pin"}], "note": "GPIO_PIN_SET 表示置位操作（写 1），置哪一位由 pin 参数决定（LED1_Pin），不可混淆。同函数内所有写入状态相同 → 引脚电平不会切换。", "links": {"graph": "register"}}, {"kind": "gpio_dual", "title": "vled3task: 2 处写入都是 GPIO_PIN_SET", "writes": [{"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 73, "state": "GPIO_PIN_SET", "pin_macro": "LED3_Pin"}, {"file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Core\\Src\\main.c", "line": 75, "state": "GPIO_PIN_SET", "pin_macro": "LED3_Pin"}], "note": "GPIO_PIN_SET 表示置位操作（写 1），置哪一位由 pin 参数决定（LED3_Pin），不可混淆。同函数内所有写入状态相同 → 引脚电平不会切换。", "links": {"graph": "register"}}], "honesty": {"states": {"measured": "实测值", "authoritative": "权威定义", "derived": "推导值", "unknown": "不可知"}, "contract": "每个数字归入四态之一并附溯源；禁止编造；身份未核验停止解释 RTOS (§6)"}};
+const STATE={measured:['实测','m'],authoritative:['权威','a'],derived:['推导','d'],unknown:['不可知','u']};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const IC={sched:'<path d="M3 12h4l3 8 4-16 3 8h4"/>',reg:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',term:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',plat:'<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',replay:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',prev:'<path d="M15 18l-6-6 6-6"/>',next:'<path d="M9 18l6-6-6-6"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',play:'<path d="M6 4l14 8-14 8V4z"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',check:'<path d="M20 6 9 17l-5-5"/>',alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+function ic(n,s){return `<svg class="ic" viewBox="0 0 24 24"${s?` style="width:${s}px;height:${s}px"`:''}>${IC[n]||''}</svg>`;}
+function openProv(){document.getElementById('prov').classList.add('on');document.getElementById('scrim').classList.add('on');}
+function closeProv(){document.getElementById('prov').classList.remove('on');document.getElementById('scrim').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProv();});
+function val(v,hex){
+  if(!v||v.value==null&&v.state!=='unknown') return '<span class="v u">—<i class="bdg">不可知</i></span>';
+  const st=STATE[v.state]||['?','u'];
+  let disp=v.value;
+  if(hex&&typeof v.value==='number') disp='0x'+(v.value>>>0).toString(16).toUpperCase();
+  if(v.state==='unknown') disp='不可知';
+  return `<span class="v ${st[1]}" data-prov='${esc(JSON.stringify(v))}'>${esc(disp)}<i class="bdg">${st[0]}</i></span>`;
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.v'); if(!t||!t.dataset.prov)return;
+  const v=JSON.parse(t.dataset.prov); const st=STATE[v.state]||['?','u'];
+  let h=`<div class="row"><b>态</b><span>${st[0]}值</span></div>`;
+  for(const[k,val]of Object.entries(v.prov||{})) h+=`<div class="row"><b>${esc(k)}</b><span class="mono">${esc(typeof val==='object'?JSON.stringify(val):val)}</span></div>`;
+  document.getElementById('provbody').innerHTML=h;
+  openProv();
+});
+function bar(barEl,lblEl){const m=new Map(),lm=new Map();return function(list){
+  const want=new Set(list.map(b=>b.k));
+  list.forEach((b,i)=>{let el=m.get(b.k),le=lm.get(b.k);
+    if(!el){el=document.createElement('div');el.className='blk '+(b.cls||'');
+      const s=document.createElement('span');s.className='lbl';el.appendChild(s);barEl.appendChild(el);m.set(b.k,el);
+      le=document.createElement('div');le.className='blbl';lblEl.appendChild(le);lm.set(b.k,le);
+      el.style.flexGrow=0;el.style.opacity=0;le.style.flexGrow=0;le.style.opacity=0;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.opacity=1;el.style.flexGrow=b.s;le.style.opacity=1;le.style.flexGrow=b.s;}));
+    }else{el.style.opacity=1;el.style.flexGrow=b.s;le.style.opacity=1;le.style.flexGrow=b.s;}
+    el.style.order=i;le.style.order=i;el.className='blk '+(b.cls||'');
+    if(b.task){el.dataset.task=b.task;el.style.cursor='pointer';el.title='点击跳回源码调用';}
+    el.querySelector('.lbl').textContent=b.l||'';le.textContent=b.lt||b.l||'';});
+  m.forEach((el,k)=>{if(!want.has(k)){const le=lm.get(k);el.style.opacity=0;el.style.flexGrow=0;le.style.opacity=0;le.style.flexGrow=0;
+    setTimeout(()=>{el.remove();le.remove();m.delete(k);lm.delete(k);},600);}});};}
+function stepper(n,render){let i=0;render(0);return{next(){i=Math.min(n-1,i+1);render(i);},prev(){i=Math.max(0,i-1);render(i);},reset(){i=0;render(0);},get i(){return i;}};}
+const $=id=>document.getElementById(id);
+let snaps=[],validSnaps=[];
+function refreshSnaps(){snaps=LENS.snapshots.filter(s=>s.status==='ok');validSnaps=snaps.filter(s=>s.valid&&s.decoded);}
+refreshSnaps();
+
+/* ---- 名词小词典：大白话解释 + 行内提示 ---- */
+const GLOSSARY=[
+ {cat:'基础概念',items:[
+  {t:'RTOS',p:'实时操作系统。让一颗单片机「同时」跑多个任务（点灯、读传感器、通信），靠快速轮流切换实现。FreeRTOS 是最常用的一种。'},
+  {t:'FreeRTOS',p:'一款免费、开源的实时操作系统，广泛用于 STM32 等单片机。本工具目前能读它的真实内核状态。'},
+  {t:'任务',p:'一段独立运行、各管一摊的代码，比如「让 LED 闪烁」。每个任务有自己的名字和优先级。'},
+  {t:'优先级',p:'任务的「重要程度」，数字越大越优先。高优先级任务一旦就绪，会抢在低优先级前面运行。'},
+  {t:'调度',p:'RTOS 决定「下一个该谁运行」的规则：总挑就绪任务里优先级最高的那个。'},
+  {t:'tick',p:'系统节拍，RTOS 的「心跳」。每滴答一次，内核检查一遍「有没有任务到点」。间隔由 configTICK_RATE_HZ 决定：100 Hz → 10 ms 一次；1000 Hz → 1 ms 一次。延时就是数滴答次数。'},
+  {t:'Hz',p:'赫兹，频率单位「每秒多少次」。心跳 1000 Hz = 每秒 1000 次 = 每次 1 毫秒。'},
+  {t:'就绪链表',p:'「已经准备好、随时能运行」的任务排成的队伍，按优先级分组。'},
+  {t:'延时链表',p:'「正在睡觉、等时间到」的任务排成的队伍，按到期 tick 从小到大排序，表头就是最早醒来的任务。内核每个节拍只看表头，不必扫描整条链。'},
+  {t:'TCB',p:'任务控制块。RTOS 给每个任务建的一张「身份卡」，存着名字、优先级、状态等。'},
+  {t:'当前任务',p:'此刻正占着 CPU 运行的那个任务（内核变量 pxCurrentTCB 指向它）。'},
+  {t:'到期 tick',p:'延时任务计划醒来的心跳编号 = 调用 vTaskDelay 那一刻的 xTickCount + 延时滴答数。注意：到期 ≠ 立刻运行，还要等调度器选中；快照只能看到这个值，不能拿「采样时的 tick + 延时数」反推它。'},
+  {t:'xTickCount',p:'内核的节拍计数器，每来一次心跳 +1。它是所有相对延时的时间基准：到期 tick = 调用时的 xTickCount + 滴答数。'},
+  {t:'xNextTaskUnblockTime',p:'内核记的「下一个该醒的时刻」：延时链表非空时等于表头任务的到期 tick；链表空时是一个很大的占位值（portMAX_DELAY）。每个节拍先比较这一个数，省时间。'},
+  {t:'vTaskDelayUntil',p:'「绝对节拍」延时：以上一次唤醒的时刻 + 固定周期作为下一次唤醒点，而不是「从现在起睡多久」。适合固定周期采样，不会因为本圈代码执行时间而越拖越慢。'},
+  {t:'适配器',p:'工具里负责「读懂某种 RTOS 内核数据」的插件。换一种 RTOS 就换一个适配器。'},
+  {t:'vTaskDelay',p:'FreeRTOS 的相对延时：让当前任务睡指定滴答数。内核把它从就绪链表摘下，按到期 tick 插进延时链表；到期时刻 = 调用时 tick + 滴答数，不含本圈代码的执行时间。'},
+  {t:'configTICK_RATE_HZ',p:'FreeRTOS 配置里的心跳频率（Hz）。100 → 1 tick = 10 ms；1000 → 1 ms。它是全工程延时的「时间尺子」，改它要重新编译，不只是改一处延时。'},
+  {t:'HAL_GPIO_WritePin',p:'ST 官方库的写引脚函数：给某端口某引脚写高电平或低电平（点灯/灭灯）。'},
+  {t:'GPIO_PIN_SET',p:'HAL 的「置位」参数：把 pin 指定的那一位写成 1（高电平）。它是置位，不是翻转；已经为 1 的位不会变成 0。'},
+  {t:'GPIO_PIN_RESET',p:'HAL 的「复位」参数：把 pin 指定的那一位写成 0（低电平）。和 SET 配对使用，引脚电平才会发生变化。'},
+ ]},
+ {cat:'芯片与寄存器',items:[
+  {t:'寄存器',p:'芯片里控制硬件的「小格子」。往某位写 1 或 0，就能控制引脚电平、开关外设等。'},
+  {t:'GPIO',p:'通用输入输出引脚，可以接 LED、按键等。每个引脚对应寄存器里的一位。'},
+  {t:'ODR',p:'GPIO 的「输出数据寄存器」。某位写 1，对应引脚输出高电平；写 0 输出低电平。高电平是否让灯亮取决于硬件接法（共阳/共阴、是否反相），源码里看不出来。'},
+  {t:'位段',p:'一个寄存器里的某几位，各有专门含义。工具把 32 位画成一格一格，方便看懂。'},
+  {t:'SVD',p:'芯片厂商写的「寄存器说明书」（CMSIS-SVD，XML 文件），列出每个寄存器的地址和每一位的含义。是权威定义，不是猜的。'},
+  {t:'derivedFrom',p:'SVD 里的省事写法：「这个外设和那个长得一样，直接沿用它的定义」。比如 GPIOC 沿用 GPIOA。'},
+  {t:'GPIO_TypeDef',p:'设备头文件里描述 GPIO 寄存器排布的结构体，用来和 SVD 交叉核对，确保地址一致。'},
+ ]},
+ {cat:'文件与构建',items:[
+  {t:'map 文件',p:'编译链接后生成的「地址清单」，列出每个变量/函数被放到内存哪个地址。工具靠它找到内核对象。'},
+  {t:'AXF',p:'Keil 编译链接后的最终程序文件（ELF 格式，含调试信息）。从中可提取烧进芯片的 Flash 镜像。'},
+  {t:'DWARF',p:'编译时留下的调试信息，记录结构体里每个成员排在第几字节。工具靠它准确读出任务名等，而不是猜版本偏移。'},
+  {t:'结构偏移',p:'结构体里某个成员距离起始地址的字节数，比如任务名在 TCB 的第几字节。必须由 DWARF 核定。'},
+  {t:'固件身份核验',p:'把芯片里实际烧录的程序，和你这次编译的程序逐字节比对，确认是同一个。不一致就停止解释，避免张冠李戴。'},
+  {t:'SHA-256',p:'文件的「数字指纹」。内容变一点，指纹就完全不同。用来确认两个文件是否一模一样。'},
+ ]},
+ {cat:'采样与诚实',items:[
+  {t:'停核采样',p:'用调试器让芯片暂停一瞬间，读出内存真实数据，再马上恢复运行。像给正在跑的程序拍快照，不改固件、不加代码。'},
+  {t:'SWD',p:'调试器（如 ST-LINK）和芯片之间通信的两线协议。工具通过它读内存，只读不写。'},
+  {t:'ST-LINK',p:'ST 芯片常用的调试器/烧录器，连接电脑和芯片，工具靠它做停核采样。'},
+  {t:'离散快照',p:'一次次单独拍的快照，不是连续录像。两次之间芯片还在跑，可能错过中间变化（漏采）。'},
+  {t:'实测值',p:'真的用调试器从芯片里读出来的数，带内存地址和采样时间。'},
+  {t:'权威定义',p:'来自厂商说明书（SVD）、设备头或编译信息（DWARF）的「标准答案」，不是猜的。'},
+  {t:'推导值',p:'用实测值 + 权威定义算出来的结果，比如 100 滴答 ÷ 100 Hz = 1 秒，附公式。'},
+  {t:'不可知',p:'证据不够时，工具诚实地说「不知道」，绝不编造一个数糊弄你。'},
+  {t:'溯源',p:'每个数字都能点开看「它从哪来」——内存地址、文件行号或计算公式。'},
+  {t:'哨兵',p:'链表末尾的特殊标记值。工具靠它确认「读到尾了、没读飞」，是一种安全校验。'},
+ ]},
+];
+const GLMAP={};GLOSSARY.forEach(c=>c.items.forEach(i=>GLMAP[i.t]=i.p));
+function g(t,label){const p=GLMAP[t];const txt=label==null?t:label;if(!p)return esc(txt);
+  return `<span class="gl" data-gl="${esc(t)}" tabindex="0" role="button" aria-label="${esc(t)}：点击查看通俗解释">${esc(txt)}</span>`;}
+const glpop=document.createElement('div');glpop.id='glpop';glpop.setAttribute('role','tooltip');document.body.appendChild(glpop);
+let glActive=null,glPinned=null;
+const hoverable=window.matchMedia('(hover:hover)').matches;
+function showGl(el){const t=el.dataset.gl,p=GLMAP[t];if(!p)return;
+  glpop.innerHTML=`<span class="gt">${esc(t)}</span>${esc(p)}`;glpop.classList.add('on');
+  const r=el.getBoundingClientRect(),pw=glpop.offsetWidth,ph=glpop.offsetHeight;
+  let left=Math.max(10,Math.min(r.left+r.width/2-pw/2,window.innerWidth-pw-10));
+  let top=r.bottom+8;if(top+ph>window.innerHeight-10)top=Math.max(10,r.top-ph-8);
+  glpop.style.left=left+'px';glpop.style.top=top+'px';glActive=el;}
+function hideGl(){glpop.classList.remove('on');glActive=null;}
+document.addEventListener('click',e=>{const el=e.target.closest('.gl');
+  if(el){e.preventDefault();if(glPinned===el){glPinned=null;hideGl();}else{glPinned=el;showGl(el);}return;}
+  if(!e.target.closest('#glpop')){glPinned=null;hideGl();}});
+document.addEventListener('mouseover',e=>{const el=e.target.closest('.gl');if(el&&hoverable&&!glPinned)showGl(el);});
+document.addEventListener('mouseout',e=>{const el=e.target.closest('.gl');if(el&&hoverable&&!glPinned&&glActive===el)hideGl();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){glPinned=null;hideGl();return;}
+  const el=e.target.closest&&e.target.closest('.gl');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();glPinned=el;showGl(el);}});
+window.addEventListener('scroll',()=>{glPinned=null;hideGl();},true);
+window.addEventListener('resize',()=>{glPinned=null;hideGl();});
+function renderGlossary(filter){const f=(filter||'').trim().toLowerCase();let h='',any=false;
+  GLOSSARY.forEach(c=>{const items=c.items.filter(i=>!f||i.t.toLowerCase().includes(f)||i.p.toLowerCase().includes(f));
+    if(!items.length)return;any=true;
+    h+=`<div class="gl-cat">${esc(c.cat)}</div>`+items.map(i=>`<div class="gl-item"><span class="t">${esc(i.t)}</span><span class="p">${esc(i.p)}</span></div>`).join('');});
+  $('glbody').innerHTML=any?h:'<div class="gl-empty">没有匹配的词。试试「任务」「寄存器」「tick」。</div>';}
+$('glopen').addEventListener('click',()=>{closeProv();glPinned=null;hideGl();renderGlossary('');$('glsearch').value='';$('glwrap').classList.add('on');setTimeout(()=>$('glsearch').focus(),60);});
+$('glclose').addEventListener('click',()=>$('glwrap').classList.remove('on'));
+$('glwrap').addEventListener('click',e=>{if(e.target===$('glwrap'))$('glwrap').classList.remove('on');});
+$('glsearch').addEventListener('input',e=>renderGlossary(e.target.value));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('glwrap').classList.remove('on');});
+
+/* ---- 顶部徽章 + 身份 ---- */
+function renderTop(){
+  const b=LENS.build,d=LENS.device;
+  $('spec').innerHTML=[['DEVICE',d.name],['CORE',d.core],['RTOS',b.rtos],['KERNEL',b.kernel?b.kernel.version:'?'],['BUILD',b.axf_sha?b.axf_sha.slice(0,12):'未提供 AXF']].map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="val">${esc(r[1])}</span></div>`).join('');
+  $('topbadges').innerHTML=
+    `<span class="tag ${b.rtos_linked?'ok':'bad'}">${g('RTOS')} ${b.rtos_linked?'已链接':'未链接'}</span>`+
+    `<span class="tag acc">${g('停核采样','停核离散采样')}</span>`+
+    `<span class="tag">${g('离散快照','快照')} ${validSnaps.length} 有效 / ${LENS.snapshots.length} 采集</span>`;
+  const id=LENS.identity;
+  const cls=id.status==='verified'?'ok':(id.status==='mismatch'?'bad':'warn');
+  const sealIc={verified:'check',mismatch:'alert',unverified:'shield','no-sample':'shield'}[id.status]||'shield';
+  const txt={verified:'固件身份已核验',mismatch:'固件身份不匹配',unverified:'身份未核验','no-sample':'尚未采样'}[id.status]||id.status;
+  $('identitycard').innerHTML=`<h2><span class="n">§6.3</span>${g('固件身份核验')} <span class="seal ${cls}">${ic(sealIc)}</span><span class="tag ${cls}">${txt}</span></h2>
+    <div class="plain"><span class="ptag">大白话</span><span>确认「芯片里烧的程序」和「你这次编译的程序」是不是同一个。只有对得上，工具才敢解释内核状态；对不上就只给原始读数，避免张冠李戴。</span></div>
+    <div class="note">${esc(id.reason||'')}${id.range?` · 比对范围 ${esc(id.range)}`:''}</div>
+    <div style="margin-top:9px"><span class="fp">${g('AXF')} sha256 ${b.axf_sha?esc(b.axf_sha.slice(0,20))+'…':'未提供'}</span><span class="fp">${g('map 文件','map')} sha256 ${b.map_sha?esc(b.map_sha.slice(0,20))+'…':'未提供'}</span></div>
+    ${id.status!=='verified'?'<div class="snote" style="margin-top:11px">身份未通过核验时，界面只展示原始读数与权威定义，停止解释 RTOS 对象。</div>':''}`;
+  $('contract').textContent=LENS.honesty.contract;
+}
+
+/* ---- Tab 切换 ---- */
+const TABS=[['sched','调度快照'],['reg','寄存器位段'],['term','术语溯源'],['plat','平台对照'],['replay','回放/导出']];
+$('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i===0?' on':''}" data-v="${t[0]}" role="tab" tabindex="0" aria-selected="${i===0}"><span class="num">0${i+1}</span><span>${t[1]}</span></div>`).join('');
+function selTab(t){document.querySelectorAll('.tab').forEach(x=>{const on=x===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);});
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='view-'+t.dataset.v));
+  history.replaceState(null,'','#'+t.dataset.v);}
+$('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)selTab(t);});
+$('tabs').addEventListener('keydown',e=>{const t=e.target.closest('.tab');if(!t)return;
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();selTab(t);}
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const all=[...document.querySelectorAll('.tab')];const i=all.indexOf(t);const n=all[(i+(e.key==='ArrowRight'?1:all.length-1))%all.length];n.focus();selTab(n);}});
+
+/* ---- V1 调度快照 ---- */
+function taskBlock(e,cls){const t=e.tcb||{};return{k:(t.addr||e.item.addr),cls:cls,task:(t.name||''),l:`${t.name||'?'} p${t.priority??'?'}`,lt:`${t.name||'?'} · 到期 ${e.wake_tick??''}`};}
+function renderSched(){
+  const root=$('view-sched');
+  if(!validSnaps.length){
+    root.innerHTML=`<div class="card"><h2><span class="n">V1</span>调度快照</h2>
+      <div class="empty"><b>未采集到身份已核验的板上数据</b><br><br>
+      结构定义（SVD/DWARF）与工程事实（源码/配置）已就绪并可查看；<br>
+      实测调度状态需连接 ST-LINK 运行 <span class="mono">elens sample</span>，或导入 Keil 手工采集。<br><br>
+      <span class="note">真实数据契约：不编造任何数值。当前任务 / tick / 到期 tick 均标为不可知。</span></div></div>`;
+    const ls=LENS.snapshots[LENS.snapshots.length-1];
+    const raw=[...((ls&&ls.notes)||[]), ...((ls&&ls.identity&&ls.identity.reason)?[ls.identity.reason]:[])];
+    const msgs=[...new Set(raw)];
+    if(msgs.length){
+      const head=msgs.map(m=>m.split('：')[0].split('\n')[0]).join('；');
+      const full=msgs.join('\n\n');
+      root.insertAdjacentHTML('beforeend',`<div class="snote"><b>最近一次采样未产出可用帧</b><div style="margin-top:5px">${esc(head)}</div>
+        <details style="margin-top:7px"><summary class="note" style="cursor:pointer;color:var(--accent-700)">展开完整探针日志</summary>
+        <div class="mono note" style="margin-top:7px;white-space:pre-wrap;word-break:break-word">${esc(full)}</div></details></div>`);
+    }
+    return;
+  }
+  root.innerHTML=`<div class="card"><h2><span class="n">V1</span>${g('调度','调度快照')} <span class="note">${g('停核采样','停核快照')} · ${g('离散快照')}</span></h2>
+    <div class="plain"><span class="ptag">大白话</span><span>把芯片「暂停一瞬间」拍下的快照画出来：左边是<b>准备好能跑</b>的任务，右边是<b>正在延时睡觉</b>的任务。点任务块可跳回源码。没接调试器时，这里诚实显示「不可知」。</span></div>
+    <div class="demo-head"><div class="note" id="sdesc"></div>
+      <div class="btns"><span class="idx" id="sidx"></span>
+      <button class="btn sec" id="sprev">${ic('prev')}上一帧</button><button class="btn" id="snext">下一帧${ic('next')}</button><button class="btn sec" id="sreset">${ic('reset')}重置</button></div></div>
+    <div id="snotes"></div>
+    <div id="scur" class="card" style="background:var(--accent-soft)"></div>
+    <div class="grid2">
+      <div><div class="note mono">优先级 1 ${g('就绪链表')} <span id="raddr"></span></div>
+        <div class="heapbar" id="rbar"></div><div id="rlbl" style="display:flex"></div><div class="cap" id="rcap"></div></div>
+      <div><div class="note mono">当前${g('延时链表')} <span id="daddr"></span></div>
+        <div class="heapbar" id="dbar"></div><div id="dlbl" style="display:flex"></div><div class="cap" id="dcap"></div></div>
+    </div>
+    <div class="note" style="margin-top:10px">语义边界 (§6.2)：${g('到期 tick','延时到期')} = 具备重新就绪条件 ≠ 实际开始执行 ≠ GPIO 动作发生。当前运行任务可同时位于${g('就绪链表')} → 标「当前选中」。</div>
+    <div class="note mono" style="margin-top:8px">采样时间轴（标出间隔与可能漏采）</div><div class="tl" id="stl"></div>
+    <div id="sraw" style="margin-top:10px"></div></div>`;
+  const rb=bar($('rbar'),$('rlbl')),db=bar($('dbar'),$('dlbl'));
+  const st=stepper(validSnaps.length,i=>{
+    const s=validSnaps[i],dec=s.decoded;
+    $('sdesc').innerHTML=`停核快照 · 主机采样 ${esc(s.host_time)} · 暂停 ${val({state:'measured',value:s.pause_ms,prov:{source:'主机单调时钟',unit:'ms'}})} ms · 来源 ${esc(s.source)}`;
+    $('snotes').innerHTML=(s.notes&&s.notes.length)?`<div class="snote"><b>采样警示</b><br>${s.notes.map(n=>esc(n)).join('<br>')}</div>`:'';
+    const c=dec.current;
+    $('scur').innerHTML=c?`<b class="mono">${g('当前任务','当前选中任务')}：${esc(c.name)}</b> · ${g('优先级')} ${val({state:'measured',value:c.priority,prov:{addr:c.addr,field:'uxPriority'}})} · ${g('TCB')} ${val({state:'measured',value:c.addr,prov:{addr:dec.current_tcb_ptr,hex:c.name_hex}})} <span class="note">（名字读自 TCB.pcTaskName）</span>`:'当前任务不可知';
+    $('raddr').textContent=dec.ready_priority1.list_addr;
+    rb(dec.ready_priority1.entries.map(e=>taskBlock(e,e.is_current?'c-cur':'c-a')));
+    $('rcap').textContent=`节点 ${dec.ready_priority1.entries.length} · 校验 ${dec.ready_priority1.valid?'通过':'失败'}`;
+    const dl=dec.delayed;
+    $('daddr').textContent=dl?dl.list_addr:'—';
+    db(dl?dl.entries.map(e=>taskBlock(e,'c-b')):[]);
+    $('dcap').textContent=dl?`${dl.which} · 节点 ${dl.entries.length} · 校验 ${dl.valid?'通过':'失败'}`:'无延时链表';
+    let raw='';for(const[k,v]of Object.entries(dec.scalars))raw+=`<span class="chip">${k} = ${val(v,k!=='xSchedulerRunning')}</span>`;
+    $('sraw').innerHTML=raw;
+    $('stl').innerHTML=validSnaps.map((x,j)=>{
+      const gap=j>0?`<div class="gap" title="离散快照之间可能漏采">⇢漏?</div>`:'';
+      return gap+`<div class="pt" style="height:${20+ (x.decoded.scalars.xTickCount?x.decoded.scalars.xTickCount.value%26:0)}px;opacity:${j===i?1:.5}" title="${esc(x.host_time)}"></div>`;}).join('');
+    $('sidx').textContent=(i+1)+' / '+validSnaps.length;
+  });
+  $('snext').onclick=st.next;$('sprev').onclick=st.prev;$('sreset').onclick=st.reset;
+  const nameToEntry={};(LENS.facts.tasks||[]).forEach(t=>nameToEntry[t.name]=t.entry);
+  const rev=e=>{const blk=e.target.closest('.blk');if(!blk||!blk.dataset.task)return;
+    const fn=nameToEntry[blk.dataset.task];document.querySelector('.tab[data-v="term"]').click();
+    const card=document.querySelector('#view-term .term[data-fn~="'+fn+'"]');
+    if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('lit');setTimeout(()=>card.classList.remove('lit'),1600);}};
+  $('dbar').addEventListener('click',rev);$('rbar').addEventListener('click',rev);
+}
+
+/* ---- V2 寄存器位段 ---- */
+function renderReg(){
+  const r=LENS.structure.register,per=LENS.structure.peripheral;
+  const latest=validSnaps[validSnaps.length-1]||snaps[snaps.length-1];
+  const odr=latest?latest.gpio_odr:null;
+  const pins=LENS.facts.pins;const pinBits={};
+  for(const[k,p]of Object.entries(pins))if(p.confirmed_from_source&&p.port===per.name)pinBits[p.bit]=k;
+  let bits='';
+  const n=r.size_bits>16?16:r.size_bits;
+  for(let b=0;b<n;b++){
+    const f=r.fields.find(x=>x.bit_offset===b);
+    const set=odr&&odr.state==='measured'?((odr.value>>b)&1):null;
+    const hi=pinBits[b]!==undefined;
+    bits+=`<div class="bit${hi?' hi':''}${set?' set':''}" title="${esc(f?f.description:'')}">
+      <span class="bn">${esc(f?f.name:'b'+b)}${hi?' · '+pinBits[b]:''}</span>
+      <span class="bv">${set===null?'?':set}</span></div>`;
+  }
+  let pintab='';for(const[k,p]of Object.entries(pins))pintab+=`<tr><td>${k}</td><td class="m">${esc(p.port)} · bit ${p.bit}</td><td>${p.confirmed_from_source?'<span class="tag ok">源码已确认</span>':'未确认'}</td><td class="m note">${esc(p.file)}:${p.Pin?p.Pin.line:''}</td></tr>`;
+  $('view-reg').innerHTML=`<div class="card"><h2><span class="n">V2</span>${esc(per.name)} ${esc(r.name)} ${g('位段')}</h2>
+    <div class="plain"><span class="ptag">大白话</span><span>把控制引脚的「开关格子」（${g('寄存器')}）一位一位画出来。这里看的是 ${g('ODR')}：某位是 1，对应引脚就输出高电平（灯亮不亮取决于硬件接法，这里只能保证电平）。高亮的位是源码里确认接了灯的引脚。没采样时每位标「?」，不瞎猜。</span></div>
+    <div class="note">地址 ${val({state:'authoritative',value:r.address,prov:{file:LENS.structure.svd.file,version:LENS.structure.svd.version,offset:r.offset}})} · ${esc(r.description)} · 定义来自 ${esc(r.defined_in)}${per.derivedFrom?` (${g('derivedFrom')} ${esc(per.derivedFrom)})`:''}</div>
+    <div style="margin:10px 0">${g('实测值','实测值：')}${odr?val(odr,true):'<span class="v u">不可知<i class="bdg">不可知</i></span>'} <span class="note">未采样时各位标 ?，不编造</span></div>
+    <div class="bits">${bits}</div>
+    <div class="note">高亮位 = 引脚映射经源码确认后才关联到板上灯（${Object.keys(pinBits).map(b=>'bit'+b+'→'+pinBits[b]).join(', ')||'无'}）。GPIO_PIN_SET 是置位操作，置哪一位由 pin 参数决定。</div>
+    <h2 style="margin-top:16px"><span class="n">${g('GPIO','引脚')}</span>映射（权威：设备头 + 源码）</h2>
+    <table><tr><th>符号</th><th>端口/位</th><th>确认</th><th>来源</th></tr>${pintab}</table>
+    <div class="note mono" style="margin-top:8px">${g('GPIO_TypeDef')} 布局来自 ${esc(LENS.structure.header.file)} · SVD/头文件一致性：${LENS.structure.cross_check&&LENS.structure.cross_check.svd_header_agree?'✓':'需复核'}</div></div>`;
+}
+
+/* ---- V3 术语溯源 ---- */
+function dval(disp,formula,inputs){const o={state:'derived',value:disp,prov:{formula:formula,inputs:inputs||null}};
+  return `<span class="v d" data-prov='${esc(JSON.stringify(o))}'>${esc(disp)}<i class="bdg">推导</i></span>`;}
+function uval(reason){const o={state:'unknown',value:null,prov:{reason:reason}};
+  return `<span class="v u" data-prov='${esc(JSON.stringify(o))}'>不可知<i class="bdg">不可知</i></span>`;}
+function msFmt(x){const n=+x;return Number.isInteger(n)?String(n):String(+n.toFixed(2));}
+function secFmt(x){return String(+x.toFixed(6));}
+function fileBase(p){return String(p||'').split(/[\\/]/).pop();}
+
+function delayTermCard(grp,gi){
+  const t=grp[0],ticks=t.passed.value,hz=t.decider.value;
+  const period=1000/hz,lo=(ticks-1)*period,hi=ticks*period,sec=ticks/hz;
+  const byFn=new Map();
+  grp.forEach(x=>{const fn=x.source.fn||'未命名函数';if(!byFn.has(fn))byFn.set(fn,[]);byFn.get(fn).push(x);});
+  const fns=[...byFn.keys()];
+  const counts=[...byFn.values()].map(a=>a.length);
+  const uniformCount=counts.every(c=>c===counts[0])?counts[0]:null;
+  const srcs=grp.map(x=>`<span class="src" data-link="cfg-${gi}">${esc(fileBase(x.source.file))}:${esc(x.source.line)} ${esc(x.source.fn||'')} → vTaskDelay(${esc(x.passed.value)})</span>`).join('');
+  const cfgFile=fileBase(t.decider.prov&&t.decider.prov.file)||'配置文件';
+  const cfgLine=t.decider.prov&&t.decider.prov.line!=null?String(t.decider.prov.line):'';
+  const cfgLoc=cfgLine?`${cfgFile}:${cfgLine}`:cfgFile;
+  const tickless=(LENS.facts&&LENS.facts.config&&LENS.facts.config.configUSE_TICKLESS_IDLE)||null;
+  const slicing=(LENS.facts&&LENS.facts.config&&LENS.facts.config.configUSE_TIME_SLICING)||null;
+  const wrap=Math.pow(2,32)/hz/86400;
+  const last=validSnaps[validSnaps.length-1];
+  let seen='';
+  if(last){
+    const names=new Set(((LENS.facts&&LENS.facts.tasks)||[]).filter(x=>fns.indexOf(x.entry)>=0).map(x=>x.name));
+    const dl=last.decoded&&last.decoded.delayed;
+    const e=dl&&dl.entries?dl.entries.find(en=>en.tcb&&names.has(en.tcb.name)):null;
+    const tc=last.decoded&&last.decoded.scalars&&last.decoded.scalars.xTickCount;
+    if(e&&e.wake_tick!=null){
+      const wv={state:'measured',value:e.wake_tick,prov:{addr:(e.item&&e.item.addr)||null,field:'xItemValue（延时链表节点）',hex:'0x'+(e.wake_tick>>>0).toString(16),sampled_at:last.sampled_at||last.host_time||null,source:last.source||null}};
+      let rem='';
+      if(tc&&tc.value!=null){const rv={state:'derived',value:e.wake_tick-tc.value,prov:{formula:`到期 ${e.wake_tick} − 采样时的 xTickCount ${tc.value}`,inputs:{wake:e.wake_tick,tick:tc.value}}};
+        rem=` · 采样时 xTickCount = ${val(tc)} → 还差 ${val(rv)} tick`;}
+      seen=`最后一个有效帧的延时链表里读到了该任务的节点：到期 tick = ${val(wv)}（实测）${rem}。`;
+    }else{seen='最后一个有效帧的延时链表里没有找到这些任务的节点（可能正好在就绪链表或被选中运行）。样本是离散的，这不等于它们没有延时。';}
+  }else{
+    seen=`当前载荷没有可用的实测帧（采样记录见 V1）→ 到期 tick ${uval('没有有效快照；需接调试器采样或导入手工采集')}。不要用「采样 tick + ${ticks}」反推：到期 tick 是调用那一刻算的，两者不是同一时刻。`;
+  }
+  const half=Math.max(1,Math.round(ticks/2));
+  const hz2=hz*10;
+  return `<div class="term term-deep" data-fn="${esc(fns.join(' '))}">
+    <div class="thead"><h3>vTaskDelay(${esc(ticks)})</h3><span class="tag acc">${byFn.size} 个函数 · ${grp.length} 处调用</span></div>
+    <div class="srcrow">${srcs}</div>
+    <p class="tlead">这行代码让任务睡 <b>${ticks} 个节拍</b>，不是 ${ticks} 毫秒。本工程心跳 <b>${hz} Hz</b>，名义上是 <b>${secFmt(sec)} 秒</b>；而且它只决定「最早什么时候能再跑」，不保证准时执行。</p>
+    <div class="tq">
+      <div><span class="k">① 传了什么</span><span class="big">${val(t.passed)}<em>tick</em></span><span class="n">节拍数。代码里看不出实际时长——单位换算由 ② 决定。</span></div>
+      <div><span class="k">② 谁决定效果</span><span class="big">${val(t.decider)}<em>Hz</em></span><span class="n">${g('configTICK_RATE_HZ')}（${esc(cfgLoc)}）→ 1 tick = ${dval(msFmt(period)+' ms',`1 s ÷ ${hz} = ${msFmt(period)} ms`,{hz:hz})}。</span></div>
+      <div><span class="k">③ 等于多久</span><span class="big">${val(t.derived)}<em>s</em></span><span class="n">${esc(t.derived.prov&&t.derived.prov.formula||'')}；按心跳边界唤醒，实际落在 ${dval(msFmt(lo)+'–'+msFmt(hi)+' ms',`(${ticks}−1) × ${msFmt(period)} ms ～ ${ticks} × ${msFmt(period)} ms；不含调度延迟`,{ticks:ticks,period_ms:msFmt(period)})}。</span></div>
+    </div>
+    <div class="tsec"><div class="hd">内核里发生了什么（FreeRTOS 相对延时）</div>
+      <ol class="flow">
+        <li>先把当前任务从<b>就绪链表</b>摘下——它暂时退出「谁来跑」的竞争。</li>
+        <li>算到期时刻：<code>到期 tick = 调用时的 <b>xTickCount</b> + ${ticks}</code>。这是 32 位无符号加法，加过头就进${g('延时链表','溢出延时链表')}。</li>
+        <li>按到期先后<b>升序</b>插进延时链表 <code>pxDelayedTaskList</code>；表头就是最早醒来的任务。</li>
+        <li>之后每个节拍只看一个数：<code>${g('xNextTaskUnblockTime')}</code>（链表非空时 = 表头最早到期值；链表空时是占位用的最大值）。到点后把任务搬回就绪链表。</li>
+        <li>搬回只代表「有资格跑」：还要等调度器选中；同优先级任务是否按时间片轮转，由 configUSE_TIME_SLICING 决定（本工程配置见下方「同优先级」一行）。</li>
+      </ol>
+      <div class="note">${seen}</div>
+    </div>
+    <div class="tsec"><div class="hd">精度与换算</div>
+      <dl class="kv">
+        <dt>心跳周期</dt><dd>${dval(msFmt(period)+' ms',`1 ÷ ${hz} Hz`,{hz:hz})}。这是全工程的「时间尺子」，不是这行代码自带的。</dd>
+        <dt>实际睡眠</dt><dd>${dval(msFmt(lo)+'–'+msFmt(hi)+' ms',`(${ticks}−1) × ${msFmt(period)} ms ～ ${ticks} × ${msFmt(period)} ms；调用时刻离下一次心跳越近，越接近下限`,{ticks:ticks,period_ms:msFmt(period)})}；若被更高优先级长期占用，还会更晚（不可知）。</dd>
+        <dt>时间分辨率</dt><dd>${dval(msFmt(period)+' ms',`1 tick = ${msFmt(period)} ms；只能按整数拍设置`,{period_ms:msFmt(period)})}。写不出半拍：<code>vTaskDelay(1)</code> 的实际睡眠是 0–${msFmt(period)} ms。</dd>
+        <dt>一圈要睡几次</dt><dd>${uniformCount
+          ?`每个函数里相同的调用有 ${uniformCount} 处（共 ${grp.length} 处）：若一圈内都执行到，仅延时约 ${dval(secFmt(uniformCount*sec)+' s',`${uniformCount} × ${ticks} tick ÷ ${hz} Hz`,{calls:uniformCount,ticks:ticks,hz:hz})}，再加本圈执行时间（未测量 → 不可知）。本工具按调用点数量推算，不解析控制流。`
+          :`各函数调用数不同（${fns.map(f=>esc(f)+'：'+byFn.get(f).length+' 处').join('，')}），一圈延时代价取决于控制流（不可知）；单次延时名义 ${secFmt(sec)} s。`}要固定节拍用 ${g('vTaskDelayUntil')}。</dd>
+        <dt>回绕</dt><dd>tick 按默认配置是 32 位计数（若启用 configUSE_16_BIT_TICKS 则为 16 位），${hz} Hz 下约 ${dval(wrap.toFixed(1)+' 天',`2^32 ÷ ${hz} Hz ÷ 86400 s/天`,{hz:hz})}回绕一次；跨回绕点的任务进溢出链表，回绕时两条延时链表互换，延时不会因此变短。</dd>
+        ${tickless?`<dt>省电暂停</dt><dd>configUSE_TICKLESS_IDLE = ${tickless.value}${tickless.value===0?'（权威配置）：心跳固定不停，不会为省电暂停。':'（权威配置）：开启 tickless 时心跳可能被省电逻辑暂停/补偿，实际时长需另判。'}</dd>`:''}
+        ${slicing?`<dt>同优先级</dt><dd>configUSE_TIME_SLICING = ${slicing.value}${slicing.value?'（权威配置）：同优先级任务按 1 个 tick 的时间片轮转。':'（权威配置）：同优先级不按时间片轮转。'}</dd>`:''}
+      </dl>
+    </div>
+    <div class="tsec"><div class="hd">图上怎么验证（三向联动）</div>
+      <div class="calc">内核存的「到期 tick」= 调用那一刻的 xTickCount + ${ticks}<br>采样时能算的「还差几拍」= 到期 tick − 采样时的 xTickCount（两者不是同一个时刻）</div>
+      <div class="note">V1 右栏「当前延时链表」的任务块标签就是到期 tick；内核变量 <code>xNextTaskUnblockTime</code> 在链表非空时应等于表头最早到期值（空链表时是占位最大值）。能不能读到，取决于采样是否成功。</div>
+      <div style="margin-top:6px"><span class="chip" data-jump="sched">${ic('arrow',14)}跳到延时链表</span><span class="chip" id="cfg-${gi}">${g('configTICK_RATE_HZ')} = ${val(t.decider)} <span class="note">${esc(cfgLoc)}</span></span></div>
+    </div>
+    <div class="tsec"><div class="hd">想改效果，改哪里</div>
+      <dl class="kv">
+        <dt>改代码参数</dt><dd><code>vTaskDelay(${half})</code> → 名义 ${dval(secFmt(half/hz)+' s',`${half} tick ÷ ${hz} Hz`,{ticks:half,hz:hz})}；这 ${grp.length} 处相同调用都会受影响，心跳不变。</dd>
+        <dt>改心跳配置</dt><dd>假设把 ${g('configTICK_RATE_HZ')} 从 ${hz} 提到 ${hz2}：同样 ${ticks} tick 变成 ${dval(secFmt(ticks/hz2)+' s',`${ticks} tick ÷ ${hz2} Hz`,{ticks:ticks,hz:hz2})}，分辨率变成 ${dval(msFmt(1000/hz2)+' ms',`1 ÷ ${hz2} Hz`,{hz:hz2})}；代价是心跳中断更频繁，且影响全工程所有延时、需要重新编译烧录（本工具只读，不改固件）。</dd>
+      </dl>
+    </div>
+    <details class="tadv"><summary>边界与陷阱（数据诚实契约 §6.2）</summary><div class="body">
+      <b>到期 ≠ 执行 ≠ 点灯。</b>到期只代表任务重新具备运行条件；真正执行要等调度器选中，GPIO 动作又发生在执行之后。三者之间可能隔着若干 tick，离散快照还可能完全漏掉中间过程。<br>
+      <b>相对延时。</b>周期 = 延时 + 本圈执行时间，逐圈累积会漂移；固定节拍用 ${g('vTaskDelayUntil')}。<br>
+      <b>证据边界。</b>「到期 tick 是多少」必须以采样读到的链表值或内核变量为准；推导只解释公式，不能替代实测。
+    </div></details>
+  </div>`;
+}
+
+function gpioTermCard(t){
+  const w=t.writes&&t.writes[0]?t.writes[0]:{};
+  const key=String(w.pin_macro||'').replace(/_Pin$/,'');
+  const pin=(LENS.facts&&LENS.facts.pins&&LENS.facts.pins[key])||null;
+  const port=pin&&pin.port?pin.port:null;
+  const bit=pin&&pin.bit!=null?pin.bit:null;
+  const regName=(LENS.structure&&LENS.structure.register&&LENS.structure.register.name)||'ODR';
+  const last=validSnaps[validSnaps.length-1];
+  const odr=last&&last.gpio_odr&&last.gpio_odr.state==='measured'?last.gpio_odr:null;
+  const bitVal=(odr&&bit!=null)?((odr.value>>bit)&1):null;
+  const srcs=t.writes.map(x=>`<span class="src" data-jump="reg">${esc(fileBase(x.file))}:${x.line} HAL_GPIO_WritePin(...,${esc(x.pin_macro)},${esc(x.state)})</span>`).join('');
+  const isSet=w.state==='GPIO_PIN_SET',isReset=w.state==='GPIO_PIN_RESET';
+  const hs=(LENS.facts&&LENS.facts.hal_gpio_pin_state&&LENS.facts.hal_gpio_pin_state[w.state])||null;
+  const stateProv=hs?{file:hs.file,line:hs.line,def_value:hs.value}:{file:w.file,line:w.line};
+  const stateV=isSet?val({state:'authoritative',value:'GPIO_PIN_SET',prov:stateProv})
+    :isReset?val({state:'authoritative',value:'GPIO_PIN_RESET',prov:stateProv})
+    :uval('未识别第 3 个参数');
+  const sem=isSet?`置位：把这一位写成 1（高电平），不是翻转${hs?'（HAL 定义值为 '+hs.value+'）':''}。`
+    :isReset?`复位：把这一位写成 0（低电平），不是翻转${hs?'（HAL 定义值为 '+hs.value+'）':''}。`
+    :'按 HAL 定义的写入状态处理。';
+  const pinV=(port&&bit!=null)
+    ?val({state:'authoritative',value:`${port} · bit ${bit}`,prov:{file:pin.file,line:pin.Pin?pin.Pin.line:null,macro:w.pin_macro}})
+    :uval('main.h 未确认这组 Pin / GPIO_Port 宏');
+  const odrV=bit==null?uval('引脚位未知，无法定位 '+regName+' 的位')
+    :(bitVal==null?uval('尚未采样；接调试器读 '+regName+' 对应位，或导入 Keil 手工采集')
+      :val({state:'measured',value:bitVal,prov:(odr.prov||{})}));
+  const states=[...new Set((((LENS.facts&&LENS.facts.gpio_writes)||[]).filter(x=>x.pin_macro===w.pin_macro)).map(x=>x.state))];
+  const onlyOne=states.length===1;
+  return `<div class="term term-deep">
+    <div class="thead"><h3>${esc(t.title)}</h3><span class="tag acc">${t.writes.length} 处写入 · ${onlyOne?'同一电平':'电平有变化'}</span></div>
+    <div class="srcrow">${srcs}</div>
+    <p class="tlead">同一个函数里 ${t.writes.length} 处调用，传的是同一个引脚、同一个状态：<b>${esc(w.pin_macro)} · ${esc(w.state)}</b>；已提取的写入里没有相反电平，所以这个引脚的电平不会切换。若它接着灯，灯的状态也不会跟着变——但任务是否还在调度，不能靠看灯，要靠 V1 采样。</p>
+    <div class="tq">
+      <div><span class="k">① 写了什么</span><span class="big">${stateV}</span><span class="n">${sem}</span></div>
+      <div><span class="k">② 写到哪里</span><span class="big">${pinV}</span><span class="n">引脚映射来自源码宏，不是猜的；未确认就标不可知。</span></div>
+      <div><span class="k">③ 输出会变吗</span><span class="big">${dval('不变',`${t.writes.length} 处调用都写 ${w.state}，没有相反电平，输出不会切换`,{sites:t.writes.length,state:w.state})}</span><span class="n">实际电平：${odrV}（${g(regName==='ODR'?'ODR':regName)} 对应位，采样后可见）。</span></div>
+    </div>
+    <div class="tsec"><div class="hd">内核与硬件之间发生了什么</div>
+      <ol class="flow">
+        <li><code>HAL_GPIO_WritePin(port, pin, state)</code> 的第 3 个参数是目标电平：${sem}</li>
+        <li>这个函数里已提取的写入（${t.writes.length} 处）传的都是 ${esc(w.state)}——执行到哪一处，写下去的值都一样。</li>
+        <li>已提取的 GPIO 写入里，这个引脚${onlyOne?`只出现 ${esc(w.state)}，没有相反电平`:`出现过 ${states.map(esc).join(' / ')}`}。</li>
+        <li>没有相反电平，引脚电平和灯的状态就不会切换——这就是「灯不闪」的源码侧解释；调度是否在跑是另一回事。</li>
+      </ol>
+    </div>
+    <div class="tsec"><div class="hd">图上怎么验证（三向联动）</div>
+      <div class="note">V2 寄存器位段里，${bit!=null?`<b>bit ${bit}</b>`:'对应位'} 高亮；采样后该位应与写入状态一致（SET→1，RESET→0）。未采样时每位标「?」，不编造。最后一个有效帧实测：${odrV}。</div>
+      <div style="margin-top:6px"><span class="chip" data-jump="reg">${ic('arrow',14)}跳到寄存器位段</span></div>
+    </div>
+    <div class="tsec"><div class="hd">想让它变化，改哪里</div>
+      <div class="note">把其中一处改成<b>相反</b>电平（如 <code>GPIO_PIN_RESET</code>，或改用 Toggle 函数），引脚才会出现切换；节奏仍由旁边的 vTaskDelay 决定。只改一处、其他处仍写同一电平，切换的间隔就由两次调用之间的代码决定。</div>
+    </div>
+    <details class="tadv"><summary>边界与陷阱（数据诚实契约 §6.2）</summary><div class="body">
+      <b>源码只能证明「写了哪个端口、哪一位、什么电平」。</b>高电平到底点亮还是熄灭，取决于硬件接法（共阴/共阳、是否反相），本页不猜。<br>
+      <b>亮灯 ≠ 调度。</b>GPIO 动作发生在任务执行之后；灯的状态不能证明任务在跑、也不能证明它准时醒。<br>
+      <b>数据出处。</b>${esc(t.note||'')} 引脚宏若被重定义或板子改线，需重新核对映射。
+    </div></details>
+  </div>`;
+}
+
+function renderTerm(){
+  const terms=LENS.terms||[];
+  let h=`<div class="card"><h2><span class="n">V3</span>术语卡 + 三向联动</h2>
+    <div class="plain"><span class="ptag">大白话</span><span>这不是名词表，而是把每处关键调用按固定顺序讲透：<b>传了什么单位</b> → <b>哪个工程事实决定效果</b> → <b>换算成多少</b> → <b>内核里发生了什么</b> → <b>图上在哪一格验证、哪里必须标「不可知」</b>。数字都带四态标记，点虚线下划线可看名词解释。</span></div>`;
+  const delayGroups=new Map();
+  terms.forEach(t=>{if(t.kind==='delay'){const k=t.passed.value+'|'+t.decider.value;if(!delayGroups.has(k))delayGroups.set(k,[]);delayGroups.get(k).push(t);}});
+  const rendered=new Set();let gi=0;
+  terms.forEach(t=>{
+    if(t.kind==='delay'){
+      const k=t.passed.value+'|'+t.decider.value;
+      if(rendered.has(k))return;rendered.add(k);
+      h+=delayTermCard(delayGroups.get(k),gi++);
+    }else if(t.kind==='gpio_dual'){
+      h+=gpioTermCard(t);
+    }
+  });
+  h+=`</div>`;
+  $('view-term').innerHTML=h;
+}
+function termClick(e){
+  const s=e.target.closest('.src[data-link]');
+  if(s){const c=$(s.dataset.link);if(c){c.classList.add('lit');setTimeout(()=>c.classList.remove('lit'),1500);}return;}
+  const j=e.target.closest('[data-jump]');
+  if(j){const tab=document.querySelector(`.tab[data-v="${j.dataset.jump}"]`);if(tab)tab.click();}
+}
+
+/* ---- 平台对照 ---- */
+function renderPlat(){
+  const cols=['freertos','rtthread','threadx','zephyr','stm32hal','esp'];
+  const heads={freertos:'FreeRTOS',rtthread:'RT-Thread',threadx:'ThreadX',zephyr:'Zephyr',stm32hal:'STM32 HAL',esp:'ESP-IDF'};
+  let rows=LENS.concepts.map(c=>`<tr><td><b>${esc(c.concept)}</b></td>${cols.map(k=>`<td class="m">${esc(c[k]||'—')}</td>`).join('')}</tr>`).join('');
+  $('view-plat').innerHTML=`<div class="card"><h2><span class="n">§13</span>跨平台概念对照</h2>
+    <div class="plain"><span class="ptag">大白话</span><span>同一个概念（比如「延时」「建任务」），在不同系统里写法不同，这张表帮你对照。目前只有 ${g('FreeRTOS')} 能读真实数据，其余先给写法对照，不假装支持。</span></div>
+    <div class="note">同一概念的多平台写法。MVP 仅 FreeRTOS 提供真实数据解析${g('适配器')}；其余为概念对照卡（concept-only），导入对应真实构建后方可解析，不假装支持。</div>
+    <div style="overflow-x:auto"><table class="cmp"><tr><th>概念</th>${cols.map(k=>`<th>${heads[k]}</th>`).join('')}</tr>${rows}</table></div></div>`;
+}
+
+/* ---- V4 回放/导出 ---- */
+function renderReplay(){
+  $('view-replay').innerHTML=`<div class="card"><h2><span class="n">V4</span>离线回放与导出</h2>
+    <div class="plain"><span class="ptag">大白话</span><span>这个网页本身就是导出成果：一个文件、不依赖网络，双击就能离线看。下面可调「回放速度」，把多张${g('离散快照','快照')}按间隔自动播放。注意：只能改回放/采样间隔，不会去改芯片里的真实参数。</span></div>
+    <div class="note">本文件即导出产物：单文件 HTML、零外部依赖，数据与来源内嵌同一文件，双击即可离线回放并${g('溯源')}。</div>
+    <div style="margin:14px 0">回放间隔（仅回放设置，真实数据模式下不得修改目标参数）：<br>
+      <input type="range" id="rint" min="200" max="3000" step="100" value="1000" style="width:min(320px,100%);margin-top:9px"> <span class="chip" id="rintv">1000 ms</span></div>
+    <div class="btns"><button class="btn" id="rplay">${ic('play')}自动回放</button><button class="btn sec" id="rstop">${ic('stop')}停止</button>
+      <span class="note">有效快照 ${validSnaps.length} 帧</span></div>
+    <div class="note mono" style="margin-top:12px">内嵌数据：device/build/identity/structure/facts/offsets/symbols/snapshots/concepts/terms · 每个数字带四态溯源</div>
+    <div class="note" style="margin-top:6px">「改参」仅指采样间隔与回放设置；写内存/改固件/烧录/复位/单步均为非目标。</div></div>`;
+  $('rint').oninput=e=>$('rintv').textContent=e.target.value+' ms';
+  $('rplay').onclick=()=>{if(!validSnaps.length)return;const tab=document.querySelector('.tab[data-v="sched"]');tab.click();
+    let i=0;const nextBtn=$('snext');clearInterval(replayTimer);
+    replayTimer=setInterval(()=>{nextBtn.click();i++;if(i>=validSnaps.length){clearInterval(replayTimer);replayTimer=null;}},+$('rint').value);};
+  $('rstop').onclick=()=>{clearInterval(replayTimer);replayTimer=null;};
+}
+
+let replayTimer=null;
+function renderAll(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}refreshSnaps();renderTop();renderSched();renderReg();renderTerm();renderPlat();renderReplay();}
+$('view-term').addEventListener('click',termClick);
+renderAll();
+const h0=location.hash.slice(1);if(h0){const t0=document.querySelector('.tab[data-v="'+h0+'"]');if(t0)selTab(t0);}
+
+/* ================= 浏览器导入向导（权威定义 + 工程事实；实测/偏移诚实标不可知） ================= */
+(function(){
+const INITIAL=JSON.parse(JSON.stringify(LENS));
+const CONCEPTS=INITIAL.concepts, HONESTY=INITIAL.honesty;
+const IMP={files:{},svdDoc:null,svdName:'',peripherals:[]};
+const REQUIRED_RTOS=["pxCurrentTCB","pxReadyTasksLists","pxDelayedTaskList","pxOverflowDelayedTaskList","xDelayedTaskList1","xDelayedTaskList2","xTickCount","xNextTaskUnblockTime","xSchedulerRunning"];
+const status=(msg,cls)=>{const s=$('impstatus');s.textContent=msg;s.className=cls||'';};
+const pnum=(s,d)=>{s=String(s==null?'':s).trim().replace(/^#/,'');if(/^0x[0-9a-f]+$/i.test(s))return parseInt(s,16);if(/^\d+$/.test(s))return parseInt(s,10);return d;};
+const hx=n=>'0x'+(n>>>0).toString(16);
+const authoritative=(v,file,version,line)=>({state:'authoritative',value:v,prov:{file,version:version==null?null:version,line:line==null?null:line}});
+const derived=(v,formula,inputs)=>({state:'derived',value:v,prov:{formula,inputs}});
+const unknown=reason=>({state:'unknown',value:null,prov:{reason}});
+async function sha256(bytes){try{const d=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}catch(e){return '';}}
+
+/* ---- map（Keil armlink / GNU ld）---- */
+function parseMap(text){
+  const lines=text.split(/\r?\n/);
+  if(text.includes('ARM Linker')||text.includes('Image Symbol Table')){
+    const symRe=/^\s{4}(\S+)\s+0x([0-9a-fA-F]{8})\s+(Data|Number|Section|Thumb Code|ARM Code)\s+(\d+)\s+(\S.*)$/;
+    const symbols={};
+    for(const ln of lines){const m=symRe.exec(ln);if(!m)continue;const[,name,addr,kind,size,obj]=m;
+      if((kind==='Data'||kind==='Number')&&!name.startsWith('[Anonymous')&&!(name in symbols))
+        symbols[name]={addr:'0x'+addr.toLowerCase(),size:+size,kind,object:obj.trim()};}
+    const removed=new Set();let inR=false;
+    for(const ln of lines){
+      if(ln.includes('Removing Unused input sections')||ln.includes('Discarded input sections')){inR=true;continue;}
+      if(inR){const m=/^\s+(\S+\.o\(\S+\))/.exec(ln);
+        if(m)removed.add(m[1]);else if(ln.trim()&&!ln.startsWith(' '))inR=false;}}
+    return{format:'keil',symbols,removed_sections:[...removed].sort()};
+  }
+  const symbols={};let cur=null;
+  for(const ln of lines){
+    const sm=/^(\.\w[\w.]*)\s+0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)/.exec(ln);if(sm)cur=sm[1];
+    const m=/^\s+0x([0-9a-fA-F]{8,16})\s+(\S+)/.exec(ln);
+    if(m&&(cur==='.bss'||cur==='.data'||cur==='.noinit')&&!m[2].startsWith('.')&&!(m[2] in symbols))
+      symbols[m[2]]={addr:'0x'+m[1].toLowerCase(),size:null,kind:'Data',object:cur};}
+  return{format:'gnu',symbols,removed_sections:[]};
+}
+const detectRTOS=s=>['pxCurrentTCB','xTickCount','pxReadyTasksLists'].every(k=>k in s)?'FreeRTOS':null;
+function checkLinked(symbols,removed){
+  const missing=REQUIRED_RTOS.filter(s=>!(s in symbols));
+  if(missing.length)return{linked:false,reason:'符号缺失: '+missing.join(', ')+' —— 该固件可能未链接 RTOS 内核'};
+  const disc=REQUIRED_RTOS.filter(s=>s in symbols&&removed.includes(symbols[s].object));
+  if(disc.length)return{linked:false,reason:'符号落入被丢弃的输入段: '+disc.join(', ')+' —— 该固件未链接 RTOS 内核'};
+  return{linked:true,reason:null};
+}
+
+/* ---- CMSIS-SVD（DOMParser，厂商无关）---- */
+const kids=(el,tag)=>el?[...el.children].filter(c=>c.tagName===tag):[];
+const txt=(el,tag,d)=>{const c=kids(el,tag)[0];return c&&c.textContent?c.textContent.trim():(d==null?'':d);};
+function svdPeripherals(doc){const root=doc.documentElement;const ps=kids(kids(root,'peripherals')[0],'peripheral');
+  return ps.map(p=>({name:txt(p,'name'),base:txt(p,'baseAddress'),derivedFrom:p.getAttribute('derivedFrom'),description:txt(p,'description'),el:p}));}
+function resolvePeriph(peripherals,name,seen){
+  seen=seen||new Set();if(seen.has(name))throw new Error('derivedFrom 循环: '+name);seen.add(name);
+  const p=peripherals.find(x=>x.name===name);if(!p)throw new Error('SVD 无外设 '+name);
+  const regs={};const df=p.el.getAttribute('derivedFrom');
+  if(df)Object.assign(regs,resolvePeriph(peripherals,df,seen).registers);
+  const regEl=kids(p.el,'registers')[0];
+  const mkFields=r=>kids(kids(r,'fields')[0],'field').map(f=>({name:txt(f,'name'),bit_offset:pnum(txt(f,'bitOffset','0'),0),bit_width:pnum(txt(f,'bitWidth','1'),1),description:txt(f,'description'),access:txt(f,'access',txt(r,'access',''))}));
+  for(const r of kids(regEl,'register')){const rn=txt(r,'name');
+    regs[rn]={name:rn,offset:pnum(txt(r,'addressOffset','0'),0),size_bits:pnum(txt(r,'size','32'),32),description:txt(r,'description'),fields:mkFields(r),defined_in:name};}
+  for(const cl of kids(regEl,'cluster')){const cn=txt(cl,'name'),coff=pnum(txt(cl,'addressOffset','0'),0);
+    for(const r of kids(cl,'register')){const rn=cn+'.'+txt(r,'name');
+      regs[rn]={name:rn,offset:coff+pnum(txt(r,'addressOffset','0'),0),size_bits:pnum(txt(r,'size','32'),32),description:txt(r,'description'),fields:mkFields(r),defined_in:name,cluster:cn};}}
+  return{name,base:pnum(txt(p.el,'baseAddress','0'),0),registers:regs};
+}
+function parseRegister(doc,peripherals,perName,regName,svdFile){
+  const per=resolvePeriph(peripherals,perName);const reg=per.registers[regName];
+  if(!reg)throw new Error(perName+' 无寄存器 '+regName);
+  const root=doc.documentElement;const df=peripherals.find(x=>x.name===perName).derivedFrom;
+  return{svd:{file:svdFile,version:txt(root,'version','?')},
+    peripheral:{name:perName,base_address:hx(per.base),derivedFrom:df},
+    register:{name:regName,address:hx(per.base+reg.offset),offset:reg.offset,size_bits:reg.size_bits,description:reg.description,defined_in:reg.defined_in,fields:reg.fields.slice().sort((a,b)=>a.bit_offset-b.bit_offset)}};
+}
+
+/* ---- 设备头 GPIO_TypeDef + 基址宏 ---- */
+function parseHeader(text,file){
+  const m=/typedef struct\s*\{([^{}]*)\}\s*GPIO_TypeDef;/s.exec(text);const fields=[];let off=0;
+  if(m)for(const ln of m[1].split(/\r?\n/)){const fm=/__IO\s+uint(\d+)_t\s+(\w+)\s*(\[(\d+)\])?\s*;/.exec(ln);
+    if(fm){const sz=Math.floor(+fm[1]/8)*(fm[4]?+fm[4]:1);fields.push({name:fm[2],offset:off,size:sz});off+=sz;}}
+  const macros={};let bm;const re=/#define\s+(\w+)\s+([^\n]+)/g;
+  while((bm=re.exec(text)))macros[bm[1]]=bm[2].replace(/\/\*.*?\*\//g,'').split('//')[0].trim();
+  function resolve(name,seen){seen=seen||new Set();if(seen.has(name)||!(name in macros))return null;seen.add(name);let total=0;
+    for(let tok of macros[name].split('+')){tok=tok.trim().replace(/^[()]+|[()]+$/g,'').trim().replace(/[UL]+$/,'');
+      if(/^0x[0-9a-f]+$/i.test(tok))total+=parseInt(tok,16);
+      else if(/^\d+$/.test(tok))total+=+tok;
+      else if(tok in macros){const r=resolve(tok,seen);if(r==null)return null;total+=r;}
+      else return null;}
+    return total;}
+  const bases={};for(const name in macros)if(/^GPIO[A-Z]_BASE$/.test(name)){const v=resolve(name);if(v!=null)bases[name]=hx(v);}
+  return{header:{file},GPIO_TypeDef:{fields,size:off},gpio_bases:bases};
+}
+
+/* ---- 工程事实（config / 任务 / 延时 / GPIO 写 / 引脚）---- */
+function configInt(s){const bare=s.trim().replace(/[uUlL]+$/,'');const v=pnum(bare,null);if(v!=null)return v;
+  const cm=/^\(\s*(?:\(\s*[\w\s]+?\s*\)\s*)?(\d+[uUlL]*)\s*\)$/.exec(s.trim());
+  return cm?pnum(cm[1].replace(/[uUlL]+$/,''),null):null;}
+function extractFacts(mainc,mainh,cfg,nc,nh,nf){
+  const config={};
+  if(cfg)cfg.split(/\r?\n/).forEach((ln,idx)=>{const m=/^\s*#define\s+(config\w+)\s+(.+?)\s*$/.exec(ln);
+    if(m&&!ln.trim().startsWith('*')){const clean=m[2].replace(/\/\*.*?\*\//g,'').split('//')[0].trim();const v=configInt(clean);
+      if(v!=null)config[m[1]]={value:v,file:nf,line:idx+1};}});
+  const tasks=[],delays=[],writes=[];let cur=null;
+  if(mainc)mainc.split(/\r?\n/).forEach((ln,idx)=>{
+    const fm=/^void\s+(\w+)\s*\(\s*void\s*\*/.exec(ln);if(fm)cur=fm[1];
+    const tm=/xTaskCreate(?:Static)?\(\s*(\w+)\s*,\s*"([^"]+)"\s*,\s*(\d+)\s*,\s*(\w+)\s*,\s*(\d+)/.exec(ln);
+    if(tm)tasks.push({name:tm[2],entry:tm[1],stack_words:+tm[3],priority:+tm[5],file:nc,line:idx+1});
+    const dm=/vTaskDelay(?:Until)?\(\s*(\d+)\s*\)/.exec(ln);
+    if(dm)delays.push({ticks:+dm[1],file:nc,line:idx+1,in_fn:cur});
+    const wm=/HAL_GPIO_WritePin\(\s*(\w+)\s*,\s*(\w+)\s*,\s*(\w+)\s*\)/.exec(ln);
+    if(wm)writes.push({port_macro:wm[1],pin_macro:wm[2],state:wm[3],file:nc,line:idx+1,in_fn:cur});});
+  const pins={};
+  if(mainh)mainh.split(/\r?\n/).forEach((ln,idx)=>{const m=/^#define\s+(\w+)_(Pin|GPIO_Port)\s+(\S+)/.exec(ln);
+    if(m){(pins[m[1]]=pins[m[1]]||{file:nh})[m[2]]={macro:m[3],line:idx+1};}});
+  for(const p of Object.values(pins)){if(p.Pin){const pm=/GPIO_PIN_(\d+)/.exec(p.Pin.macro);p.bit=pm?+pm[1]:null;}
+    if(p.GPIO_Port)p.port=p.GPIO_Port.macro;p.confirmed_from_source=!!p.Pin&&!!p.GPIO_Port;}
+  return{config,tasks,delay_calls:delays,gpio_writes:writes,pins,kernel:null};
+}
+
+/* ---- ELF Flash 加载镜像（ArrayBuffer）---- */
+function elfFlash(buf,flashBase,flashSize){
+  const data=new Uint8Array(buf),dv=new DataView(buf);
+  if(data[0]!==0x7f||data[1]!==0x45||data[2]!==0x4c||data[3]!==0x46)throw new Error('不是 ELF 文件');
+  if(data[4]!==1||data[5]!==1)throw new Error('仅支持 32 位小端 ELF (Cortex-M)');
+  const phoff=dv.getUint32(28,true),phentsize=dv.getUint16(42,true),phnum=dv.getUint16(44,true);
+  const segs=[];
+  for(let i=0;i<phnum;i++){const o=phoff+i*phentsize;
+    const type=dv.getUint32(o,true),off=dv.getUint32(o+4,true),paddr=dv.getUint32(o+12,true),filesz=dv.getUint32(o+16,true);
+    if(type===1&&filesz>0&&paddr>=flashBase&&paddr<flashBase+flashSize)segs.push({paddr,bytes:data.slice(off,off+filesz)});}
+  if(!segs.length)throw new Error('无 Flash 加载段（flash_base='+hx(flashBase)+'）');
+  segs.sort((a,b)=>a.paddr-b.paddr);const base=segs[0].paddr;const end=Math.max(...segs.map(s=>s.paddr+s.bytes.length));
+  const img=new Uint8Array(end-base);for(const s of segs)img.set(s.bytes,s.paddr-base);
+  return{base,img};
+}
+
+/* ---- 术语卡（通用生成，不写死任务名）---- */
+function buildTerms(facts){
+  const terms=[];const cfg=facts.config.configTICK_RATE_HZ;const tick=cfg?cfg.value:null;
+  for(const d of facts.delay_calls){if(!tick)continue;const sec=d.ticks/tick;const secStr=String(+sec.toFixed(6));
+    terms.push({kind:'delay',title:'vTaskDelay('+d.ticks+')',source:{file:d.file,line:d.line,fn:d.in_fn},
+      passed:authoritative(d.ticks,d.file,null,d.line),decider:authoritative(tick,cfg.file,null,cfg.line),
+      derived:derived(Math.round(sec*1e4)/1e4,d.ticks+' tick ÷ '+tick+' Hz ≈ '+secStr+' s',{ticks:d.ticks,hz:tick}),
+      visible:'延时链表中的实测到期 tick（采样后可见）',links:{config:'configTICK_RATE_HZ',graph:'delayed'}});}
+  const groups={};
+  for(const w of facts.gpio_writes){const k=w.in_fn+'|'+w.pin_macro;(groups[k]=groups[k]||[]).push(w);}
+  for(const k in groups){const ws=groups[k];const states=new Set(ws.map(w=>w.state));
+    if(ws.length>=2&&states.size===1){const st=[...states][0];const fn=ws[0].in_fn,pin=ws[0].pin_macro;
+      const sem=st==='GPIO_PIN_SET'?'置位操作（写 1）':st==='GPIO_PIN_RESET'?'复位操作（写 0）':'按 HAL 定义的写入';
+      terms.push({kind:'gpio_dual',title:fn+': '+ws.length+' 处写入都是 '+st,
+        writes:ws.map(w=>({file:w.file,line:w.line,state:w.state,pin_macro:w.pin_macro})),
+        note:st+' 表示'+sem+'，置哪一位由 pin 参数决定（'+pin+'），不可混淆。同函数内所有写入状态相同 → 引脚电平不会切换。',
+        links:{graph:'register'}});}}
+  return terms;
+}
+
+/* ---- 文件输入绑定 ---- */
+function bindFile(id,key,after){const inp=$(id),chip=$('c_'+key),pick=inp.closest('.imp-pick');
+  const setPick=on=>{if(!pick)return;pick.classList.toggle('done',on);const s=pick.querySelector('span');if(s)s.textContent=on?'重新选择':'选择文件';};
+  inp.addEventListener('change',async()=>{const f=inp.files[0];
+    if(!f){delete IMP.files[key];chip.hidden=true;setPick(false);return;}
+    IMP.files[key]=f;chip.textContent=f.name+' · '+(f.size/1024).toFixed(1)+' KB';chip.hidden=false;setPick(true);
+    if(after)try{await after(f);}catch(e){status('读取 '+f.name+' 失败：'+e.message,'err');}});}
+bindFile('f_map','map');bindFile('f_axf','axf');bindFile('f_hdr','hdr');
+bindFile('f_mainc','mainc');bindFile('f_mainh','mainh');bindFile('f_cfg','cfg');bindFile('f_off','off');
+bindFile('f_svd','svd',async f=>{
+  const doc=new DOMParser().parseFromString(await f.text(),'application/xml');
+  if(doc.getElementsByTagName('parsererror').length)throw new Error('SVD XML 解析失败');
+  IMP.svdDoc=doc;IMP.svdName=f.name;IMP.peripherals=svdPeripherals(doc);
+  const sel=$('sel_per');sel.innerHTML=IMP.peripherals.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('');
+  const def=IMP.peripherals.find(p=>p.name==='GPIOC')||IMP.peripherals[0];
+  if(def){sel.value=def.name;fillRegs(def.name);}
+  status('芯片说明书已载入（'+IMP.peripherals.length+' 个外设），已自动选好 '+sel.value+' 的输出寄存器。要换别的外设/寄存器，展开下面「更多选项」。','ok');
+});
+function fillRegs(perName){const sel=$('sel_reg');
+  try{const per=resolvePeriph(IMP.peripherals,perName);const names=Object.keys(per.registers).sort();
+    sel.innerHTML=names.map(n=>'<option value="'+n+'">'+n+'</option>').join('');
+    if(names.includes('ODR'))sel.value='ODR';}
+  catch(e){sel.innerHTML='<option value="">解析失败</option>';status(e.message,'err');}}
+$('sel_per').addEventListener('change',e=>fillRegs(e.target.value));
+
+/* ---- 解析并渲染 ---- */
+$('impgo').addEventListener('click',async()=>{
+  try{
+    const F=IMP.files;
+    if(!F.map)throw new Error('请先选第 1 个文件：地址清单（.map）');
+    if(!F.svd||!IMP.svdDoc)throw new Error('请先选第 2 个文件：芯片说明书（.svd）');
+    if(!F.mainc)throw new Error('请先选第 3 个文件：你的主程序（main.c）');
+    const perName=$('sel_per').value,regName=$('sel_reg').value;
+    if(!perName||!regName)throw new Error('请在「更多选项」里选好外设与寄存器');
+    status('正在读懂你的工程…','');
+    const mapText=await F.map.text();
+    const mp=parseMap(mapText);const rtos=detectRTOS(mp.symbols);
+    if(!rtos)throw new Error('未检测到受支持的 RTOS 内核符号（MVP 仅 FreeRTOS 适配器）。其余 RTOS 见「平台对照」概念卡。');
+    for(const[key,pat]of[['static_idle_tcb','xIdleTaskTCB'],['static_idle_stack','uxIdleTaskStack']]){
+      const hit=Object.keys(mp.symbols).find(n=>n.includes(pat));
+      if(hit)mp.symbols[key]=Object.assign({},mp.symbols[hit],{alias_of:hit});}
+    const lk=checkLinked(mp.symbols,mp.removed_sections);
+    const mapSha=await sha256(new TextEncoder().encode(mapText));
+    const reg=parseRegister(IMP.svdDoc,IMP.peripherals,perName,regName,IMP.svdName);
+    let hdr={header:{file:'未提供设备头'},GPIO_TypeDef:{fields:[],size:0},gpio_bases:{}};
+    if(F.hdr)hdr=parseHeader(await F.hdr.text(),F.hdr.name);
+    const odrHdr=hdr.GPIO_TypeDef.fields.find(f=>f.name===regName);
+    const baseMacro=perName+'_BASE';
+    const agree=(parseInt(reg.peripheral.base_address,16)===parseInt(hdr.gpio_bases[baseMacro]||'0',16))&&!!odrHdr&&reg.register.offset===odrHdr.offset;
+    const structure=Object.assign({},reg,hdr,{cross_check:{svd_header_agree:agree}});
+    const facts=extractFacts(F.mainc?await F.mainc.text():'',F.mainh?await F.mainh.text():'',F.cfg?await F.cfg.text():'',
+      F.mainc?F.mainc.name:'main.c',F.mainh?F.mainh.name:'main.h',F.cfg?F.cfg.name:'FreeRTOSConfig.h');
+    let axfSha='',flashImage=null;
+    if(F.axf){const buf=await F.axf.arrayBuffer();axfSha=await sha256(buf);
+      const fb=pnum($('p_flash').value,0x08000000);
+      try{const fl=elfFlash(buf,fb,0x40000);flashImage={base:hx(fl.base),size:fl.img.length,sha256:await sha256(fl.img)};}
+      catch(e){flashImage={error:e.message};}}
+    let offsets={source:{method:'未提供（需 CLI gdb 核定 DWARF，或导入 offsets.json）'},types:{},cross_check:{},provided:false};
+    if(F.off){try{offsets=JSON.parse(await F.off.text());offsets.provided=true;}catch(e){throw new Error('offsets.json 解析失败：'+e.message);}}
+    const payload={
+      meta:{tool:'EmbeddedLens',version:'0.1.0-mvp',example:'browser-import'},
+      device:{name:$('p_device').value||'未知型号',core:$('p_core').value||'Cortex-M',svd:structure.svd,flash_base:$('p_flash').value,ram_base:$('p_ram').value},
+      build:{rtos,rtos_linked:lk.linked,axf_sha:axfSha,map_sha:mapSha,kernel:facts.kernel},
+      identity:{status:'no-sample',reason:'尚未采集板上数据（浏览器导入仅含权威定义与工程事实，实测需 ST-LINK 采样）'},
+      structure,facts,offsets,symbols:mp.symbols,snapshots:[],
+      concepts:CONCEPTS,terms:buildTerms(facts),honesty:HONESTY,
+      import_report:{map_format:mp.format,symbol_count:Object.keys(mp.symbols).length,removed_count:mp.removed_sections.length,
+        rtos_linked_reason:lk.reason,axf_provided:!!F.axf,header_provided:!!F.hdr,offsets_provided:!!F.off,flash_image:flashImage}
+    };
+    LENS=payload;renderAll();
+    $('impexphtml').disabled=false;$('impexpjson').disabled=false;
+    const rep=payload.import_report;
+    status('✓ 已读懂你的工程，下面每个页面都更新好了。\n'
+      +'· 地址清单：认出 '+rep.symbol_count+' 个符号，'+rtos+(lk.linked?' 内核已链接':' 内核未链接')+'\n'
+      +'· 寄存器：'+perName+'.'+regName+'，'+reg.register.fields.length+' 个位'+(agree?'（与设备头核对一致）':'（设备头没提供或对不上，需复核）')+'\n'
+      +'· 你的代码：任务 '+facts.tasks.length+' 个 · 延时 '+facts.delay_calls.length+' 处 · 点灯 '+facts.gpio_writes.length+' 处 · 引脚 '+Object.keys(facts.pins).length+' 个\n'
+      +'· 固件指纹：'+(rep.axf_provided?'已提取，可核对身份':'没给程序文件，身份暂时无法核对')+'\n'
+      +'· 结构偏移：'+(rep.offsets_provided?'已导入':'不可知（要用命令行 gdb 核定）')+'\n'
+      +'芯片此刻的真实状态：不可知（要接 ST-LINK 采样）。缺的地方都老实标注，没有编造任何数。点页面上带虚线的词可看大白话解释。','ok');
+    $('impwrap').classList.remove('on');
+  }catch(e){status('✗ '+e.message,'err');}
+});
+
+/* ---- 导出 / 恢复 ---- */
+function download(name,text,type){const blob=new Blob([text],{type:type+';charset=utf-8'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+$('impexphtml').addEventListener('click',()=>{
+  const clone=document.documentElement.cloneNode(true);
+  ['#impwrap','#prov','#scrim'].forEach(s=>{const el=clone.querySelector(s);if(el)el.classList.remove('on');});
+  let html='<!DOCTYPE html>\n'+clone.outerHTML;
+  const json=JSON.stringify(LENS).replace(/</g,'\\u003c');
+  html=html.replace(/let LENS = [^\n]*;\nconst STATE=/,'let LENS = '+json+';\nconst STATE=');
+  download('embedded-lens-imported.html',html,'text/html');
+  status('已导出单文件 HTML（内嵌当前导入数据，双击离线打开）。','ok');
+});
+$('impexpjson').addEventListener('click',()=>{download('payload.json',JSON.stringify(LENS,null,1),'application/json');status('已导出 payload.json。','ok');});
+$('f_json').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{const p=JSON.parse(await f.text());
+    if(!p.device||!p.build||!p.structure)throw new Error('不是有效的 EmbeddedLens payload');
+    p.concepts=p.concepts||CONCEPTS;p.honesty=p.honesty||HONESTY;p.snapshots=p.snapshots||[];p.terms=p.terms||[];
+    LENS=p;renderAll();$('impexphtml').disabled=false;$('impexpjson').disabled=false;
+    status('✓ 已载入 payload.json 并渲染。','ok');$('impwrap').classList.remove('on');
+  }catch(err){status('✗ 导入 payload 失败：'+err.message,'err');}});
+function resetFiles(){IMP.files={};IMP.svdDoc=null;IMP.peripherals=[];
+  ['map','axf','svd','hdr','mainc','mainh','cfg','off'].forEach(k=>{const c=$('c_'+k);if(c)c.hidden=true;});
+  ['f_map','f_axf','f_svd','f_hdr','f_mainc','f_mainh','f_cfg','f_off','f_json'].forEach(id=>{const i=$(id);if(i)i.value='';});
+  document.querySelectorAll('#impwrap .imp-pick').forEach(p=>{p.classList.remove('done');const s=p.querySelector('span');if(s)s.textContent='选择文件';});
+  $('sel_per').innerHTML='<option value="">先载入说明书…</option>';$('sel_reg').innerHTML='<option value="">先选外设…</option>';}
+$('impreset').addEventListener('click',()=>{LENS=JSON.parse(JSON.stringify(INITIAL));renderAll();
+  $('impexphtml').disabled=true;$('impexpjson').disabled=true;resetFiles();
+  status('已切换到内置示例。','ok');$('impwrap').classList.remove('on');});
+
+/* ---- 开合 ---- */
+$('impopen').addEventListener('click',()=>{closeProv();hideGl();$('glwrap').classList.remove('on');$('impwrap').classList.add('on');});
+$('impclose').addEventListener('click',()=>$('impwrap').classList.remove('on'));
+$('impwrap').addEventListener('click',e=>{if(e.target===$('impwrap'))$('impwrap').classList.remove('on');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('impwrap').classList.remove('on');});
+})();
+</script></body></html>

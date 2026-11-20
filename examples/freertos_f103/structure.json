@@ -1,0 +1,188 @@
+{
+ "svd": {
+  "file": "D:\\KELI_MDK\\Keil\\STM32F1xx_DFP\\2.4.1\\SVD\\STM32F103xx.svd",
+  "version": "1.3"
+ },
+ "peripheral": {
+  "name": "GPIOC",
+  "base_address": "0x40011000",
+  "derivedFrom": "GPIOA"
+ },
+ "register": {
+  "name": "ODR",
+  "address": "0x4001100c",
+  "offset": 12,
+  "size_bits": 32,
+  "description": "Port output data register\n          (GPIOn_ODR)",
+  "defined_in": "GPIOA",
+  "fields": [
+   {
+    "name": "ODR0",
+    "bit_offset": 0,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR1",
+    "bit_offset": 1,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR2",
+    "bit_offset": 2,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR3",
+    "bit_offset": 3,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR4",
+    "bit_offset": 4,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR5",
+    "bit_offset": 5,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR6",
+    "bit_offset": 6,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR7",
+    "bit_offset": 7,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR8",
+    "bit_offset": 8,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR9",
+    "bit_offset": 9,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR10",
+    "bit_offset": 10,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR11",
+    "bit_offset": 11,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR12",
+    "bit_offset": 12,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR13",
+    "bit_offset": 13,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR14",
+    "bit_offset": 14,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   },
+   {
+    "name": "ODR15",
+    "bit_offset": 15,
+    "bit_width": 1,
+    "description": "Port output data",
+    "access": "read-write"
+   }
+  ]
+ },
+ "header": {
+  "file": "D:\\FREERTOS\\TIETOU\\FREERTOS_2\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include\\stm32f103xe.h"
+ },
+ "GPIO_TypeDef": {
+  "fields": [
+   {
+    "name": "CRL",
+    "offset": 0,
+    "size": 4
+   },
+   {
+    "name": "CRH",
+    "offset": 4,
+    "size": 4
+   },
+   {
+    "name": "IDR",
+    "offset": 8,
+    "size": 4
+   },
+   {
+    "name": "ODR",
+    "offset": 12,
+    "size": 4
+   },
+   {
+    "name": "BSRR",
+    "offset": 16,
+    "size": 4
+   },
+   {
+    "name": "BRR",
+    "offset": 20,
+    "size": 4
+   },
+   {
+    "name": "LCKR",
+    "offset": 24,
+    "size": 4
+   }
+  ],
+  "size": 28
+ },
+ "gpio_bases": {
+  "GPIOA_BASE": "0x40010800",
+  "GPIOB_BASE": "0x40010c00",
+  "GPIOC_BASE": "0x40011000",
+  "GPIOD_BASE": "0x40011400",
+  "GPIOE_BASE": "0x40011800",
+  "GPIOF_BASE": "0x40011c00",
+  "GPIOG_BASE": "0x40012000"
+ },
+ "cross_check": {
+  "svd_header_agree": true
+ }
+}

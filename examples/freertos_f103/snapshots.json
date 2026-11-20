@@ -1,0 +1,18 @@
+[
+ {
+  "id": "sample-1795098812",
+  "host_time": "2026-11-19T22:33:32.396+08:00",
+  "source": "openocd",
+  "status": "probe_failed",
+  "identity": {
+   "status": "unverified",
+   "reason": "OpenOCD 退出（探针未连接/被独占/供电异常）：xPack Open On-Chip Debugger 0.12.0+dev-02228-ge5888bda3-dirty (2025-10-04-22:44)\nLicensed under GNU GPL v2\nFor bug reports, read\n\thttp://openocd.org/doc/doxygen/bugs.html\nWarn : DEPRECATED: auto-selecting transport \"swd (dapdirect)\". Use 'transport select swd' to suppress this message.\nDEPRECATED! use 'tcl port' not 'tcl_port'\nError: open failed\n\n"
+  },
+  "valid": false,
+  "decoded": null,
+  "raw_scalars": {},
+  "notes": [
+   "OpenOCD 退出（探针未连接/被独占/供电异常）：xPack Open On-Chip Debugger 0.12.0+dev-02228-ge5888bda3-dirty (2025-10-04-22:44)\nLicensed under GNU GPL v2\nFor bug reports, read\n\thttp://openocd.org/doc/doxygen/bugs.html\nWarn : DEPRECATED: auto-selecting transport \"swd (dapdirect)\". Use 'transport select swd' to suppress this message.\nDEPRECATED! use 'tcl port' not 'tcl_port'\nError: open failed\n\n"
+  ]
+ }
+]
