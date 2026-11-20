@@ -1311,20 +1311,20 @@ function init3D(){
 
   /* 主控：LQFP-64，占板比例按实物缩小 */
   const bodyMat=chipMat;
-  const sh=new T.Shape(),s=28,r=4;
+  const sh=new T.Shape(),s=20,r=3;
   sh.moveTo(-s+r,-s);sh.lineTo(s-r,-s);sh.quadraticCurveTo(s,-s,s,-s+r);
   sh.lineTo(s,s-r);sh.quadraticCurveTo(s,s,s-r,s);sh.lineTo(-s+r,s);
   sh.quadraticCurveTo(-s,s,-s,s-r);sh.lineTo(-s,-s+r);sh.quadraticCurveTo(-s,-s,-s+r,-s);
-  const body=new T.Mesh(new T.ExtrudeGeometry(sh,{depth:9,bevelEnabled:true,bevelThickness:1.1,bevelSize:1.1,bevelSegments:3,steps:1,curveSegments:8}),bodyMat);
+  const body=new T.Mesh(new T.ExtrudeGeometry(sh,{depth:7,bevelEnabled:true,bevelThickness:1.1,bevelSize:1,bevelSegments:3,steps:1,curveSegments:8}),bodyMat);
   body.rotation.x=-Math.PI/2;body.position.set(-10,3.6,-4);body.castShadow=true;body.receiveShadow=true;board.add(body);
 
-  const leadG=new T.BoxGeometry(1.3,1,10),bendG=new T.BoxGeometry(1.3,2.2,1.3);
+  const leadG=new T.BoxGeometry(1,.9,8),bendG=new T.BoxGeometry(1,2,1.1);
   for(let side=0;side<4;side++){
     const g=new T.Group();g.rotation.y=side*Math.PI/2;g.position.set(-10,0,-4);board.add(g);
     for(let i=0;i<16;i++){
-      const off=-28+3.5*(i+.5);
-      const lead=new T.Mesh(leadG,tinMat);lead.position.set(off,3.8,28+5);lead.castShadow=true;g.add(lead);
-      const bend=new T.Mesh(bendG,tinMat);bend.position.set(off,3.5,28.2);g.add(bend);
+      const off=-20+2.5*(i+.5);
+      const lead=new T.Mesh(leadG,tinMat);lead.position.set(off,3.8,20+4);lead.castShadow=true;g.add(lead);
+      const bend=new T.Mesh(bendG,tinMat);bend.position.set(off,3.5,20.2);g.add(bend);
     }
   }
 
@@ -1342,8 +1342,8 @@ function init3D(){
     x.fillText('LQFP-64 · CORTEX-M3',512,672);
     const t=new T.CanvasTexture(c);t.anisotropy=4;t.encoding=T.sRGBEncoding;return t;
   }
-  const top=new T.Mesh(new T.PlaneGeometry(56,56),new T.MeshBasicMaterial({map:topTexture(),transparent:true,depthWrite:false}));
-  top.rotation.x=-Math.PI/2;top.position.set(-10,14.05,-4);board.add(top);
+  const top=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshBasicMaterial({map:topTexture(),transparent:true,depthWrite:false}));
+  top.rotation.x=-Math.PI/2;top.position.set(-10,11.85,-4);board.add(top);
 
   /* 两侧 2×24 排针 */
   [-72,72].forEach(z=>{
@@ -1361,7 +1361,7 @@ function init3D(){
   }
   /* 双晶振：8 MHz 大罐 + 32.768 kHz 小罐 */
   box(20,7,10,canMat,-56,5.7,-30);
-  box(8,3,4,canMat,-56,4.7,-16);
+  box(8,3,4,canMat,-56,4.7,22);
   /* LDO + 两颗电解电容（黑壳银顶 + 负极白条） */
   box(11,3.2,7,blackMat,-66,4.8,34);
   box(6,1.6,4,canMat,-66,4.2,39);
@@ -1375,13 +1375,11 @@ function init3D(){
   box(3,2,2,canMat,-134,6.7,48);
   /* 复位键 / BOOT0 跳线 / 用户按键 KEY1 KEY2 */
   box(9,3,9,blackMat,-42,4.7,48);
-  cyl(2.2,2.2,1.6,canMat,-42,6.6,48);
+  const plunger=cyl(2.2,2.2,1.6,canMat,-42,6.6,48);
   box(12,3,8,blackMat,-42,4.7,-48);
   [-46,-38].forEach(x=>[-51,-45].forEach(z=>box(1.8,5,1.8,goldMat,x,8,z)));
-  [[36,-50],[62,-50]].forEach(q=>{
-    box(8,3,8,blackMat,q[0],4.7,q[1]);
-    box(2,1.6,2,canMat,q[0],6.9,q[1]);
-  });
+  const key1Top=box(2,1.6,2,canMat,36,6.9,-50),key2Top=box(2,1.6,2,canMat,62,6.9,-50);
+  box(8,3,8,blackMat,36,4.7,-50);box(8,3,8,blackMat,62,4.7,-50);
   /* 蜂鸣器（顶开孔） */
   cyl(7,7,7,blackMat,36,6.7,50);
   cyl(2,2,.4,new T.MeshStandardMaterial({color:col(0x05070a),roughness:.9}),36,10.3,50);
@@ -1400,8 +1398,8 @@ function init3D(){
     [-29.5,-22.5].forEach(z=>box(.8,.7,2.4,tinMat,x,3.6,z));
   }
   /* JST 电池座 */
-  box(12,6,9,whiteMat,-134,6.2,-42);
-  [-137,-131].forEach(x=>box(1.6,4,1.6,goldMat,x,9.5,-42));
+  box(12,6,9,whiteMat,-134,6.2,32);
+  [-137,-131].forEach(x=>box(1.6,4,1.6,goldMat,x,9.5,32));
   /* 晶振负载电容 / 去耦电容（0603 MLCC）与 0805 */
   const resMat=new T.MeshStandardMaterial({color:col(0x1b1e22),roughness:.7,metalness:.1});
   const mlccMat=new T.MeshStandardMaterial({color:col(0xc7a86a),roughness:.55,metalness:.15});
@@ -1413,11 +1411,13 @@ function init3D(){
   }
   function res(x,z){smd(x,z,resMat,7.5,3.7,1.8);}
   function cap(x,z){smd(x,z,mlccMat,7.5,3.7,2);}
-  /* MCU 四边去耦电容 */
-  [-32,-22,-12,-2].forEach(x=>{cap(x,-42);cap(x,34);});
-  [-18,-8,2].forEach(z=>{cap(-48,z);cap(28,z);});
+  /* MCU 四边去耦电容（避开引脚末端外扩 8 个单位） */
+  [-28,-18,-8,2].forEach(x=>cap(x,-48));
+  [-32,-22,-12,-2].forEach(x=>cap(x,40));
+  [-6,2,10].forEach(z=>cap(-56,z));
+  [-18,-8,2].forEach(z=>cap(36,z));
   /* 晶振负载电容 */
-  cap(-44,-38);cap(-44,-26);cap(-66,-24);cap(-66,-12);
+  cap(-52,-44);cap(-52,-20);cap(-66,14);cap(-48,30);
   /* LDO 输入输出：钽电容 + MLCC + 功率电感 + 磁珠 + 防反二极管 */
   smd(-80,26,tantMat,12,7,6);smd(-80,44,tantMat,12,7,6);
   cap(-54,28);cap(-54,44);
@@ -1434,10 +1434,10 @@ function init3D(){
   /* LED 限流电阻 */
   [-56,-28,-4,20].forEach(z=>res(92,z));
   /* OLED I2C 上拉 */
-  res(-124,-24);res(-124,-12);
+  res(-124,-64);res(-112,-64);
   /* 电位器与 SD 上拉、排阻 */
   res(50,36);cap(74,36);res(36,28);
-  [8,20,32].forEach(x=>res(x,-42));
+  [8,20].forEach(x=>res(x,-50));
   /* 驱动三极管 SOT-23 */
   [[24,36],[88,28]].forEach(q=>{
     box(5,2.2,6,blackMat,q[0],4.3,q[1]);
@@ -1499,8 +1499,8 @@ function init3D(){
     const x=c.getContext('2d');
     function label(txt,wx,wz,size,col){x.fillStyle=col||'rgba(214,232,248,.85)';x.font='500 '+size+'px Consolas,monospace';x.textAlign='center';
       x.fillText(txt,(wx+150)/300*1536,816*(.5+wz/160));}
-    label('U1',-46,12,24);
-    label('Y1',-56,-44,20);label('Y2',-56,-6,20);
+    label('U1',28,32,24);
+    label('Y1',-56,-44,20);label('Y2',-64,22,20);
     label('U2',-104,30,20);label('U3',-66,54,20);
     label('OLED',-100,-16,22);
     label('SD',52,28,20);
@@ -1510,15 +1510,16 @@ function init3D(){
     label('SWD',134,-44,22);
     label('PC3',104,-18,20);label('PC1',104,6,20);
     label('PWR',104,-46,20);label('TX',104,10,18);
-    label('J1',-134,-56,20);label('VBAT',-116,-56,18);
+    label('J1',-134,44,20);label('VBAT',-116,32,18);
     label('PROTO',104,66,18);
-    label('C1',-32,-48,16);label('C5',-32,42,16);label('C9',-56,-18,16);label('C12',36,-18,16);
-    label('C15',-44,-46,16);label('C17',-74,-24,16);
+    label('C1',-28,-54,16);label('C5',-22,48,16);label('C9',-64,-6,16);label('C12',44,-18,16);
+    label('C15',-52,-52,16);label('C16',-52,-12,16);label('C17',-74,14,16);label('C18',-56,38,16);
     label('C19',-80,16,16);label('C20',-80,54,16);label('C21',-54,20,16);label('C22',-54,54,16);
     label('L1',-96,36,16);label('FB1',-110,42,16);label('D1',-124,42,16);
     label('Q1',24,44,16);label('Q2',88,20,16);
     label('R1',-124,14,16);label('R3',-118,-22,16);label('R4',-30,56,16);label('R5',84,-56,16);
-    label('R9',-124,-32,16);label('R11',50,28,16);label('R12',36,20,16);label('R13',8,-34,16);
+    label('R9',-124,-58,16);label('R10',-112,-58,16);
+    label('R11',50,28,16);label('R12',36,20,16);label('R13',8,-58,16);label('R14',20,-58,16);
     label('ESD',-134,-6,14);
     const pinTop=['3V3','GND','PA0','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PB0','PB1','PB2','PB3','PB4','PB5','PB6','PB7','PB8','PB9','PC13','PC14','PC15','VBAT'];
     const pinBot=['GND','5V','PA8','PA9','PA10','PA11','PA12','PA13','PA14','PA15','PB10','PB11','PB12','PB13','PB14','PB15','PC0','PC1','PC2','PC3','PC4','PC5','PC6','PC7'];
@@ -1530,12 +1531,12 @@ function init3D(){
   const pcbTop=new T.Mesh(new T.PlaneGeometry(300,160),new T.MeshBasicMaterial({map:pcbTexture(),transparent:true,depthWrite:false}));
   pcbTop.rotation.x=-Math.PI/2;pcbTop.position.y=3.26;board.add(pcbTop);
 
-  const ringGroup=new T.Group();ringGroup.position.set(-10,24,-4);scene.add(ringGroup);
-  const ring=new T.Mesh(new T.TorusGeometry(48,.45,8,120),
+  const ringGroup=new T.Group();ringGroup.position.set(-10,22,-4);scene.add(ringGroup);
+  const ring=new T.Mesh(new T.TorusGeometry(38,.4,8,120),
     new T.MeshBasicMaterial({color:0x14406b,transparent:true,opacity:.45}));
   ring.rotation.x=-Math.PI/2+.26;ringGroup.add(ring);
 
-  const state={yaw:.72,pitch:.95,radius:420,zoom:1,lookX:0,lookY:0,auto:true,freeze:false,dragging:false,pinching:false};
+  const state={yaw:.72,pitch:.95,radius:420,zoom:1,lookX:0,lookY:0,auto:!RM2.matches,freeze:false,dragging:false,pinching:false};
   function fit(){
     const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -1547,11 +1548,27 @@ function init3D(){
 
   const ray=new T.Raycaster(),pt=new T.Vector2();
   let downX=0,downY=0,lastX=0,lastY=0,idle=null,targetZoom=1;
-  function castAt(e){
+  function hitAt(e){
     const b=canvas.getBoundingClientRect();
     pt.x=((e.clientX-b.left)/b.width)*2-1;pt.y=-((e.clientY-b.top)/b.height)*2+1;
     ray.setFromCamera(pt,camera);
-    return ray.intersectObject(body,false).length>0;
+    const hits=ray.intersectObjects([body,key1Top,key2Top,plunger,led,led3],false);
+    if(!hits.length)return null;
+    const o=hits[0].object;
+    return o===body?'chip':o===key1Top?'key1':o===key2Top?'key2':o===plunger?'reset':o===led?'led1':o===led3?'led3':null;
+  }
+  const fx=[];
+  function flashLed(mesh,times){
+    fx.push({mesh:mesh,until:performance.now()+(times||1)*1500});
+    if(G&&!RM2.matches)G.fromTo(mesh.scale,{x:1,y:1,z:1},{x:1.35,y:1.35,z:1.35,duration:.16,yoyo:true,repeat:1,ease:'power2.out'});
+  }
+  function pressFeedback(kind){
+    const target=kind==='key1'?key1Top:kind==='key2'?key2Top:plunger;
+    if(G&&!RM2.matches){const y0=target.position.y;G.to(target.position,{y:y0-1.3,duration:.09,yoyo:true,repeat:1,ease:'power1.inOut'});}
+    if(kind==='reset'){
+      flashLed(led,2);flashLed(led3,2);
+      state.auto=false;clearTimeout(idle);idle=setTimeout(()=>{state.auto=!RM2.matches;},1700);
+    }else flashLed(kind==='key1'?led:led3,1);
   }
   function zoomTo(z){
     targetZoom=Math.max(.55,Math.min(2.3,z));
@@ -1585,18 +1602,24 @@ function init3D(){
       state.pitch=Math.max(.45,Math.min(1.38,state.pitch-(e.clientY-lastY)*.005));
       lastX=e.clientX;lastY=e.clientY;
     }else{
-      const hov=castAt(e);
+      const hov=hitAt(e);
       canvas.style.cursor=hov?'pointer':'grab';
-      bodyMat.emissive.setHex(hov?0x122436:0x000000);
+      bodyMat.emissive.setHex(hov==='chip'?0x122436:0x000000);
     }
   });
   function endDrag(e){
     pts.delete(e.pointerId);
-    if(state.pinching){if(pts.size<2){state.pinching=false;idle=setTimeout(()=>{state.auto=true;},2600);}return;}
+    if(state.pinching){if(pts.size<2){state.pinching=false;idle=setTimeout(()=>{state.auto=!RM2.matches;},2600);}return;}
     if(!state.dragging)return;
     state.dragging=false;
-    idle=setTimeout(()=>{state.auto=true;},2600);
-    if(Math.hypot(e.clientX-downX,e.clientY-downY)<6&&castAt(e))registerEggClick();
+    idle=setTimeout(()=>{state.auto=!RM2.matches;},2600);
+    if(Math.hypot(e.clientX-downX,e.clientY-downY)<6){
+      const h=hitAt(e);
+      if(h==='chip')registerEggClick();
+      else if(h==='key1'||h==='key2'||h==='reset')pressFeedback(h);
+      else if(h==='led1')flashLed(led,1);
+      else if(h==='led3')flashLed(led3,1);
+    }
   }
   canvas.addEventListener('pointerup',endDrag);
   canvas.addEventListener('pointercancel',endDrag);
@@ -1617,8 +1640,14 @@ function init3D(){
     const sp=Math.sin(pitch),rad=state.radius*state.zoom;
     camera.position.set(rad*sp*Math.sin(yaw),rad*Math.cos(pitch)+12,rad*sp*Math.cos(yaw));
     camera.lookAt(0,12,0);
-    if(!state.freeze){board.position.y=Math.sin(t/1600)*1.6;board.rotation.z=Math.sin(t/2400)*.012;ringGroup.rotation.y+=dt*.5;}
+    if(!state.freeze&&!RM2.matches){board.position.y=Math.sin(t/1600)*1.6;board.rotation.z=Math.sin(t/2400)*.012;ringGroup.rotation.y+=dt*.5;}
     led.material.emissiveIntensity=state.freeze?.7+Math.sin(t/90)*.6:.7+Math.sin(t/700)*.35;
+    led3.material.emissiveIntensity=.9;
+    for(let i=fx.length-1;i>=0;i--){
+      const f=fx[i];
+      if(performance.now()>f.until){fx.splice(i,1);continue;}
+      f.mesh.material.emissiveIntensity=(Math.floor(t/150)%2===0)?2.4:.05;
+    }
     renderer.render(scene,camera);
   });
   host.classList.add('gl-ok');
