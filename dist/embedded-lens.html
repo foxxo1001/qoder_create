@@ -1024,24 +1024,25 @@ body.landing-on #ldhome{display:none}
     <button class="imp-x" id="readclose" aria-label="关闭">&times;</button>
     <div class="imp-h">一键读取开发板</div>
     <p class="imp-lead">通过本机 EmbeddedLens Bridge 调用 OpenOCD，短暂停核读取真实内存后立即恢复。只读，不写内存、不烧录、不复位。</p>
-    <div class="imp-callout"><b>为什么需要本机桥接？</b>浏览器不能直接访问 ST-LINK/USB。请先在本机运行桥接，再点「开始读取」；线上页面也可调用本机 127.0.0.1 的桥接。</div>
+    <div class="imp-callout"><b>为什么需要本机桥接？</b>浏览器不能直接访问 ST-LINK/USB。<br><b>推荐一次设置：</b>双击 <code>setup-lens.cmd</code> 注册 <code>elens://</code> 协议（按需启动，<b>不写开机启动、不常驻</b>）。之后在网页点「启动本机助手」即可拉起；用完点「停止本机助手」，空闲 30 分钟也会自动退出。<br><b>临时使用：</b>双击 <code>start-lens.cmd</code> 启动并打开本机页。<br><span class="note">浏览器安全限制：网页不能静默启动本地程序；协议唤起只需注册一次。</span></div>
     <div class="read-status busy" id="readstatus">正在连接本机桥接…</div>
     <div class="imp-grid">
       <div class="imp-field"><label for="read-example">工程</label><select id="read-example" aria-label="选择工程"><option value="">先连接桥接…</option></select></div>
       <div class="imp-field"><label for="read-frames">帧数</label><input type="number" id="read-frames" min="1" max="20" step="1" value="5" aria-label="连续采样帧数"></div>
       <div class="imp-field"><label for="read-interval">帧间隔 / 秒</label><input type="number" id="read-interval" min="0" max="10" step="0.5" value="1" aria-label="帧间隔秒数"></div>
     </div>
-    <pre class="read-cmd mono" id="readcmd">在项目根目录运行：
-python tools\elens_bridge.py
-
-然后保持窗口开启，回到这里点「重试连接」。</pre>
+    <pre class="read-cmd mono" id="readcmd">手动启动（可选）：
+cd &lt;项目根目录&gt;
+python tools\elens_bridge.py</pre>
     <div class="imp-actions">
       <button class="btn big" id="readgo" disabled>开始读取</button>
+      <a class="btn sec" id="readlaunch" href="elens://start" title="需要先运行一次 setup-lens.cmd；按需启动，不写开机启动">启动本机助手</a>
+      <button class="btn sec" id="readstop" disabled>停止本机助手</button>
       <button class="btn sec" id="readretry">重试连接</button>
       <button class="btn sec" id="readcopy">复制启动命令</button>
       <a class="btn sec" id="readlocal" href="http://127.0.0.1:8765/" target="_blank" rel="noopener">打开本机页面</a>
     </div>
-    <p class="read-note">读取时会短暂停核并立即恢复；帧间隔由主机控制，目标在帧间保持运行。固件身份核验不通过时只记录原始读数，不解释 RTOS 状态。</p>
+    <p class="read-note">首次使用 <code>setup-lens.cmd</code> 注册按需启动协议（不写开机启动）；也可用 <code>start-lens.cmd</code> 临时启动。读取时会短暂停核并立即恢复；不写内存、不烧录。固件身份核验不通过时只记录原始读数，不解释 RTOS 状态。</p>
   </div>
 </div>
 
@@ -1368,7 +1369,7 @@ function renderSched(){
       <h3>等待第一帧真实快照</h3><p>当前没有身份已核验的板上数据。<br>你仍然可以查看寄存器定义与源码解读，实测状态会在采样后呈现。</p>
       <div class="btns"><button class="btn" data-readopen>一键读取${ic('arrow')}</button><button class="btn sec" data-jump="reg">查看寄存器定义</button><button class="btn sec" data-jump="term">查看源码解读</button></div>
       <dl class="empty-metrics"><div><dt>当前任务</dt><dd>不可知</dd></div><div><dt>系统 tick</dt><dd>不可知</dd></div><div><dt>到期 tick</dt><dd>不可知</dd></div></dl>
-      <details class="learn-more"><summary>如何获得真实快照？</summary><div class="lesson-body note" style="text-align:left">连接 ST-LINK 后运行 <span class="mono">elens sample --frames 5 --interval 1</span>（一次会话连拍 5 帧），或导入 Keil 手工采集，再重新导出网页。固件身份核验通过后，才会解释任务与调度状态；没有证据的数值始终标为「不可知」。</div></details></div>`;
+      <details class="learn-more"><summary>如何获得真实快照？</summary><div class="lesson-body note" style="text-align:left">网页可点「一键读取」；首次需双击 <span class="mono">setup-lens.cmd</span> 注册按需启动协议（不写开机启动），之后按钮会按需拉起本机助手。也可以连接 ST-LINK 后运行 <span class="mono">elens sample --frames 5 --interval 1</span>（一次会话连拍 5 帧），或导入 Keil 手工采集，再重新导出网页。固件身份核验通过后，才会解释任务与调度状态；没有证据的数值始终标为「不可知」。</div></details></div>`;
     const ls=LENS.snapshots[LENS.snapshots.length-1];
     const raw=[...((ls&&ls.notes)||[]), ...((ls&&ls.identity&&ls.identity.reason)?[ls.identity.reason]:[])];
     const msgs=[...new Set(raw)];
@@ -3001,16 +3002,16 @@ async function bridgeFetch(base,path,opts,ms){
     return data;
   }finally{clearTimeout(timer);}
 }
-async function bridgeConnect(){
-  readStatus('正在连接本机桥接…','busy');
+async function bridgeConnect(silent){
+  if(!silent)readStatus('正在连接本机桥接…','busy');
   let found=null;
   for(const base of BRIDGE_CANDIDATES){
     try{const h=await bridgeFetch(base,'/health',{},3000);if(h&&h.app==='EmbeddedLens bridge'){found={base,h};break;}}catch(e){}
   }
   if(!found){
-    health=null;$('readgo').disabled=true;$('readcmd').classList.add('on');
-    readStatus('未检测到本机桥接。'+(location.protocol==='https:'?'线上页面若被浏览器拦截，请点「打开本机页面」。':'')+'\n请在本机运行下面的启动命令，然后点「重试连接」。','err');
-    return;
+    health=null;$('readgo').disabled=true;$('readstop').disabled=true;$('readcmd').classList.add('on');
+    if(!silent)readStatus('未检测到本机桥接。\n首次使用：双击 setup-lens.cmd 注册 elens:// 协议（按需启动，不写开机启动）；临时使用：双击 start-lens.cmd。\n本页正在自动等待助手启动…','err');
+    return false;
   }
   BRIDGE=found.base;health=found.h;
   const ready=(health.examples||[]).filter(x=>x.ready);
@@ -3020,24 +3021,49 @@ async function bridgeConnect(){
   else if(health.default&&ready.some(x=>x.name===health.default))sel.value=health.default;
   const toolOk=!!(health.tools&&health.tools.openocd_exists),scriptOk=!!(health.tools&&health.tools.scripts_exists);
   $('readgo').disabled=busy||!ready.length||!toolOk||!scriptOk;
+  $('readstop').disabled=false;
   $('readcmd').classList.remove('on');
   if(!toolOk||!scriptOk)readStatus('桥接已连接，但工具不完整：'+(toolOk?'':'OpenOCD 未找到。')+(scriptOk?'':'OpenOCD scripts 未找到。')+'请检查安装路径或启动参数。','err');
-  else readStatus(`本机桥接已连接 · ${ready.length} 个工程就绪。\n探针连接状态将在读取时检测；读取只读，不写内存、不烧录。`,'ok');
+  else{const idle=health.idle_timeout?` · 空闲 ${Math.round(health.idle_timeout/60)} 分钟自动退出`:'';
+    readStatus(`本机桥接已连接 · ${ready.length} 个工程就绪${idle}。\n探针连接状态将在读取时检测；读取只读，不写内存、不烧录。`,'ok');}
+  return true;
 }
-function openRead(){
+let waitTimer=null,waitUntil=0;
+function stopBridgeWait(){if(waitTimer){clearInterval(waitTimer);waitTimer=null;}}
+function startBridgeWait(){
+  stopBridgeWait();waitUntil=Date.now()+45000;
+  waitTimer=setInterval(async()=>{
+    if(!$('readwrap').classList.contains('on')||busy||health){stopBridgeWait();return;}
+    if(Date.now()>waitUntil){stopBridgeWait();return;}
+    if(await bridgeConnect(true))stopBridgeWait();
+  },2500);
+}
+async function openRead(){
   closeProv();hideGl();$('glwrap').classList.remove('on');
   $('readwrap').classList.add('on');
-  bridgeConnect();
+  const ok=await bridgeConnect(false);
+  if(!ok)startBridgeWait();
   setTimeout(()=>$('read-example').focus({preventScroll:true}),60);
 }
 document.addEventListener('click',e=>{
   const op=e.target.closest('#readopen,[data-readopen]');
   if(op){e.preventDefault();openRead();return;}
-  if(e.target.closest('#readclose')){$('readwrap').classList.remove('on');return;}
-  if(e.target===$('readwrap'))$('readwrap').classList.remove('on');
+  if(e.target.closest('#readclose')){stopBridgeWait();$('readwrap').classList.remove('on');return;}
+  if(e.target===$('readwrap')){stopBridgeWait();$('readwrap').classList.remove('on');}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$('readwrap').classList.remove('on');});
-$('readretry').addEventListener('click',bridgeConnect);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){stopBridgeWait();$('readwrap').classList.remove('on');}});
+$('readretry').addEventListener('click',async()=>{const ok=await bridgeConnect(false);if(ok)stopBridgeWait();else startBridgeWait();});
+$('readlaunch').addEventListener('click',()=>{
+  readStatus('已请求启动本机助手，正在等待连接…\n若浏览器没有反应，请先运行一次 setup-lens.cmd 安装 elens:// 协议。','busy');
+  startBridgeWait();
+});
+$('readstop').addEventListener('click',async()=>{
+  if(!health)return;
+  $('readstop').disabled=true;
+  try{await bridgeFetch(BRIDGE,'/shutdown',{method:'POST',body:'{}'},3000);}catch(e){}
+  health=null;stopBridgeWait();$('readgo').disabled=true;
+  readStatus('本机助手已停止。需要时点「启动本机助手」按需启动；它不会开机自启。','ok');
+});
 $('readcopy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(COPY_CMD);readStatus('启动命令已复制。','ok');}
   catch(e){readStatus('复制失败，请手动执行：\n'+COPY_CMD,'err');}
@@ -3065,6 +3091,7 @@ $('readgo').addEventListener('click',async()=>{
     if(r.ok){
       const sum=r.summary||{};
       readStatus(`读取完成：${sum.valid??0} 个有效帧 / ${sum.frames??0} 帧。\n页面已更新，正在打开调度快照。`+(sum.exported===false?'\n本机页面文件重建失败，可仍用页面内「导出网页」。':''),'ok');
+      stopBridgeWait();
       $('readwrap').classList.remove('on');
       document.querySelector('.tab[data-v="sched"]').click();
     }else{

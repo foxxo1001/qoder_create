@@ -3,7 +3,7 @@
 静态网页不能直接访问 ST-LINK。本桥接只监听 127.0.0.1，调用现有
 OpenOCD halt-read-resume 采样器；不写内存、不烧录、不复位。
 """
-import argparse, importlib.util, json, re, sys, threading
+import argparse, importlib.util, json, re, sys, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -115,6 +115,18 @@ def _run_sample(examples_dir, page_path, example, frames_n, interval_s):
                         "export_error": export_error}}
 
 
+class BridgeServer(ThreadingHTTPServer):
+    daemon_threads = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.last_request = time.monotonic()
+        self.idle_timeout = 0
+
+    def touch(self):
+        self.last_request = time.monotonic()
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "EmbeddedLensBridge/1.0"
 
@@ -132,6 +144,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        self.server.touch()
         if not self._origin_allowed():
             return
         path = urlparse(self.path).path
@@ -160,14 +173,21 @@ class Handler(BaseHTTPRequestHandler):
                 "tools": {"openocd": str(cli.OPENOCD), "openocd_exists": cli.OPENOCD.exists(),
                           "scripts": str(cli.OCD_SCRIPTS), "scripts_exists": cli.OCD_SCRIPTS.exists()},
                 "page": {"path": str(self.server.page_path), "exists": self.server.page_path.exists()},
+                "idle_timeout": self.server.idle_timeout,
                 "note": "探针连接状态在读取时检测；采样只读，不写内存/不烧录/不复位。"})
             return
         _json(self, 404, {"ok": False, "error": "not found"})
 
     def do_POST(self):
+        self.server.touch()
         if not self._origin_allowed():
             return
-        if urlparse(self.path).path != "/sample":
+        path = urlparse(self.path).path
+        if path == "/shutdown":
+            _json(self, 200, {"ok": True, "message": "bridge stopping"})
+            threading.Timer(0.25, self.server.shutdown).start()
+            return
+        if path != "/sample":
             _json(self, 404, {"ok": False, "error": "not found"})
             return
         try:
@@ -205,6 +225,7 @@ class Handler(BaseHTTPRequestHandler):
             _json(self, 500, {"ok": False, "error": f"桥接异常：{e}", "snapshots": []})
         finally:
             SAMPLE_LOCK.release()
+            self.server.touch()
 
 
 def main():
@@ -212,16 +233,41 @@ def main():
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--page", default=str(DEFAULT_PAGE))
     p.add_argument("--examples-dir", default=str(cli.EXAMPLES))
+    p.add_argument("--log", default="", help="把启动与请求日志写入该文件（pythonw 后台运行时使用）")
+    p.add_argument("--idle-timeout", type=int, default=0, help="空闲多少秒后自动退出；0 表示不自动退出")
     args = p.parse_args()
+    if args.log:
+        log_path = Path(args.log)
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            stream = log_path.open("w", encoding="utf-8", buffering=1)
+            sys.stdout = sys.stderr = stream
+            print(f"=== EmbeddedLens bridge {time.strftime('%Y-%m-%d %H:%M:%S')} ===")
+        except OSError as e:
+            print(f"无法写入日志 {log_path}: {e}", file=sys.stderr)
     page = Path(args.page).resolve()
     examples = Path(args.examples_dir).resolve()
-    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    srv = BridgeServer(("127.0.0.1", args.port), Handler)
     srv.daemon_threads = True
     srv.page_path = page
     srv.examples_dir = examples
+    srv.idle_timeout = max(0, args.idle_timeout)
+    if srv.idle_timeout:
+        def idle_watch():
+            while True:
+                time.sleep(5)
+                if SAMPLE_LOCK.locked():
+                    srv.touch()
+                    continue
+                if time.monotonic() - srv.last_request > srv.idle_timeout:
+                    print(f"idle for {srv.idle_timeout}s; exiting.")
+                    srv.shutdown()
+                    break
+        threading.Thread(target=idle_watch, daemon=True).start()
     print(f"EmbeddedLens bridge: http://127.0.0.1:{args.port}/")
     print(f"  page     : {page}{'' if page.exists() else '  [缺失，请先 python elens.py export]'}")
     print(f"  examples : {examples}")
+    print(f"  idle     : {srv.idle_timeout or 'off'} s")
     print("  在页面点「一键读取」。仅本机访问；Ctrl+C 停止。")
     try:
         srv.serve_forever()
