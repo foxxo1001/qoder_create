@@ -2,8 +2,9 @@
 夹具仅为算法测试，明确标注 SYNTHETIC，绝不作为产品快照导出。"""
 import json, struct, tempfile
 from pathlib import Path
+from unittest.mock import Mock, patch
 from elens.rtos import FreeRTOSAdapter, RamReader
-from elens import model, maps, svd, facts
+from elens import model, maps, svd, facts, frames, sample
 
 EX = Path(__file__).resolve().parent.parent / "examples" / "freertos_f103"
 off = json.loads((EX / "offsets.json").read_text(encoding="utf-8"))
@@ -142,4 +143,241 @@ with tempfile.TemporaryDirectory() as td:
     assert s2["GPIO_PIN_RESET"]["value"] == 0 and s2["GPIO_PIN_RESET"]["line"] == 4, s2
     assert s2["GPIO_PIN_SET"]["value"] == 1 and s2["GPIO_PIN_SET"]["line"] == 5, s2
 print("[test] HAL 单行枚举/块内注释抗干扰 OK (synthetic header)")
+# GPIO 术语只描述已识别调用，不把静态写入当成实际电平变化。
+def gpio_write(line, state="GPIO_PIN_SET", fn="task_a", port="LED_GPIO_Port", pin="LED_Pin"):
+    return {"file": "SYNTHETIC.c", "line": line, "in_fn": fn,
+            "port_macro": port, "pin_macro": pin, "state": state}
+
+
+def gpio_terms(writes):
+    return frames.build_terms({"config": {}, "delay_calls": [], "gpio_writes": writes}, {})
+
+
+scope_note = "调用存在不等于实际执行；其他任务、中断、Toggle/直接寄存器写和硬件接法未覆盖，不能证明电平恒定或周期闪烁"
+for states in [("GPIO_PIN_SET",) * 3, ("GPIO_PIN_RESET",) * 2,
+               ("GPIO_PIN_SET", "GPIO_PIN_RESET")]:
+    writes = [gpio_write(i + 1, state) for i, state in enumerate(states)]
+    cards = gpio_terms(writes)
+    assert len(cards) == 1 and cards[0]["kind"] == "gpio_dual", cards
+    card = cards[0]
+    assert card["writes"] == writes, card
+    assert scope_note in card["note"] and "已识别" in card["title"], card
+    assert all(state in card["title"] and state in card["notice"] for state in states), card
+    assert all(label in card["notice"] for label in ("task_a", "LED_GPIO_Port", "LED_Pin")), card
+
+assert gpio_terms([]) == [] and gpio_terms([gpio_write(1)]) == []
+for other_group in ({"fn": "task_b"}, {"port": "OTHER_GPIO_Port"}, {"pin": "OTHER_Pin"}):
+    assert gpio_terms([gpio_write(1), gpio_write(2, **other_group)]) == []
+    writes = [gpio_write(1), gpio_write(2), gpio_write(3, "GPIO_PIN_RESET", **other_group)]
+    assert gpio_terms(writes)[0]["writes"] == writes[:2]
+    writes.append(gpio_write(4, "GPIO_PIN_RESET", **other_group))
+    cards = gpio_terms(writes)
+    assert len(cards) == 2 and [c["writes"] for c in cards] == [writes[:2], writes[2:]], cards
+
+delay_terms = frames.build_terms({
+    "config": {"configTICK_RATE_HZ": {"value": 1000, "file": "SYNTHETIC.h", "line": 1}},
+    "delay_calls": [{"ticks": 500, "file": "SYNTHETIC.c", "line": 2, "in_fn": "task_a"}],
+    "gpio_writes": [],
+}, {})
+assert delay_terms[0]["kind"] == "delay" and delay_terms[0]["derived"]["value"] == 0.5
+print("[test] GPIO 同状态/混合状态及函数/端口/引脚分组与范围声明 OK (synthetic facts)")
+
+
+# 所有进程、TCL 连接和等待都被 Mock；仅在临时目录写 SYNTHETIC 数据。
+def mock_sample(*, start_error=None, connect_error=None, exited=False, responses=None,
+                dumps=None, decoder=None, frames=1):
+    responses = responses or {}
+    data = {"board_flash.bin": pf["bytes"], "board_ram.bin": bytes(blob),
+            "board_gpio.bin": bytes(sample.F103_PROFILE["gpio_dump_size"])}
+    data.update(dumps or {})
+    decoder = decoder if decoder is not None else Mock(wraps=ad, spec=FreeRTOSAdapter)
+    proc = Mock()
+    proc.poll.return_value = 1 if exited else None
+    rpc = Mock(spec=sample.TclRPC)
+
+    def command(text):
+        verb = text.split(" ", 1)[0]
+        path = Path(text[len("dump_image "):].rsplit(" ", 2)[0]) if verb == "dump_image" else None
+        result = responses.get(path.name if path else verb, "")
+        if isinstance(result, Exception):
+            raise result
+        if path and not result and data[path.name] is not None:
+            path.write_bytes(data[path.name])
+        return result
+
+    def start(*args, **kwargs):
+        if start_error is not None:
+            raise start_error
+        kwargs["stdout"].write("SYNTHETIC OpenOCD exit log\n")
+        kwargs["stdout"].flush()
+        return proc
+
+    rpc.cmd.side_effect = command
+    with tempfile.TemporaryDirectory(prefix="elens-synthetic-") as td:
+        pack_file = Path(td) / "SYNTHETIC_flash.bin"
+        pack_file.write_bytes(pf["bytes"])
+        pack = {"flash_image": {"base": pf["base"], "size": pf["size"], "file": str(pack_file)}}
+        with patch.object(sample.subprocess, "Popen", side_effect=start) as launch, \
+             patch.object(sample, "TclRPC", return_value=rpc, side_effect=connect_error) as connect, \
+             patch.object(sample.time, "sleep"), \
+             patch.object(sample.socket, "create_connection", side_effect=AssertionError("禁止真实连接")):
+            snaps = sample.sample_session(sample.F103_PROFILE, pack, sym, off, decoder,
+                                          td, "SYNTHETIC_openocd", "SYNTHETIC_scripts",
+                                          frames=frames, interval_s=0.25)
+        snap = snaps[0] if frames == 1 else snaps
+        launch.assert_called_once()
+        if start_error is not None:
+            connect.assert_not_called()
+            proc.terminate.assert_not_called()
+        elif not exited:
+            proc.terminate.assert_called_once()
+        if start_error is None and connect_error is None and not exited:
+            rpc.close.assert_called_once()
+        else:
+            rpc.cmd.assert_not_called()
+        if connect_error is not None:
+            assert connect.call_count == 40
+    commands = [c.args[0] for c in rpc.cmd.call_args_list]
+    assert all(c in ("halt", "resume", "shutdown") or c.startswith("dump_image ") for c in commands), commands
+    return snap, commands, decoder
+
+
+def assert_unavailable(snap, stage, code):
+    assert snap["valid"] is False, snap
+    assert snap["diagnostic"]["stage"] == stage and snap["diagnostic"]["code"] == code, snap
+    assert isinstance(snap["diagnostic"]["message"], str), snap
+    assert "resume_ok" in snap, snap
+
+
+for error, code in [(FileNotFoundError("SYNTHETIC tool not found"), "tool_not_found"),
+                    (PermissionError("SYNTHETIC launch denied"), "tool_start_failed")]:
+    snap, commands, decoder = mock_sample(start_error=error)
+    assert_unavailable(snap, "tool", code)
+    assert snap["status"] == "probe_failed" and snap["resume_ok"] is None, snap
+    assert snap["identity"]["reason"] == str(error) == snap["diagnostic"]["message"]
+    assert str(error) in snap["notes"] and snap["decoded"] is None
+    decoder.decode.assert_not_called()
+
+snap, commands, decoder = mock_sample(connect_error=ConnectionRefusedError("SYNTHETIC TCL refused"))
+assert_unavailable(snap, "connect", "tcl_connect_failed")
+assert snap["status"] == "probe_failed" and snap["resume_ok"] is None
+assert "SYNTHETIC TCL refused" in snap["diagnostic"]["message"]
+assert snap["diagnostic"]["message"] == snap["identity"]["reason"] == snap["notes"][0]
+snap, commands, decoder = mock_sample(exited=True)
+assert_unavailable(snap, "connect", "openocd_exited")
+assert "SYNTHETIC OpenOCD exit log" in snap["diagnostic"]["message"]
+
+for response, code, expected_commands, resumed in [
+    ("Error: SYNTHETIC halt failed", "halt_failed", ["halt", "resume"], True),
+    (TimeoutError("SYNTHETIC halt timeout"), "unknown", ["halt"], None),
+]:
+    snap, commands, decoder = mock_sample(responses={"halt": response})
+    assert_unavailable(snap, "halt", code)
+    assert snap["status"] == "probe_failed" and snap["resume_ok"] is resumed
+    assert str(response) in snap["diagnostic"]["message"] and commands == expected_commands
+    decoder.decode.assert_not_called()
+
+for dump_name in ("board_flash.bin", "board_ram.bin", "board_gpio.bin"):
+    for response, code in [("Error: SYNTHETIC read failed", "read_failed"),
+                           (OSError("SYNTHETIC read disconnected"), "unknown")]:
+        snap, commands, decoder = mock_sample(responses={dump_name: response})
+        assert_unavailable(snap, "read", code)
+        assert snap["status"] == "probe_failed" and snap["resume_ok"] is True
+        assert str(response) in snap["diagnostic"]["message"]
+        assert commands[0] == "halt" and commands[-1] == "resume" and commands.count("resume") == 1
+        decoder.decode.assert_not_called()
+
+for response, code in [("Error: SYNTHETIC resume failed", "resume_failed"),
+                       (TimeoutError("SYNTHETIC resume timeout"), "unknown")]:
+    for read_response in (None, OSError("SYNTHETIC prior read failure")):
+        responses = {"resume": response}
+        if read_response is not None:
+            responses["board_ram.bin"] = read_response
+        snap, commands, decoder = mock_sample(responses=responses)
+        assert_unavailable(snap, "resume", code)
+        assert snap["status"] == "probe_failed" and snap["resume_ok"] is False and snap["decoded"] is None
+        assert str(response) in snap["diagnostic"]["message"]
+        assert commands[-1] == "resume" and commands.count("resume") == 1
+        if read_response is not None:
+            assert str(read_response) in snap["notes"], snap
+        decoder.decode.assert_not_called()
+
+snap, commands, decoder = mock_sample()
+assert snap["valid"] and snap["status"] == "ok" and snap["resume_ok"] is True, snap
+assert snap["diagnostic"] == {"stage": "complete", "code": "ok", "message": ""}
+assert snap["identity"]["status"] == "verified" and snap["decoded"]["current"]["name"] == "IDLE"
+assert len(commands) == 6 and commands[0] == "halt" and commands[-2:] == ["resume", "shutdown"]
+decoder.decode.assert_called_once()
+
+for flash, status in [(b"\xff" * pf["size"], "mismatch"), (None, "unverified")]:
+    snap, commands, decoder = mock_sample(dumps={"board_flash.bin": flash})
+    assert_unavailable(snap, "identity", "identity_" + status)
+    assert snap["identity"]["status"] == status and snap["decoded"] is None
+    assert snap["diagnostic"]["message"] == snap["identity"]["reason"]
+    assert any("固件身份未通过核验" in note for note in snap["notes"])
+    decoder.decode.assert_not_called()
+
+snap, commands, decoder = mock_sample(dumps={"board_ram.bin": b""})
+assert_unavailable(snap, "read", "ram_missing")
+assert snap["diagnostic"]["message"] == "无 RAM 数据" and "无 RAM 数据" in snap["notes"]
+decoder.decode.assert_not_called()
+snap, commands, decoder = mock_sample(dumps={"board_ram.bin": bytes(bad)})
+assert_unavailable(snap, "structure", "structure_invalid")
+assert snap["identity"]["status"] == "verified" and not snap["decoded"]["valid"]
+assert snap["diagnostic"]["message"] in snap["notes"]
+
+decoder = Mock(spec=FreeRTOSAdapter)
+decoder.decode.side_effect = ValueError("SYNTHETIC decode failure")
+snap, commands, decoder = mock_sample(decoder=decoder)
+assert_unavailable(snap, "structure", "unknown")
+assert snap["identity"]["status"] == "verified" and snap["resume_ok"] is True
+assert snap["diagnostic"]["message"] == "SYNTHETIC decode failure"
+assert "SYNTHETIC decode failure" in snap["notes"]
+
+# 直接构帧同样必须阻断恢复失败的数据，不能只改 sample_board 的异常路径。
+decoder = Mock(spec=FreeRTOSAdapter)
+snap = sample._build_snapshot(sample.F103_PROFILE, {}, sym, off, decoder, bytes(blob), bytes(32),
+                              model.verify_identity(pf["bytes"], pf), 1, "SYNTHETIC",
+                              resume_resp="Error: SYNTHETIC resume failed", resume_ok=False)
+assert_unavailable(snap, "resume", "resume_failed")
+assert snap["status"] == "probe_failed" and snap["decoded"] is None and snap["resume_ok"] is False
+assert snap["diagnostic"]["message"] == snap["resume_resp"]
+decoder.decode.assert_not_called()
+print("[test] 采样各阶段诊断/原始原因/恢复失败阻断 OK (synthetic fixtures + Mock only)")
+
+# 多帧会话：一次 OpenOCD 会话连拍；帧间目标保持运行；身份失败/恢复失败即停止。
+snaps3, commands3, decoder3 = mock_sample(frames=3)
+assert isinstance(snaps3, list) and len(snaps3) == 3, snaps3
+assert all(s["valid"] and s["status"] == "ok" for s in snaps3)
+assert len({s["session"]["id"] for s in snaps3}) == 1
+assert [s["session"]["frame_index"] for s in snaps3] == [0, 1, 2]
+assert all(s["session"]["frame_count"] == 3 and s["session"]["interval_s"] == 0.25 for s in snaps3)
+assert decoder3.decode.call_count == 3
+verbs = [c.split(" ", 1)[0] for c in commands3]
+assert verbs == ["halt", "dump_image", "dump_image", "dump_image", "resume"] * 3 + ["shutdown"], verbs
+print("[test] 多帧会话 3 帧同会话/序号/命令序列 OK (synthetic fixtures + Mock only)")
+
+snaps1, commands1, _ = mock_sample()
+assert snaps1["session"]["frame_count"] == 1 and snaps1["session"]["frame_index"] == 0
+assert snaps1["session"]["id"].startswith("sess-")
+print("[test] 单帧采样带会话元数据 OK (synthetic fixtures + Mock only)")
+
+snaps_bad_id, commands_bad_id, decoder_bad_id = mock_sample(
+    frames=3, dumps={"board_flash.bin": b"\xff" * pf["size"]})
+assert len(snaps_bad_id) == 1 and snaps_bad_id[0]["identity"]["status"] == "mismatch", snaps_bad_id
+assert snaps_bad_id[0]["diagnostic"]["code"] == "identity_mismatch"
+assert snaps_bad_id[0]["session"]["frame_index"] == 0
+decoder_bad_id.decode.assert_not_called()
+assert [c.split(" ", 1)[0] for c in commands_bad_id][-1] == "shutdown"
+print("[test] 身份不匹配记录首帧后停止会话 OK (synthetic fixtures + Mock only)")
+
+snaps_resume, commands_resume, decoder_resume = mock_sample(
+    frames=3, responses={"resume": "Error: SYNTHETIC resume failed"})
+assert len(snaps_resume) == 1 and snaps_resume[0]["status"] == "probe_failed", snaps_resume
+assert snaps_resume[0]["diagnostic"]["stage"] == "resume" and snaps_resume[0]["diagnostic"]["code"] == "resume_failed"
+assert snaps_resume[0]["resume_ok"] is False
+decoder_resume.decode.assert_not_called()
+assert [c.split(" ", 1)[0] for c in commands_resume] == ["halt", "dump_image", "dump_image", "dump_image", "resume"]
+print("[test] 恢复失败中断会话且不继续采样 OK (synthetic fixtures + Mock only)")
+
 print("ALL TESTS PASSED (synthetic fixtures, not product data)")

@@ -8,7 +8,9 @@ ROOT = Path(__file__).resolve().parent
 EXAMPLES = ROOT.parent / "examples"
 GDB = Path(r"C:\STM32Tools\xpack-arm-none-eabi-gcc-14.2.1-1.1\bin\arm-none-eabi-gdb.exe")
 OPENOCD = Path(r"C:\STM32Tools\xpack-openocd-0.12.0-7\bin\openocd.exe")
-OCD_SCRIPTS = Path(r"C:\STM32Tools\xpack-openocd-0.12.0-7\share\openocd\scripts")
+_OCD_ROOT = OPENOCD.parent.parent
+OCD_SCRIPTS = next((p for p in (_OCD_ROOT / "openocd/scripts", _OCD_ROOT / "share/openocd/scripts") if p.exists()),
+                   _OCD_ROOT / "openocd/scripts")
 PROJ = Path(r"D:\FREERTOS\TIETOU\FREERTOS_2")
 
 EXAMPLE_CFG = {
@@ -131,16 +133,28 @@ def cmd_sample(args):
               f"({a['structure']['peripheral']['name']})")
         prof["gpio_base"] = svd_base
     if args.manual:
-        snap = sample.import_manual(args.manual, prof, a["pack"], a["symbols"]["symbols"], a["offsets"], adapter, odr_offset=odr)
+        if args.frames != 1:
+            print("[sample] 手工采集仅支持单帧，忽略 --frames/--interval")
+        new_shots = [sample.import_manual(args.manual, prof, a["pack"], a["symbols"]["symbols"],
+                                          a["offsets"], adapter, odr_offset=odr)]
     else:
-        snap = sample.sample_board(prof, a["pack"], a["symbols"]["symbols"], a["offsets"], adapter,
-                                   ex / "sample_run", args.openocd, args.scripts, odr_offset=odr)
+        new_shots = sample.sample_session(prof, a["pack"], a["symbols"]["symbols"], a["offsets"], adapter,
+                                          ex / "sample_run", args.openocd, args.scripts, odr_offset=odr,
+                                          frames=args.frames, interval_s=args.interval)
     snaps = load_snapshots(ex)
-    snaps.append(snap)
+    snaps.extend(new_shots)
     (ex / "snapshots.json").write_text(json.dumps(snaps, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"[sample] status={snap.get('status')} identity={snap['identity']['status']} valid={snap.get('valid')}")
-    if snap.get("status") == "probe_failed":
-        print("[sample] 探针失败（诚实记录，不编造）：" + snap["identity"]["reason"][:200])
+    for i, snap in enumerate(new_shots):
+        diag = snap.get("diagnostic") or {}
+        print(f"[sample] frame {i + 1}/{len(new_shots)} status={snap.get('status')} "
+              f"identity={snap.get('identity', {}).get('status')} valid={snap.get('valid')} "
+              f"stage={diag.get('stage', '?')}/{diag.get('code', '?')}")
+    sid = (new_shots[0].get("session") or {}).get("id", "-") if new_shots else "-"
+    ok = sum(1 for s in new_shots if s.get("valid"))
+    print(f"[sample] session={sid} frames={len(new_shots)} valid={ok}")
+    failed = next((s for s in new_shots if s.get("status") == "probe_failed"), None)
+    if failed:
+        print("[sample] 采样失败（诚实记录，不编造）：" + (failed.get("diagnostic") or {}).get("message", "")[:200])
 
 def cmd_export(args):
     ex = EXAMPLES / args.example
@@ -170,7 +184,10 @@ def main():
     ip.set_defaults(fn=cmd_import)
     sp = sub.add_parser("sample"); sp.add_argument("--example", default="freertos_f103")
     sp.add_argument("--manual"); sp.add_argument("--openocd", default=str(OPENOCD))
-    sp.add_argument("--scripts", default=str(OCD_SCRIPTS)); sp.set_defaults(fn=cmd_sample)
+    sp.add_argument("--scripts", default=str(OCD_SCRIPTS))
+    sp.add_argument("--frames", type=int, default=1, help="连续采样的帧数（默认 1）")
+    sp.add_argument("--interval", type=float, default=1.0, help="帧间隔秒数（主机侧等待，目标保持运行）")
+    sp.set_defaults(fn=cmd_sample)
     ep = sub.add_parser("export"); ep.add_argument("--example", default="freertos_f103")
     ep.add_argument("--out", default=str(ROOT.parent / "dist" / "embedded-lens.html")); ep.set_defaults(fn=cmd_export)
     bp = sub.add_parser("build"); bp.add_argument("--example", default="freertos_f103")

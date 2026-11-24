@@ -168,6 +168,36 @@ td.m{font-family:var(--mono)}
 .bit.hi::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;background:var(--accent)}
 .bit.set{border-color:var(--accent);background:var(--accent-soft)}
 .bit.set .bv{color:var(--accent)}
+.bit{appearance:none;-webkit-appearance:none;cursor:pointer;width:100%;display:block;color:var(--ink);background:var(--surface)}
+.bit.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-tint)}
+.bit.sel .bv{color:var(--accent)}
+.bit:hover{border-color:var(--accent-tint)}
+.bit.res{opacity:.55}
+.map-legend i.set{background:var(--accent);border-color:var(--accent)}
+.map-legend i.clear{background:var(--surface);border-color:var(--line)}
+.reg-frames{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.reg-frame-chip{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:5px 9px;font-family:var(--mono);font-size:10.5px;color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center;transition:border-color .18s,background .18s}
+.reg-frame-chip b{font-weight:600;color:var(--ink)}
+.reg-frame-chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.reg-frame-chip.on b{color:var(--accent)}
+.reg-frame-chip:hover{border-color:var(--accent-tint)}
+.reg-layout{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:20px;align-items:start;margin-top:18px}
+.reg-layout .register-map{margin:0}
+.reg-bits-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-top:10px}
+.bit-detail{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:18px;position:sticky;top:14px;min-width:0}
+.bit-detail h4{font-family:var(--serif);font-size:17px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;letter-spacing:.01em}
+.bit-detail .bd-sub{font-family:var(--mono);font-size:10px;color:var(--faint);margin:4px 0 12px;letter-spacing:.05em}
+.bit-detail dl{display:grid;grid-template-columns:86px minmax(0,1fr);gap:9px 12px;font-size:12px;margin:0}
+.bit-detail dt{color:var(--muted);font-size:11px}
+.bit-detail dd{margin:0;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+.bd-write{font-family:var(--mono);font-size:10.5px;border-top:1px dashed var(--line-2);padding:5px 0;line-height:1.5}
+.bd-write:first-child{border-top:0}
+.bit-hist{display:flex;gap:5px;flex-wrap:wrap}
+.hist-chip{border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r);padding:3px 6px;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer}
+.hist-chip b{color:var(--ink);margin-left:4px}
+.hist-chip.on{background:var(--accent-soft);border-color:var(--accent-tint);color:var(--accent)}
+.hist-chip.sel{box-shadow:0 0 0 2px var(--accent-tint)}
+.readout-bin{font-family:var(--mono);font-size:12px;color:var(--ink-2);letter-spacing:.06em;margin-top:6px;overflow-wrap:anywhere}
 
 /* term cards */
 .term{border:1px solid var(--line);border-radius:var(--r);padding:17px;margin-bottom:12px;background:var(--surface);transition:all .3s var(--ease)}
@@ -264,8 +294,8 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 #glpop .gt{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);display:block;margin-bottom:5px}
 
 /* modal overlays (import + glossary) */
-#impwrap,#glwrap{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;padding:38px 16px;background:rgba(27,30,33,.34);overflow-y:auto}
-#impwrap.on,#glwrap.on{display:flex}
+#impwrap,#glwrap,#readwrap{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;padding:38px 16px;background:rgba(27,30,33,.34);overflow-y:auto}
+#impwrap.on,#glwrap.on,#readwrap.on{display:flex}
 .imppanel,.glpanel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);width:100%;padding:28px 30px;box-shadow:0 18px 60px rgba(27,30,33,.22);position:relative}
 .imppanel{max-width:680px} .glpanel{max-width:680px}
 .imp-x{position:absolute;top:18px;right:18px;cursor:pointer;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);width:30px;height:30px;display:grid;place-items:center;font-size:19px;line-height:1;transition:all .18s}
@@ -306,7 +336,8 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 .imp-field>label{font-size:12px;font-weight:600;color:var(--ink-2)}
 .imp-field .fh{font-size:11px;color:var(--muted);line-height:1.5;font-weight:400}
 .imp-field input[type=text],.imp-field select{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;background:var(--surface);color:var(--ink);width:100%}
-.imp-field input[type=text]:focus,.imp-field select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.imp-field input[type=number]{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;background:var(--surface);color:var(--ink);width:100%}
+.imp-field input[type=text]:focus,.imp-field select:focus,.imp-field input[type=number]:focus{outline:2px solid var(--accent);outline-offset:1px}
 .imp-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .imp-mini .imp-pick{padding:6px 11px;font-size:11.5px}
 .imp-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
@@ -315,6 +346,15 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 #impstatus:empty{display:none}
 #impstatus.err{color:var(--bad);border-color:#e0bdb8;background:var(--bad-soft)}
 #impstatus.ok{border-left:3px solid var(--ok)}
+.readpanel{max-width:620px}
+.readpanel .imp-grid{grid-template-columns:1.3fr .6fr .8fr}
+.read-status{border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r);padding:12px 14px;font-size:12.5px;line-height:1.7;color:var(--ink-2);margin:14px 0;white-space:pre-line;overflow-wrap:anywhere}
+.read-status.ok{border-left:3px solid var(--ok)}
+.read-status.err{border-left:3px solid var(--bad);background:var(--bad-soft);color:var(--bad);border-color:#e0bdb8}
+.read-status.busy{border-left:3px solid var(--accent)}
+.read-cmd{display:none;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:11.5px;line-height:1.7;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 14px}
+.read-cmd.on{display:block}
+.read-note{font-size:12px;color:var(--muted);line-height:1.65;margin:12px 0 0}
 /* glossary dictionary */
 .gl-search{width:100%;font-family:var(--sans);font-size:13px;border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;background:var(--surface-2);color:var(--ink);margin:14px 0 4px}
 .gl-search:focus{outline:2px solid var(--accent);outline-offset:1px}
@@ -395,10 +435,45 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var
 .scheduler-lists>div{border:1px solid var(--line-2);padding:20px;border-radius:var(--r);background:var(--surface-2)}
 .scheduler-lists .heapbar{margin-top:16px;height:62px}
 .scheduler-timeline{padding-top:20px;border-top:1px solid var(--line-2);margin-top:24px}
+.swim-summary{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 12px}
+.swim-summary b{font-size:13px;color:var(--ink)}
+.swim-summary .note{margin-left:10px}
+.swim-wrap{overflow-x:auto;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);margin-bottom:10px}
+.swim{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;min-width:540px;table-layout:fixed}
+.swim th:first-child{width:150px}
+.swim th,.swim td{border-bottom:1px solid var(--line-2);padding:0;text-align:center;vertical-align:middle}
+.swim thead th{background:var(--surface-2);font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:0;text-transform:none;padding:6px 8px;white-space:nowrap}
+.swim thead th:first-child{position:sticky;left:0;z-index:2;text-align:left}
+.swim thead th b{display:block;color:var(--ink);font-size:10.5px;font-weight:650}
+.swim thead th span{display:block;font-size:9px;color:var(--faint)}
+.swim thead th.fbad{background:var(--bad-soft);color:var(--bad)}
+.swim thead th.fbad span{color:var(--bad)}
+.swim thead th.on,.swim td.cell.on{box-shadow:inset 0 0 0 2px var(--accent)}
+.swim tbody th{position:sticky;left:0;z-index:1;background:var(--surface);text-align:left;padding:7px 12px;min-width:128px;border-right:1px solid var(--line-2)}
+.swim tbody th b{display:block;font-size:11.5px;color:var(--ink);font-family:var(--sans)}
+.swim tbody th span{display:block;font-family:var(--mono);font-size:9px;color:var(--faint);white-space:nowrap}
+.swim td.cell{height:42px;border-left:1px solid var(--line-2);cursor:pointer;transition:filter .15s}
+.swim td.cell:hover{filter:brightness(.97)}
+.swim .st{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:100%;font-family:var(--mono);font-size:10px;line-height:1.25}
+.swim .st em{font-style:normal;font-size:8.5px;opacity:.8}
+.swim .s-run{background:var(--ok-soft);color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)}
+.swim .s-ready{background:var(--accent-soft);color:var(--accent)}
+.swim .s-delay{background:var(--warn-soft);color:var(--warn)}
+.swim .s-absent{background:var(--surface);color:var(--faint)}
+.swim .s-bad{background:var(--bad-soft);color:var(--bad)}
+.swim-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin:9px 0 8px}
+.swim-legend span{display:inline-flex;align-items:center;gap:6px}
+.swim-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;flex:0 0 auto}
+.swim-legend .i-run{background:var(--ok-soft);border-left:3px solid var(--ok)}
+.swim-legend .i-ready{background:var(--accent-soft);border:1px solid var(--accent-tint)}
+.swim-legend .i-delay{background:var(--warn-soft);border:1px solid #e6d3a4}
+.swim-legend .i-absent{background:var(--surface);border:1px dashed var(--faint)}
+.swim-legend .i-bad{background:var(--bad-soft);border:1px solid var(--bad)}
 .table-scroll{width:100%;overflow-x:auto;border:1px solid var(--line-2);border-radius:4px;margin-top:14px}
 .table-scroll .pin-table{min-width:600px;table-layout:fixed}
 .pin-table th:nth-child(1){width:14%}.pin-table th:nth-child(2){width:20%}.pin-table th:nth-child(3){width:21%}
 .pin-table td{overflow-wrap:anywhere}
+.pin-table tr.pin-other{opacity:.65}
 .table-scroll .cmp{min-width:860px}
 .cmp th:first-child,.cmp td:first-child{position:sticky;left:0;background:var(--surface-2);z-index:1}
 .replay-layout.on{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:0 20px;align-items:start}
@@ -426,7 +501,56 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:6
 .data-contract[open]>summary::after{content:"−"}
 .data-contract>summary::-webkit-details-marker{display:none}
 .data-contract .legend{padding-bottom:16px;gap:12px 18px}
+.study-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.study-nav button{font:12px var(--sans);padding:9px 16px;min-height:40px;border:1px solid transparent;border-radius:var(--r);background:transparent;color:var(--muted);cursor:pointer}
+.study-nav button[aria-pressed="true"]{color:var(--accent);border-color:var(--accent-tint);background:var(--accent-soft);font-weight:650}
+.study-lessons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.study-lesson{padding:17px 20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);text-align:left;cursor:pointer;color:var(--ink);font-family:var(--sans);min-width:0}
+.study-lesson[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+.study-lesson b{display:block;font-family:var(--serif);font-size:16px;margin:5px 0}
+.study-lesson span{font-size:11px;color:var(--muted)}
+.study-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(240px,.7fr);gap:20px;align-items:start}
+.study-layout>*{min-width:0}
+.study-step{font:10px var(--mono);color:var(--accent);letter-spacing:.12em;display:block;margin-bottom:10px}
+.study-question h3{font-family:var(--serif);font-size:20px;margin-bottom:10px}
+.study-question fieldset{border:0;margin:20px 0}
+.study-question legend{font-size:12px;color:var(--muted);margin-bottom:10px}
+.study-choice{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--line-2);border-radius:var(--r);margin:8px 0;font-size:12px;cursor:pointer;line-height:1.65}
+.study-choice:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.study-choice input{accent-color:var(--accent);margin-top:4px;flex-shrink:0}
+.study-select{display:block;font:11px var(--mono);width:100%;margin-top:8px;padding:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-width:0;max-width:100%}
+.study-feedback{margin-top:20px;padding:16px;border:1px solid var(--accent-tint);border-left:3px solid var(--accent);background:var(--accent-soft);font-size:12px;line-height:1.85}
+.study-feedback b{display:block;color:var(--accent);margin-bottom:6px}
+.study-feedback.agree{border-color:#bcd3ba;border-left-color:var(--ok);background:var(--ok-soft)}
+.study-feedback.agree b{color:var(--ok)}
+.study-evidence>summary{cursor:pointer;font-size:13px;color:var(--accent);font-weight:600}
+.study-evidence dl{margin:16px 0 0}
+.study-evidence dt{font-size:10px;color:var(--muted);margin-top:15px}
+.study-evidence dd{font-size:12px;margin-top:4px;overflow-wrap:anywhere}
+.study-evidence .btns{margin-top:20px}
+.study-next{padding-left:18px;margin-top:14px;font-size:12px;color:var(--ink-2);line-height:1.85}
+.study-next li+li{margin-top:10px}
+.study-status{font-size:12px;color:var(--muted);margin-bottom:18px;white-space:pre-wrap;overflow-wrap:anywhere}
+.study-status:empty{display:none}
+.study-status.error{color:var(--bad)}
+.compare-slots{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.compare-slot{min-width:0}
+.compare-slot h3{font-family:var(--serif);font-size:19px;margin:4px 0 12px}
+.compare-slot .btn{font-size:11px;padding:7px 10px;min-height:38px}
+.compare-file{position:relative;overflow:hidden;cursor:pointer}
+.compare-file input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.compare-file:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.compare-meta{font-size:11px;line-height:1.9;overflow-wrap:anywhere;margin:12px 0 18px;color:var(--muted)}
+.compare-table{table-layout:fixed;min-width:650px}
+.compare-table th:first-child{width:16%}.compare-table th:last-child{width:14%}
+.compare-table td{overflow-wrap:anywhere;font-size:12px;line-height:1.8}
+.compare-table tr.changed{background:var(--accent-soft)}
+.compare-table .compare-source{display:block;font:10px var(--mono);color:var(--muted);margin-top:6px}
+.diagnosis-list{list-style:none;margin:14px 0;padding:0}
+.diagnosis-list li{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:12px}
+.diagnosis-log{font:11px/1.8 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin-top:15px}
 @media(max-width:1100px){
+.study-layout{grid-template-columns:1fr}
 .term-detail-grid{grid-template-columns:1fr}
 .replay-layout.on{grid-template-columns:1fr}
 .project-panel>summary{gap:10px 16px}
@@ -452,7 +576,13 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:6
 .view-head{margin-top:24px}
 }
 @media(max-width:760px){
+.study-lessons,.compare-slots{grid-template-columns:1fr}
+.study-lesson{padding:14px 16px}
+.study-nav{gap:2px}
+.study-nav button{padding:10px 12px}
+.study-question h3{font-size:18px}
 .imp-grid{grid-template-columns:1fr}
+.readpanel .imp-grid{grid-template-columns:1fr}
 .imppanel,.glpanel{padding:22px 18px}
 .imp-row{flex-wrap:wrap}
 .imp-rowfile{flex-direction:row;align-items:center;width:100%;min-width:0;margin-top:9px;padding-left:41px}
@@ -471,10 +601,17 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:6
 .view-index{font-size:9px}
 .register-map{padding:14px}
 .register-map .section-head{align-items:flex-start;flex-direction:column;gap:8px}
+.reg-layout{grid-template-columns:1fr}
+.bit-detail{position:static}
 .bits{gap:7px}
 .bit{padding:12px 3px}
 .bit .bv{font-size:22px}
 .snapshot-empty{padding:30px 16px}
+.swim{min-width:480px}
+.swim th:first-child{width:104px}
+.swim tbody th{min-width:96px;padding:6px 8px}
+.swim td.cell{height:38px}
+.swim-summary .note{margin-left:0;display:block}
 .snapshot-empty h3{font-size:16px}
 .snapshot-empty .empty-metrics{margin-top:24px}
 .view-foot{align-items:flex-start;flex-direction:column;gap:5px}
@@ -588,11 +725,63 @@ body.landing-on{overflow:hidden}
 .ld-wave polyline{fill:none;stroke:var(--accent);stroke-width:1.1;stroke-dasharray:6 5;animation:ldwave 3.4s linear infinite}
 @keyframes ldwave{to{stroke-dashoffset:-44}}
 .ld-stage-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--faint);z-index:2}
-.ld-trace{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 13px 9px;border:1px solid var(--accent-tint);background:var(--surface);border-radius:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--accent);opacity:0;pointer-events:none;z-index:3;overflow:hidden;box-shadow:0 6px 20px rgba(27,30,33,.1)}
-.ld-trace i{width:23px;height:1px;background:var(--accent-tint)}
-.ld-scanbar{position:absolute;left:0;bottom:0;height:2px;width:16%;background:var(--accent);opacity:.9}
-.ld-eggtoast{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#fff;background:var(--accent);padding:5px 11px;border-radius:2px;opacity:0;pointer-events:none;z-index:4;white-space:nowrap}
-.ld-stage.egg-on .ld-q{animation:none;opacity:.1}
+.egg-trigger{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:7px 0;font-family:var(--mono);font-size:10px;letter-spacing:.1em;border:0;border-bottom:1px dashed var(--line);color:var(--muted);background:none;cursor:pointer}
+.egg-trigger:hover{color:var(--accent);border-color:var(--accent)}
+.egg-trigger span{font-size:9px;border:1px solid var(--line);border-radius:3px;padding:2px 6px;color:var(--accent)}
+.egg-dialog{--egg-ink:#dce7e7;--egg-muted:#9eb2b7;--egg-line:#314851;--egg-accent:#91dfce;position:fixed;inset:0;margin:auto;width:min(1160px,calc(100vw - 40px));max-width:none;max-height:calc(100dvh - 40px);padding:0;border:1px solid #465e64;border-radius:14px;background:#101f28;color:var(--egg-ink);box-shadow:0 32px 100px #0008;overflow:auto}
+.egg-dialog::backdrop{background:rgba(4,15,23,.75);backdrop-filter:blur(9px)}
+.egg-dialog :focus-visible{outline:2px solid var(--egg-accent);outline-offset:3px}
+.egg-dialog [hidden]{display:none!important}
+.egg-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 24px;border-bottom:1px solid var(--egg-line);background:#152832}
+.egg-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--egg-accent);margin-bottom:5px}
+.egg-head h2{font-family:var(--serif);font-size:22px;color:#f1f3ec;margin:0;padding:0;border:0;font-weight:500;letter-spacing:.06em}
+.egg-close{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--egg-line);border-radius:5px;color:var(--egg-ink);background:#1b3039;cursor:pointer;font-size:23px;flex:none}
+.egg-close:hover{border-color:var(--egg-accent)}
+.egg-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr)}
+.egg-visual{position:relative;min-height:530px;min-width:0;overflow:hidden;background:radial-gradient(ellipse at 40% 40%,#27464b,#0a1720 75%);border-right:1px solid var(--egg-line)}
+.egg-viewport{position:absolute;inset:0}
+.egg-viewport #ldgl{cursor:default;touch-action:pan-y}
+.egg-visual-label{position:absolute;top:20px;left:22px;right:22px;display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:9px;color:var(--egg-muted);letter-spacing:.1em;pointer-events:none}
+.egg-visual-label span:first-child{color:var(--egg-accent)}
+.egg-caption{position:absolute;left:22px;right:22px;bottom:20px;font-size:11px;line-height:1.7;color:var(--egg-muted);background:#0b1a22cc;border-left:2px solid var(--egg-accent);padding:10px 12px;pointer-events:none}
+.egg-caption strong{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--egg-accent);margin-bottom:4px}
+.egg-fallback{width:100%;height:100%;padding:50px 24px 80px}
+.has-webgl .egg-fallback{display:none}
+.egg-fallback .egg-svg-lid{transition:transform .65s var(--ease),opacity .65s}
+.egg-dialog[data-step="1"] .egg-svg-lid{transform:translateY(-60px);opacity:.35}
+.egg-console{padding:26px;min-width:0;display:flex;flex-direction:column;gap:18px}
+.egg-steps{display:flex;gap:7px}
+.egg-step{flex:1;min-width:0;padding:11px 7px;border:1px solid var(--egg-line);border-radius:5px;color:var(--egg-muted);background:transparent;cursor:pointer;text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+.egg-step small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:0;margin-top:4px;color:inherit}
+.egg-step[aria-pressed="true"]{background:#1a393b;border-color:#5aa996;color:var(--egg-accent)}
+.egg-step:hover{border-color:#769c9f}
+.egg-story h3{font-family:var(--serif);font-size:26px;font-weight:500;line-height:1.35;margin-bottom:9px;color:#edf1e9}
+.egg-story p{font-size:13px;color:var(--egg-muted);line-height:1.9;min-height:74px}
+.egg-targets{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.egg-target{min-height:39px;padding:8px;border:1px solid var(--egg-line);border-radius:4px;background:#142832;color:var(--egg-muted);font-family:var(--mono);font-size:11px;cursor:pointer}
+.egg-target[aria-pressed="true"]{border-color:var(--egg-accent);color:var(--egg-accent);background:#203c3e}
+.egg-readout{border:1px solid var(--egg-line);border-radius:5px;padding:14px;background:#0c1a22;min-height:119px}
+.egg-readout .egg-symbol{font-family:var(--mono);font-size:12px;color:var(--egg-accent);overflow-wrap:anywhere}
+.egg-readout p{font-size:12px;line-height:1.8;color:var(--egg-muted);margin-top:7px}
+.egg-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:auto}
+.egg-next,.egg-workspace{padding:11px 15px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;min-height:42px}
+.egg-next{color:#10252a;background:var(--egg-accent);border:1px solid var(--egg-accent);flex:1}
+.egg-next:hover{background:#bbf0df}
+.egg-workspace{border:1px solid var(--egg-line);color:var(--egg-ink);background:transparent}
+.egg-disclaimer{font-size:10px;color:var(--egg-muted);padding-top:12px;border-top:1px solid var(--egg-line);line-height:1.7}
+@media(max-width:760px){
+.egg-dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px);border-radius:9px}
+.egg-head{padding:14px 16px}
+.egg-head h2{font-size:20px}
+.egg-layout{grid-template-columns:1fr}
+.egg-visual{height:270px;min-height:0;border-right:0;border-bottom:1px solid var(--egg-line)}
+.egg-console{padding:18px;gap:14px}
+.egg-story h3{font-size:23px}
+.egg-story p{min-height:0}
+.egg-visual-label{top:12px;left:16px;right:16px;font-size:8px}
+.egg-caption{left:16px;right:16px;bottom:12px;font-size:10px;padding:6px 10px}
+.egg-step,.egg-target{min-height:44px}
+}
 .ld-marquee{grid-row:2;grid-column:1/-1;border-top:1px solid var(--line);background:var(--surface-2);overflow:hidden;padding:13px 0;position:relative;z-index:2}
 .ld-probe{position:fixed;left:0;top:0;width:10px;height:10px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;opacity:0;z-index:72;will-change:transform}
 .ld-marq{display:flex;white-space:nowrap;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--faint);will-change:transform}
@@ -639,6 +828,7 @@ body.landing-on #ldhome{display:none}
       <span><b>SINGLE FILE</b>单文件离线，双击即看</span>
     </div>
     <div class="ld-build" id="ldbuild"></div>
+    <button class="egg-trigger" id="eggunlock" type="button" aria-haspopup="dialog">芯片里藏了一个实验 <span>SWD</span></button>
   </div>
   <div class="ld-stage" id="ldstage" aria-hidden="true">
     <span class="ld-stage-tag tl">ASSEMBLY / 001</span>
@@ -680,13 +870,33 @@ body.landing-on #ldhome{display:none}
     <span class="ld-tag t4"><i></i>3D ASSEMBLY</span>
     <svg class="ld-wave" viewBox="0 0 420 48" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,34 12,34 14,18 18,18 20,34 42,34 46,26 50,26 52,34 78,34 80,10 84,10 86,34 104,34 108,30 112,30 114,34 150,34 152,22 156,22 158,34 186,34 190,38 194,38 196,34 230,34 232,14 236,14 238,34 260,34 264,28 268,28 270,34 300,34 302,20 306,20 308,34 336,34 340,32 344,32 346,34 380,34 382,12 386,12 388,34 420,34"/></svg>
     <div class="ld-stage-foot"><span>MODEL / DETAIL STUDY</span><span>拖动旋转 · 滚轮 / 双指缩放</span><span>3D 示意 · 非实时读数</span></div>
-    <div class="ld-trace" id="ldtrace"><span>HALT</span><i></i><span>READ</span><i></i><span>RESUME</span><div class="ld-scanbar" id="ldscan"></div></div>
-    <div class="ld-eggtoast" id="ldeggtoast">彩蛋 · 停核采样演练（示意）</div>
   </div>
   <div class="ld-probe" id="ldprobe" aria-hidden="true"></div>
   <div class="ld-marquee" aria-hidden="true"><div class="ld-marq" id="ldmarq"><span>SWD · SNAPSHOT · TICK · READY · DELAYED · PROVENANCE · NO FABRICATION · </span><span>SWD · SNAPSHOT · TICK · READY · DELAYED · PROVENANCE · NO FABRICATION · </span></div></div>
 </div>
 <div id="ldiris" aria-hidden="true"></div>
+<dialog class="egg-dialog" id="eggdialog" aria-labelledby="eggtitle" aria-describedby="eggdisclaimer">
+  <header class="egg-head"><div><div class="egg-eyebrow">SECRET LAB / INSIDE THE CHIP</div><h2 id="eggtitle">芯片调试舱</h2></div><button class="egg-close" id="eggclose" type="button" aria-label="退出芯片调试舱" autofocus>×</button></header>
+  <div class="egg-layout">
+    <div class="egg-visual">
+      <div class="egg-viewport" id="eggviewport" aria-hidden="true"><svg class="egg-fallback" viewBox="0 0 480 340" aria-hidden="true">
+        <g fill="none" stroke="#35585c"><path d="M45 235 225 110 438 223 256 337Z"/><path d="m90 243 139-97 167 89-140 96Z"/><path d="m144 215 87-62 107 57-84 60Z"/></g>
+        <g fill="#163536" stroke="#91dfce"><path d="m155 202 75-52 100 53-75 53Z"/><path d="m190 200 42-29 62 32-42 30Z"/></g><text x="242" y="205" text-anchor="middle" fill="#b9f1de" font-family="monospace" font-size="12">CORE</text>
+        <g class="egg-svg-lid"><path d="m110 145 117-80 151 80v24L259 252 110 169Z" fill="#1d303b" stroke="#87aeb6"/><path d="m110 145 117-80 151 80-119 83Z" fill="#2c4350" stroke="#87aeb6"/><text x="237" y="145" fill="#e1ece8" font-family="monospace" text-anchor="middle" font-size="18">CORTEX-M3</text></g>
+      </svg></div>
+      <div class="egg-visual-label"><span id="eggvisualstate">CORE / HALTED</span><span>CONCEPT MODEL · 结构示意</span></div>
+      <div class="egg-caption"><strong id="eggcaptiontitle">HALT / 把时间停在这一拍</strong><span id="eggcaption">点击下一步，掀开外壳看看观察链路。</span></div>
+    </div>
+    <section class="egg-console" aria-label="调试过程演练">
+      <div class="egg-steps" aria-label="选择演练阶段"><button class="egg-step" data-egg-step="0" type="button" aria-pressed="true">01 HALT<small>暂停</small></button><button class="egg-step" data-egg-step="1" type="button" aria-pressed="false">02 READ<small>检查</small></button><button class="egg-step" data-egg-step="2" type="button" aria-pressed="false">03 RESUME<small>恢复</small></button></div>
+      <div class="egg-story" aria-live="polite" aria-atomic="true"><h3 id="eggheading"></h3><p id="eggbody"></p></div>
+      <div class="egg-targets" id="eggtargets" aria-label="选择检查对象" hidden><button class="egg-target" data-egg-target="0" type="button" aria-pressed="true">固件身份</button><button class="egg-target" data-egg-target="1" type="button" aria-pressed="false">当前任务</button><button class="egg-target" data-egg-target="2" type="button" aria-pressed="false">节拍计数</button><button class="egg-target" data-egg-target="3" type="button" aria-pressed="false">引脚输出</button></div>
+      <div class="egg-readout" aria-live="polite" aria-atomic="true"><div class="egg-symbol" id="eggsymbol"></div><p id="eggdetail"></p></div>
+      <div class="egg-actions"><button class="egg-next" id="eggnext" type="button">掀开芯片 · 下一步</button><button class="egg-workspace" id="eggworkspace" type="button">去看真实数据</button></div>
+      <p class="egg-disclaimer" id="eggdisclaimer">教学彩蛋 · 未连接硬件。分层与内部电路仅为概念示意，不是真实芯片剖面，也不是采样结果。</p>
+    </section>
+  </div>
+</dialog>
 <button id="ldhome" aria-label="返回介绍页"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>介绍页</button>
 <div class="wrap">
 <div class="workbench" id="workbench">
@@ -705,15 +915,17 @@ body.landing-on #ldhome{display:none}
 <header class="masthead">
   <div class="workspace-label"><b>工作空间</b><span class="slash">/</span><span>观察工作台</span></div>
   <div class="mast-actions">
+    <button class="btn" id="readopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></svg>一键读取</button>
     <button class="btn sec" id="glopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>名词小词典</button>
-    <button class="btn" id="impopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>导入我的工程</button>
+    <button class="btn sec" id="impopen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>导入我的工程</button>
   </div>
 </header>
 <details class="project-panel" id="projectpanel">
   <summary><span class="project-name" id="projectname"></span><span class="status-strip" id="topbadges"></span><span class="project-detail-label">工程详情</span></summary>
   <div class="project-body"><div class="spec" id="spec"></div><details class="identity-panel" id="identitycard"></details></div>
 </details>
-<div class="view on" id="view-sched" role="tabpanel" aria-labelledby="tab-sched" tabindex="0"></div>
+<div class="view on" id="view-learn" role="tabpanel" aria-labelledby="tab-learn" tabindex="0"></div>
+<div class="view" id="view-sched" role="tabpanel" aria-labelledby="tab-sched" tabindex="0"></div>
 <div class="view" id="view-reg" role="tabpanel" aria-labelledby="tab-reg" tabindex="0"></div>
 <div class="view" id="view-term" role="tabpanel" aria-labelledby="tab-term" tabindex="0"></div>
 <div class="view" id="view-plat" role="tabpanel" aria-labelledby="tab-plat" tabindex="0"></div>
@@ -812,6 +1024,32 @@ body.landing-on #ldhome{display:none}
   </div>
 </div>
 
+<div id="readwrap" role="dialog" aria-modal="true" aria-label="一键读取开发板">
+  <div class="imppanel readpanel">
+    <button class="imp-x" id="readclose" aria-label="关闭">&times;</button>
+    <div class="imp-h">一键读取开发板</div>
+    <p class="imp-lead">通过本机 EmbeddedLens Bridge 调用 OpenOCD，短暂停核读取真实内存后立即恢复。只读，不写内存、不烧录、不复位。</p>
+    <div class="imp-callout"><b>为什么需要本机桥接？</b>浏览器不能直接访问 ST-LINK/USB。请先在本机运行桥接，再点「开始读取」；线上页面也可调用本机 127.0.0.1 的桥接。</div>
+    <div class="read-status busy" id="readstatus">正在连接本机桥接…</div>
+    <div class="imp-grid">
+      <div class="imp-field"><label for="read-example">工程</label><select id="read-example" aria-label="选择工程"><option value="">先连接桥接…</option></select></div>
+      <div class="imp-field"><label for="read-frames">帧数</label><input type="number" id="read-frames" min="1" max="20" step="1" value="5" aria-label="连续采样帧数"></div>
+      <div class="imp-field"><label for="read-interval">帧间隔 / 秒</label><input type="number" id="read-interval" min="0" max="10" step="0.5" value="1" aria-label="帧间隔秒数"></div>
+    </div>
+    <pre class="read-cmd mono" id="readcmd">在项目根目录运行：
+python tools\elens_bridge.py
+
+然后保持窗口开启，回到这里点「重试连接」。</pre>
+    <div class="imp-actions">
+      <button class="btn big" id="readgo" disabled>开始读取</button>
+      <button class="btn sec" id="readretry">重试连接</button>
+      <button class="btn sec" id="readcopy">复制启动命令</button>
+      <a class="btn sec" id="readlocal" href="http://127.0.0.1:8765/" target="_blank" rel="noopener">打开本机页面</a>
+    </div>
+    <p class="read-note">读取时会短暂停核并立即恢复；帧间隔由主机控制，目标在帧间保持运行。固件身份核验不通过时只记录原始读数，不解释 RTOS 状态。</p>
+  </div>
+</div>
+
 <div id="glwrap" role="dialog" aria-modal="true" aria-label="名词小词典">
   <div class="glpanel">
     <button class="imp-x" id="glclose" aria-label="关闭">&times;</button>
@@ -829,7 +1067,7 @@ __GSAP_LIBS__
 let LENS = __LENS_JSON__;
 const STATE={measured:['实测','m'],authoritative:['权威','a'],derived:['推导','d'],unknown:['不可知','u']};
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-const IC={sched:'<path d="M3 12h4l3 8 4-16 3 8h4"/>',reg:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',term:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',plat:'<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',replay:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',prev:'<path d="M15 18l-6-6 6-6"/>',next:'<path d="M9 18l6-6-6-6"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',play:'<path d="M6 4l14 8-14 8V4z"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',check:'<path d="M20 6 9 17l-5-5"/>',alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+const IC={learn:'<path d="m3 8 9-5 9 5-9 5-9-5zM6 10v7c4 4 8 4 12 0v-7M21 8v9"/>',sched:'<path d="M3 12h4l3 8 4-16 3 8h4"/>',reg:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',term:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',plat:'<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',replay:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',prev:'<path d="M15 18l-6-6 6-6"/>',next:'<path d="M9 18l6-6-6-6"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',play:'<path d="M6 4l14 8-14 8V4z"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',check:'<path d="M20 6 9 17l-5-5"/>',alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
 function ic(n,s){return `<svg class="ic" viewBox="0 0 24 24"${s?` style="width:${s}px;height:${s}px"`:''}>${IC[n]||''}</svg>`;}
 function openProv(){document.getElementById('prov').classList.add('on');document.getElementById('scrim').classList.add('on');if(window.__provIn)window.__provIn();}
 function closeProv(){document.getElementById('prov').classList.remove('on');document.getElementById('scrim').classList.remove('on');}
@@ -842,13 +1080,19 @@ function val(v,hex){
   if(v.state==='unknown') disp='不可知';
   return `<span class="v ${st[1]}" data-prov='${esc(JSON.stringify(v))}'>${esc(disp)}<i class="bdg">${st[0]}</i></span>`;
 }
-document.addEventListener('click',e=>{
-  const t=e.target.closest('.v'); if(!t||!t.dataset.prov)return;
-  const v=JSON.parse(t.dataset.prov); const st=STATE[v.state]||['?','u'];
+function provShow(v){
+  const st=STATE[v.state]||['?','u'];
   let h=`<div class="row"><b>态</b><span>${st[0]}值</span></div>`;
-  for(const[k,val]of Object.entries(v.prov||{})) h+=`<div class="row"><b>${esc(k)}</b><span class="mono">${esc(typeof val==='object'?JSON.stringify(val):val)}</span></div>`;
+  for(const[k,val]of Object.entries(v.prov||{})) h+=`<div class="row"><b>${esc(k)}</b><span class="mono">${esc(typeof val==='object'?JSON.stringify(val):String(val))}</span></div>`;
   document.getElementById('provbody').innerHTML=h;
   openProv();
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.v'); if(t&&t.dataset.prov){provShow(JSON.parse(t.dataset.prov));return;}
+  const c=e.target.closest('.swim td.cell'); if(c&&c.dataset.prov)provShow(JSON.parse(c.dataset.prov));
+});
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.swim td.cell[role="button"]')){e.preventDefault();e.target.click();}
 });
 function bar(barEl,lblEl){const m=new Map(),lm=new Map();return function(list){
   const want=new Set(list.map(b=>b.k));
@@ -867,7 +1111,7 @@ function bar(barEl,lblEl){const m=new Map(),lm=new Map();return function(list){
 function stepper(n,render){let i=0;render(0);return{next(){i=Math.min(n-1,i+1);render(i);},prev(){i=Math.max(0,i-1);render(i);},reset(){i=0;render(0);},get i(){return i;}};}
 const $=id=>document.getElementById(id);
 let snaps=[],validSnaps=[];
-function refreshSnaps(){snaps=LENS.snapshots.filter(s=>s.status==='ok');validSnaps=snaps.filter(s=>s.valid&&s.decoded);}
+function refreshSnaps(){snaps=LENS.snapshots.filter(s=>s.status==='ok');validSnaps=studyFrames(LENS);}
 refreshSnaps();
 
 /* ---- 名词小词典：大白话解释 + 行内提示 ---- */
@@ -978,7 +1222,7 @@ function renderTop(){
 }
 
 /* ---- Tab 切换 ---- */
-const TABS=[['sched','调度快照'],['reg','寄存器位段'],['term','术语溯源'],['plat','平台对照'],['replay','回放/导出']];
+const TABS=[['learn','学习实验'],['sched','调度快照'],['reg','寄存器位段'],['term','术语溯源'],['plat','平台对照'],['replay','回放/导出']];
 $('tabs').innerHTML=TABS.map((t,i)=>`<button type="button" class="tab${i===0?' on':''}" id="tab-${t[0]}" data-v="${t[0]}" role="tab" tabindex="${i===0?0:-1}" aria-selected="${i===0}" aria-controls="view-${t[0]}" aria-label="${t[1]}" title="${t[1]}"><span class="tab-icon" aria-hidden="true">${ic(t[0],17)}</span><span class="tab-label">${t[1]}</span></button>`).join('');
 const compactNav=matchMedia('(max-width:900px)'),navToggle=$('navtoggle');
 function syncNavToggle(){
@@ -1016,21 +1260,84 @@ $('tabs').addEventListener('keydown',e=>{const t=e.target.closest('.tab');if(!t)
 
 /* ---- V1 调度快照 ---- */
 function taskBlock(e,cls){const t=e.tcb||{};return{k:(t.addr||e.item.addr),s:1,cls:cls,task:(t.name||''),l:`${t.name||'?'} p${t.priority??'?'}`,lt:`${t.name||'?'} · 到期 ${e.wake_tick??''}`};}
+/* ---- 会话泳道：同一会话的多帧停核快照，逐任务显示状态 ---- */
+const DIAG_CN={identity_mismatch:'固件身份不匹配',identity_unverified:'固件身份未核验',structure_invalid:'结构校验失败',resume_failed:'目标恢复失败',read_failed:'内存读取失败',ram_missing:'RAM 数据缺失',halt_failed:'停核失败',openocd_exited:'OpenOCD 退出',tcl_connect_failed:'调试器连接失败',tool_not_found:'采样工具未找到',tool_start_failed:'采样工具启动失败',probe_failed:'采样失败'};
+function frameSessionId(s){return (s&&s.session&&s.session.id)||'legacy';}
+function frameSessionFrames(cur){const id=frameSessionId(cur);return LENS.snapshots.filter(x=>frameSessionId(x)===id);}
+function frameUsable(s){return !!s&&s.status==='ok'&&s.valid===true&&!!s.identity&&s.identity.status==='verified'&&s.resume_ok!==false&&!!s.decoded;}
+function swimTaskState(s,name){
+  if(!frameUsable(s)){const code=s&&s.diagnostic&&s.diagnostic.code;const msg=String((s&&s.diagnostic&&s.diagnostic.message)||'').slice(0,160);
+    return{k:'bad',label:'✕',detail:(DIAG_CN[code]||code||'帧不可用')+(msg?' · '+msg:'')};}
+  const dec=s.decoded,c=dec.current;
+  if(c&&c.name===name)return{k:'run',label:'运行',detail:`运行中：pxCurrentTCB → ${c.addr}`,tcb:c,list:'pxCurrentTCB',name:name};
+  const r=((dec.ready_priority1&&dec.ready_priority1.entries)||[]).find(e=>e.tcb&&e.tcb.name===name);
+  if(r)return{k:'ready',label:'就绪',detail:`就绪：优先级 1 链表节点 ${r.item.addr} → TCB ${r.tcb.addr}`,tcb:r.tcb,item:r.item,list:'pxReadyTasksLists[1]',name:name};
+  const d=((dec.delayed&&dec.delayed.entries)||[]).find(e=>e.tcb&&e.tcb.name===name);
+  if(d)return{k:'delay',label:'延时',detail:`延时：到期 tick ${d.wake_tick} · 节点 ${d.item.addr}`,tcb:d.tcb,item:d.item,wake:d.wake_tick,list:'pxDelayedTaskList',name:name};
+  return{k:'absent',label:'·',detail:'该帧未在已读取对象中观察到',name:name};
+}
+function swimProv(s,st){
+  const tick=s.decoded&&s.decoded.scalars&&s.decoded.scalars.xTickCount&&s.decoded.scalars.xTickCount.value;
+  const base={frame:s.session?`F${(s.session.frame_index??0)+1}`:'帧',host_time:s.host_time,session:(s.session&&s.session.id)||null,source:s.source};
+  if(st.k==='bad')return{state:'unknown',value:null,prov:{...base,reason:st.detail,diagnostic:(s.diagnostic&&s.diagnostic.code)||null,note:'该帧不可用，任务状态不可知'}};
+  if(st.k==='absent')return{state:'unknown',value:null,prov:{...base,reason:'该帧未在 pxCurrentTCB、优先级 1 就绪链表或当前延时链表中出现',note:'其他优先级就绪链表与溢出延时链表本期不读取；未出现不等于任务不存在'}};
+  const q={...base,task:st.name,state_cn:st.label,list:st.list,tcb:st.tcb&&st.tcb.addr,priority:st.tcb&&st.tcb.priority,sampled_at:s.host_time};
+  if(Number.isInteger(tick))q.tick=tick;
+  if(st.k==='delay'){
+    q.wake_tick=st.wake;q.item=st.item&&st.item.addr;
+    q.item_hex=st.item&&Number.isInteger(st.item.xItemValue)?'0x'+(st.item.xItemValue>>>0).toString(16):null;
+    if(Number.isInteger(tick)&&Number.isInteger(st.wake)){q.remaining_ticks=st.wake-tick;q.remaining_formula=`到期 ${st.wake} − 采样时 xTickCount ${tick}（仅该快照时刻）`;}
+  }
+  return{state:'derived',value:st.label,prov:q};
+}
+function renderSwim(cur){
+  const el=$('swim');if(!el)return;
+  const group=frameSessionFrames(cur),usable=group.filter(frameUsable);
+  const rows=new Map();
+  const add=t=>{if(!t||!t.name)return;const r=rows.get(t.name)||{name:t.name,priority:null,addr:null};if(r.priority==null&&Number.isInteger(t.priority))r.priority=t.priority;if(!r.addr&&t.addr)r.addr=t.addr;rows.set(t.name,r);};
+  for(const t of (LENS.facts.tasks||[]))if(t&&t.name)rows.set(t.name,{name:t.name,priority:Number.isInteger(t.priority)?t.priority:null,addr:null,entry:t.entry});
+  for(const s of usable){const d=s.decoded;add(d.current);((d.ready_priority1&&d.ready_priority1.entries)||[]).forEach(e=>add(e.tcb));((d.delayed&&d.delayed.entries)||[]).forEach(e=>add(e.tcb));}
+  const list=[...rows.values()].sort((a,b)=>(b.priority??-1)-(a.priority??-1)||a.name.localeCompare(b.name));
+  const ticks=usable.map(s=>s.decoded.scalars&&s.decoded.scalars.xTickCount&&s.decoded.scalars.xTickCount.value).filter(Number.isInteger);
+  const delta=ticks.length>1?ticks[ticks.length-1]-ticks[0]:null;
+  const bad=group.length-usable.length;
+  const sm=cur.session||{};
+  const started=sm.started_at?String(sm.started_at).replace('T',' ').slice(0,19):'';
+  const label=started?`会话 · ${esc(started)}`:'历史记录（无会话元数据）';
+  let summary=`<div class="swim-summary"><div><b>${label}</b> <span class="note">${group.length} 帧 · ${usable.length} 有效${bad?` · ${bad} 帧不可用`:''}${ticks.length>1?` · tick ${ticks[0]} → ${ticks[ticks.length-1]}（Δ ${delta<0?'回绕/不可比':delta}）`:''}</span></div>${sm.interval_s!=null&&group.length>1?`<span class="note mono">请求间隔 ${esc(sm.interval_s)} s（主机）</span>`:''}</div>`;
+  let h=`${summary}<div class="swim-wrap" role="region" tabindex="0" aria-label="同一会话的多帧任务状态泳道"><table class="swim" style="min-width:${150+group.length*56}px"><thead><tr><th scope="col">任务 / TASK</th>`;
+  group.forEach((s,j)=>{const ok=frameUsable(s),t=ok&&s.decoded.scalars&&s.decoded.scalars.xTickCount,fi=Number.isInteger(s.session&&s.session.frame_index)?s.session.frame_index:j;
+    const code=s&&s.diagnostic&&s.diagnostic.code;
+    h+=`<th scope="col" class="fhead${ok?'':' fbad'}${s===cur?' on':''}" title="${esc(String(s.host_time||'')+(ok?' · 暂停 '+s.pause_ms+' ms':' · '+(DIAG_CN[code]||code||'不可用')))}"><b>F${fi+1}</b><span>${ok&&t?esc(t.value):'不可用'}</span></th>`;});
+  h+='</tr></thead><tbody>';
+  for(const r of list){
+    h+=`<tr><th scope="row" title="${esc((r.entry?r.entry+' · ':'')+(r.priority!=null?'优先级 '+r.priority:'优先级未知'))}"><b>${esc(r.name)}</b><span>${r.priority!=null?'p'+r.priority:''}${r.addr?` · ${esc(r.addr)}`:''}</span></th>`;
+    for(const s of group){const st=swimTaskState(s,r.name),prov=swimProv(s,st),clickable=st.k!=='bad'&&st.k!=='absent';
+      const fi=Number.isInteger(s.session&&s.session.frame_index)?s.session.frame_index:group.indexOf(s);
+      const al=st.k==='bad'?'帧不可用':st.k==='absent'?'未在已读取对象中出现':st.label;
+      h+=`<td class="cell s-${st.k}${s===cur?' on':''}" ${clickable?'tabindex="0" role="button"':''} data-prov='${esc(JSON.stringify(prov))}' title="${esc(st.detail)}" aria-label="${esc(r.name)} · F${fi+1} · ${esc(al)}"><span class="st">${st.label}${st.k==='delay'?`<em>${esc(st.wake)}</em>`:''}</span></td>`;}
+    h+='</tr>';
+  }
+  h+='</tbody></table></div>';
+  h+=`<div class="swim-legend"><span><i class="i-run"></i>运行中（当前选中）</span><span><i class="i-ready"></i>就绪（优先级 1）</span><span><i class="i-delay"></i>延时（数字＝到期 tick）</span><span><i class="i-absent"></i>未在已读链表中出现</span><span><i class="i-bad"></i>帧不可用</span></div>
+    <div class="note">每列是一帧停核快照；帧与帧之间目标仍在运行，可能漏采，不能据此推断任务切换时刻。只读取当前任务、优先级 1 就绪链表、当前延时链表与所选寄存器；其他优先级就绪链表和溢出延时链表不在观察范围，未出现的任务标为不可知，不代表不存在。</div>`;
+  el.innerHTML=h;
+}
 function renderSched(){
   const root=$('view-sched');
   const heading=`<div class="view-head"><div><h2>调度快照</h2><p>看清任务的就绪、延时与当前选中状态。</p></div><span class="view-index">01 / SCHEDULER</span></div>`;
   if(!validSnaps.length){
     root.innerHTML=heading+`<div class="card snapshot-empty"><div class="empty-symbol" aria-hidden="true">${ic('sched')}</div>
       <h3>等待第一帧真实快照</h3><p>当前没有身份已核验的板上数据。<br>你仍然可以查看寄存器定义与源码解读，实测状态会在采样后呈现。</p>
-      <div class="btns"><button class="btn" data-jump="reg">查看寄存器定义${ic('arrow')}</button><button class="btn sec" data-jump="term">查看源码解读</button></div>
+      <div class="btns"><button class="btn" data-readopen>一键读取${ic('arrow')}</button><button class="btn sec" data-jump="reg">查看寄存器定义</button><button class="btn sec" data-jump="term">查看源码解读</button></div>
       <dl class="empty-metrics"><div><dt>当前任务</dt><dd>不可知</dd></div><div><dt>系统 tick</dt><dd>不可知</dd></div><div><dt>到期 tick</dt><dd>不可知</dd></div></dl>
-      <details class="learn-more"><summary>如何获得真实快照？</summary><div class="lesson-body note" style="text-align:left">连接 ST-LINK 后运行 <span class="mono">elens sample</span>，或导入 Keil 手工采集，再重新导出网页。固件身份核验通过后，才会解释任务与调度状态；没有证据的数值始终标为「不可知」。</div></details></div>`;
+      <details class="learn-more"><summary>如何获得真实快照？</summary><div class="lesson-body note" style="text-align:left">连接 ST-LINK 后运行 <span class="mono">elens sample --frames 5 --interval 1</span>（一次会话连拍 5 帧），或导入 Keil 手工采集，再重新导出网页。固件身份核验通过后，才会解释任务与调度状态；没有证据的数值始终标为「不可知」。</div></details></div>`;
     const ls=LENS.snapshots[LENS.snapshots.length-1];
     const raw=[...((ls&&ls.notes)||[]), ...((ls&&ls.identity&&ls.identity.reason)?[ls.identity.reason]:[])];
     const msgs=[...new Set(raw)];
     if(msgs.length){
       const full=msgs.join('\n\n');
-      root.insertAdjacentHTML('beforeend',`<details class="sample-log"><summary>最近一次采样未产出可用帧 · 查看探针日志</summary><div class="mono note">${esc(full)}</div></details>`);
+      root.insertAdjacentHTML('beforeend',`<details class="sample-log"><summary>最近一次采样未产出可用帧 · 查看探针日志</summary><div class="mono note">${esc(full)}</div><button class="btn sec" data-study-open="diagnosis" style="margin-bottom:16px">查看排查步骤</button></details>`);
     }
     return;
   }
@@ -1046,7 +1353,7 @@ function renderSched(){
       <div><div class="note mono">当前${g('延时链表')} <span id="daddr"></span></div>
         <div class="heapbar" id="dbar"></div><div id="dlbl" style="display:flex"></div><div class="cap" id="dcap"></div></div>
     </div>
-    <div class="scheduler-timeline"><div class="section-head"><h3>采样时间轴</h3><span class="note">离散采样 · 帧间可能漏采</span></div><div class="tl" id="stl"></div></div>
+    <div class="scheduler-timeline"><div class="section-head"><h3>会话泳道</h3><span class="note">离散采样 · 帧间可能漏采</span></div><div id="swim"></div></div>
     <div class="note">到期 ≠ 实际执行 ≠ GPIO 动作；当前选中任务可同时位于就绪链表。</div>
     <details class="learn-more"><summary>读懂调度视图与内核原始值</summary><div class="plain"><span>左边是<b>准备好能跑</b>的任务，右边是<b>正在延时</b>的任务。点任务块可跳回源码。${g('到期 tick','延时到期')}只代表具备重新就绪条件，并不保证立即执行。</span></div><div id="sraw" class="lesson-body"></div></details></div>`;
   const rb=bar($('rbar'),$('rlbl')),db=bar($('dbar'),$('dlbl'));
@@ -1065,9 +1372,7 @@ function renderSched(){
     $('dcap').textContent=dl?`${dl.which} · 节点 ${dl.entries.length} · 校验 ${dl.valid?'通过':'失败'}`:'无延时链表';
     let raw='';for(const[k,v]of Object.entries(dec.scalars))raw+=`<span class="chip">${k} = ${val(v,k!=='xSchedulerRunning')}</span>`;
     $('sraw').innerHTML=raw;
-    $('stl').innerHTML=validSnaps.map((x,j)=>{
-      const gap=j>0?`<div class="gap" title="离散快照之间可能漏采">⇢漏?</div>`:'';
-      return gap+`<div class="pt" style="height:${20+ (x.decoded.scalars.xTickCount?x.decoded.scalars.xTickCount.value%26:0)}px;opacity:${j===i?1:.5}" title="${esc(x.host_time)}"></div>`;}).join('');
+    renderSwim(s);
     $('sidx').textContent=(i+1)+' / '+validSnaps.length;
     if(window.__frameIn)window.__frameIn();
   });
@@ -1081,37 +1386,115 @@ function renderSched(){
 }
 
 /* ---- V2 寄存器位段 ---- */
+let REG_BIT=null,REG_PICK=null,REG_ALL=false;
+function regFrameLabel(s,j){const fi=s&&s.session&&Number.isInteger(s.session.frame_index)?s.session.frame_index:j;return 'F'+(fi+1);}
+function regTick(s){const t=s&&s.decoded&&s.decoded.scalars&&s.decoded.scalars.xTickCount;return t&&Number.isInteger(t.value)?t.value:null;}
+function regAddrOk(s,addr){const o=s&&s.gpio_odr;return !!(o&&o.prov&&String(o.prov.addr||'').toLowerCase()===String(addr).toLowerCase());}
+function regFrames(addr){return validSnaps.filter(s=>s.gpio_odr&&s.gpio_odr.state==='measured'&&regAddrOk(s,addr));}
+function regFieldAt(fields,b){for(const f of fields)if(b>=f.bit_offset&&b<f.bit_offset+f.bit_width)return f;return null;}
+function regFieldValue(v,f){const w=f.bit_width||1;return w>=32?(v>>>0):((v>>>f.bit_offset)&((1<<w)-1));}
+function regBitOf(s,b){const o=s&&s.gpio_odr;return o&&o.state==='measured'?((o.value>>>b)&1):null;}
+function regDetailHtml(per,pins,pinBits,writesByBit,frames,pick,b){
+  const r=LENS.structure.register,f=regFieldAt(r.fields||[],b);
+  const v=pick?regBitOf(pick,b):null;
+  const meas=v===null?uval('没有与定义地址一致、身份已核验的采样'):val({state:'measured',value:v,prov:{addr:r.address,bit:b,register:'0x'+((pick.gpio_odr.value>>>0).toString(16)),sampled_at:(pick.gpio_odr.prov||{}).sampled_at||pick.host_time,source:(pick.gpio_odr.prov||{}).source||pick.source,frame:regFrameLabel(pick,frames.indexOf(pick))}});
+  const fw=f?(f.bit_width||1):1,maskStr=fw>=32?'0xffffffff':'0x'+((1<<fw)-1).toString(16);
+  const fieldVal=(v!==null&&f)?val({state:'derived',value:regFieldValue(pick.gpio_odr.value,f),prov:{formula:`(VALUE >>> ${f.bit_offset}) & ${maskStr}`,inputs:{register:'0x'+((pick.gpio_odr.value>>>0).toString(16)),offset:f.bit_offset,width:f.bit_width}}}):null;
+  const pinName=pinBits[b],pin=pinName?pins[pinName]:null;
+  const ws=writesByBit[b]||[],hs=LENS.facts.hal_gpio_pin_state||{};
+  const hist=frames.map((s,j)=>{const x=regBitOf(s,b);return `<button type="button" class="hist-chip${x?' on':''}${s===pick?' sel':''}" data-regframe="${esc(s.id)}" title="${esc(String(s.host_time||''))} · tick ${regTick(s)??'—'}">${regFrameLabel(s,j)}<b>${x===null?'?':x}</b></button>`;}).join('');
+  const writes=ws.length?ws.map(w=>`<div class="bd-write"><span class="mono">${esc(fileBase(w.file))}:${esc(w.line)}</span> · ${esc(w.in_fn||'未识别函数')} → ${esc(w.port_macro)} / ${esc(w.pin_macro)} = ${esc(w.state)}${hs[w.state]?` (${hs[w.state].value})`:''}</div>`).join(''):'<span class="note">未识别到写这一位的 HAL 调用；不代表没有其他写者（中断、Toggle 或直接寄存器写）。</span>';
+  const range=f?(f.bit_width>1?`bit ${f.bit_offset+f.bit_width-1}:${f.bit_offset}`:`bit ${f.bit_offset}`):null;
+  return `<aside class="bit-detail" id="bitdetail" aria-live="polite">
+    <h4>bit ${b}${f?` · ${esc(f.name)}`:''}<span class="tag ${f?'acc':''}">${f?'SVD 定义':'未定义'}</span></h4>
+    <div class="bd-sub">${esc(per.name)} / ${esc(r.name)}${range?' · '+esc(range):' · SVD 未给出位定义'}</div>
+    <dl>
+      <dt>实测位值</dt><dd>${meas}</dd>
+      ${f?`<dt>本段字段值</dt><dd>${fieldVal??uval('无实测值，字段值不可知')} <span class="note">宽 ${f.bit_width} 位 · 访问 ${esc(f.access||'未提供')}</span></dd>`:''}
+      <dt>SVD 说明</dt><dd>${f?esc(f.description||'SVD 未提供描述'):'SVD 未定义此位，不猜测其含义。'}</dd>
+      <dt>引脚映射</dt><dd>${pin?`${esc(pinName)} · ${esc(pin.port)} bit ${pin.bit}<span class="note">${esc(fileBase(pin.file))}:${pin.Pin?pin.Pin.line:''}</span>`:'无源码确认的引脚映射（不可知）'}</dd>
+      <dt>源码写入</dt><dd>${writes}</dd>
+      <dt>各帧实测</dt><dd><div class="bit-hist">${hist||'<span class="note">无地址一致的有效帧</span>'}</div><div class="note" style="margin-top:6px">离散采样，帧间变化不可知；位值不代表灯的实际亮灭。</div></dd>
+    </dl></aside>`;
+}
 function renderReg(){
-  const r=LENS.structure.register,per=LENS.structure.peripheral;
-  const latest=validSnaps[validSnaps.length-1]||snaps[snaps.length-1];
-  const odr=latest?latest.gpio_odr:null;
-  const pins=LENS.facts.pins;const pinBits={};
-  for(const[k,p]of Object.entries(pins))if(p.confirmed_from_source&&p.port===per.name)pinBits[p.bit]=k;
-  let bits='';
-  const n=r.size_bits>16?16:r.size_bits;
-  for(let b=0;b<n;b++){
-    const f=r.fields.find(x=>x.bit_offset===b);
-    const set=odr&&odr.state==='measured'?((odr.value>>b)&1):null;
-    const hi=pinBits[b]!==undefined;
-    bits+=`<div class="bit${hi?' hi':''}${set?' set':''}" title="${esc(f?f.description:'')}">
-      <span class="bn">${esc(f?f.name:'b'+b)}</span><span class="bv">${set===null?'?':set}</span><span class="bit-pin">${hi?esc(pinBits[b]):'—'}</span></div>`;
+  const r=LENS.structure.register,per=LENS.structure.peripheral,pins=LENS.facts.pins||{};
+  const fields=(r.fields||[]).slice().sort((a,b)=>a.bit_offset-b.bit_offset);
+  const maxField=fields.reduce((m,f)=>Math.max(m,f.bit_offset+f.bit_width),0);
+  const bitCount=Math.max(8,Math.min(64,Math.max(Number(r.size_bits)||8,maxField)));
+  const defaultBits=Math.min(bitCount,Math.ceil(Math.max(16,maxField)/8)*8);
+  const displayBits=REG_ALL?bitCount:defaultBits;
+  const pinBits={};
+  for(const[k,p]of Object.entries(pins))if(p.confirmed_from_source&&Number.isInteger(p.bit)&&p.port===per.name)pinBits[p.bit]=k;
+  const writesByKey={};
+  for(const w of (LENS.facts.gpio_writes||[])){const k=String(w.pin_macro||'').replace(/_Pin$/,'');if(k)(writesByKey[k]=writesByKey[k]||[]).push(w);}
+  const writesByBit={};
+  for(const[b,k]of Object.entries(pinBits)){const ws=writesByKey[k]||[];if(ws.length)writesByBit[b]=ws;}
+  const frames=regFrames(r.address);
+  const omitted=validSnaps.length-frames.length;
+  const pick=frames.find(s=>s.id===REG_PICK)||frames[frames.length-1]||null;
+  const odr=pick?pick.gpio_odr:null;
+  if(!Number.isInteger(REG_BIT)||REG_BIT<0||REG_BIT>=displayBits){
+    const wb=Object.keys(writesByBit).map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+    const pb=Object.keys(pinBits).map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+    REG_BIT=wb[0]??pb[0]??(fields.length?fields[0].bit_offset:0);
   }
-  let pintab='';for(const[k,p]of Object.entries(pins))pintab+=`<tr><td>${k}</td><td class="m">${esc(p.port)} · bit ${p.bit}</td><td>${p.confirmed_from_source?'<span class="tag ok">源码已确认</span>':'未确认'}</td><td class="m note">${esc(p.file)}:${p.Pin?p.Pin.line:''}</td></tr>`;
-  $('view-reg').innerHTML=`<div class="view-head"><div><h2>寄存器位段</h2><p>从一个寄存器，看清每一位与引脚的对应关系。</p></div><span class="view-index">02 / REGISTER</span></div>
+  let bits='';
+  for(let b=0;b<displayBits;b++){
+    const f=regFieldAt(fields,b),set=odr?((odr.value>>>b)&1):null,pinName=pinBits[b];
+    const label=f?(f.bit_width>1&&b!==f.bit_offset?'↳':f.name):('b'+b);
+    const range=f?(f.bit_width>1?`bit ${f.bit_offset+f.bit_width-1}:${f.bit_offset}`:`bit ${f.bit_offset}`):'SVD 未定义';
+    const desc=f?`${f.name} · ${range} · ${f.description||''}`:'SVD 未定义此位，不猜测含义';
+    bits+=`<button type="button" class="bit${pinName?' hi':''}${set===1?' set':''}${b===REG_BIT?' sel':''}${f?'':' res'}" data-bit="${b}" aria-pressed="${b===REG_BIT}" aria-label="bit ${b} ${esc(f?f.name:'未定义')} ${set===null?'实测不可知':'实测 '+set}" title="${esc(desc)}"><span class="bn">${esc(label)}</span><span class="bv">${set===null?'?':set}</span><span class="bit-pin">${pinName?esc(pinName):(f?'':'—')}</span></button>`;
+  }
+  const digits=Math.max(4,Math.min(16,Math.ceil((Number(r.size_bits)||32)/4)));
+  const strip=frames.map((s,j)=>{const v=s.gpio_odr.value>>>0;return `<button type="button" class="reg-frame-chip${s===pick?' on':''}" data-regframe="${esc(s.id)}" aria-pressed="${s===pick}" title="${esc(String(s.host_time||''))} · tick ${regTick(s)??'—'}">${regFrameLabel(s,j)} <b>0x${v.toString(16).toUpperCase().padStart(digits,'0')}</b></button>`;}).join('');
+  const tick=regTick(pick);
+  const frameNote=pick?`${regFrameLabel(pick,frames.indexOf(pick))} · ${esc(String(pick.host_time||''))}${tick!==null?` · tick ${tick}`:''} · 身份已核验`:'尚无与定义地址一致、身份已核验的采样读数，不推测引脚状态';
+  const bin=odr?('0b'+((odr.value>>>0).toString(2).padStart(Math.min(bitCount,32),'0')).replace(/(.{4})(?=.)/g,'$1 ')):'';
+  const detail=regDetailHtml(per,pins,pinBits,writesByBit,frames,pick,REG_BIT);
+  const fieldRows=fields.map(f=>{const hi=f.bit_offset+f.bit_width-1,pin=f.bit_width===1?pinBits[f.bit_offset]:null,ws=pin?writesByKey[pin]||[]:[];
+    return `<tr><td class="m">${hi===f.bit_offset?'bit '+f.bit_offset:hi+':'+f.bit_offset}</td><td class="m">${esc(f.name)}</td><td>${f.bit_width}</td><td>${esc(f.access||'—')}</td><td>${pin?`${esc(pin)}${ws.length?` · ${ws.length} 处写入`:''}`:'—'}</td><td>${esc(f.description||'')}</td></tr>`;}).join('');
+  let pintab='';
+  for(const[k,p]of Object.entries(pins)){
+    const ws=writesByKey[k]||[],states=[...new Set(ws.map(w=>w.state))],here=p.port===per.name;
+    pintab+=`<tr${here?'':' class="pin-other"'}><td>${esc(k)}</td><td class="m">${esc(p.port)} · bit ${p.bit??'?'}</td><td>${ws.length?`${ws.length} 处 · ${states.map(esc).join(' / ')}`:'无'}</td><td>${p.confirmed_from_source?'<span class="tag ok">源码已确认</span>':'未确认'}</td><td class="m note">${esc(p.file)}:${p.Pin?p.Pin.line:''}</td></tr>`;
+  }
+  const hs=LENS.facts.hal_gpio_pin_state||{};
+  const hsNote=Object.keys(hs).length?`HAL 枚举：${Object.entries(hs).map(([k,v])=>`${k}=${v.value}`).join(' / ')}`:'';
+  $('view-reg').innerHTML=`<div class="view-head"><div><h2>寄存器位段</h2><p>从一位的实测值，追到 SVD 定义、源码写入与采样时刻。</p></div><span class="view-index">02 / REGISTER</span></div>
     <div class="card"><div class="section-head"><h3 class="mono">${esc(per.name)} <span style="color:var(--faint)">/</span> ${esc(r.name)}</h3><span class="note mono">${esc(r.size_bits)}-BIT REGISTER</span></div>
     <div class="readout-grid"><div class="readout"><div class="readout-label">定义地址 / ADDRESS</div>
       <div class="readout-value">${val({state:'authoritative',value:r.address,prov:{file:LENS.structure.svd.file,version:LENS.structure.svd.version,offset:r.offset}})}</div>
       <div class="note">定义来自 ${esc(r.defined_in)}${per.derivedFrom?` (${g('derivedFrom')} ${esc(per.derivedFrom)})`:''}</div></div>
       <div class="readout"><div class="readout-label">采样读数 / VALUE</div>
-      <div class="readout-value">${odr?val(odr,true):'<span class="v u">不可知<i class="bdg">不可知</i></span>'}</div><div class="note">${odr&&odr.state==='measured'?'来自最近一次可用采样':'尚无实测读数，不推测引脚状态'}</div></div></div>
-    <div class="register-map"><div class="section-head"><h3>引脚位图</h3><div class="map-legend"><span><i></i>源码确认</span><span><i class="unknown"></i>? 未采样</span></div></div>
-      <div class="bits">${bits}</div><div class="note">高亮映射：${Object.keys(pinBits).map(b=>'bit '+b+' → '+esc(pinBits[b])).join(' · ')||'无已确认引脚'}${r.size_bits>16?' · 当前展示低 16 位':''}</div></div>
+      <div class="readout-value">${odr?val(odr,true):uval('没有与定义地址一致、身份已核验的采样读数')}</div>
+      ${bin?`<div class="readout-bin">${esc(bin)}</div>`:''}
+      <div class="note">${frameNote}${omitted>0?` · 另有 ${omitted} 个有效帧没有地址一致的寄存器读数，未采用`:''}</div></div></div>
+    <div class="reg-frames"><span class="note mono">采样帧</span>${strip||'<span class="note">无地址一致且身份已核验的帧</span>'}<span class="note">点击切换本视图所用帧 · 只采用地址一致且身份已核验的读数</span></div>
+    <div class="reg-layout">
+      <div class="register-map"><div class="section-head"><h3>引脚位图</h3><div class="map-legend"><span><i></i>源码确认</span><span><i class="set"></i>实测 1</span><span><i class="clear"></i>实测 0</span><span><i class="unknown"></i>? 不可知</span></div></div>
+        <div class="bits">${bits}</div><div class="reg-bits-foot"><div class="note">高亮映射：${Object.keys(pinBits).length?Object.entries(pinBits).map(([b,k])=>'bit '+b+' → '+esc(k)).join(' · '):'无已确认引脚'} · 点击任一位查看 SVD 定义、实测来源与源码写入；${fields.length?'↳ 表示同一位段的延续位，bN 表示 SVD 未定义':'SVD 未提供字段'}。${bitCount>displayBits?` 当前显示 bit 0–${displayBits-1}，高 ${bitCount-displayBits} 位 SVD 未定义，未展开。`:''}</div>${bitCount>defaultBits?`<button type="button" class="chip" data-regall="1" aria-pressed="${REG_ALL}">${REG_ALL?'只看已定义范围':`显示全部 ${bitCount} 位`}</button>`:''}</div></div>
+      ${detail}
+    </div>
     <div class="view-foot"><span>位值不代表灯的亮灭，实际效果取决于硬件接法。</span><span class="mono">${esc(r.description)}</span></div>
-    <details class="learn-more"><summary>如何阅读寄存器位图？</summary><div class="plain"><span>每个格子对应${g('寄存器')}中的一位。对于 ${g('ODR')}，位值 1 表示输出锁存器置位，0 表示复位；实际引脚电平还取决于引脚模式。高亮只表示源码已确认映射，不代表已测得电平。GPIO_PIN_SET 是置位操作，置哪一位由 pin 参数决定。没采样时显示「?」。</span></div></details></div>
-    <details class="card mapping-details"><summary><b>引脚映射与来源</b><span class="note">设备头 + 源码 · ${Object.keys(pins).length} 项</span></summary>
-      <div class="table-scroll" tabindex="0" role="region" aria-label="引脚映射表"><table class="pin-table"><tr><th>符号</th><th>端口/位</th><th>确认</th><th>来源</th></tr>${pintab}</table></div>
+    <details class="learn-more"><summary>如何阅读寄存器位图与证据？</summary><div class="plain"><span>每个格子对应${g('寄存器')}中的一位。字段名来自 SVD；对于 ${g('ODR')}，位值 1 表示输出锁存器置位，0 表示复位；实际引脚电平还取决于引脚模式。实测值只在地址一致且身份核验的帧中显示，「?」表示不可知。源码写入只说明写入意图，不等于代码已执行或引脚电平；其他任务、中断、Toggle、直接寄存器写和硬件接法未覆盖。GPIO_PIN_SET 是置位操作，置哪一位由 pin 参数决定。</span></div></details></div>
+    <details class="card mapping-details"><summary><b>SVD 字段定义</b><span class="note">权威定义 · ${fields.length} 个字段</span></summary>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="SVD 字段定义表"><table><thead><tr><th>位段</th><th>名称</th><th>宽</th><th>访问</th><th>关联引脚/写入</th><th>说明</th></tr></thead><tbody>${fieldRows}</tbody></table></div>
+      <div class="note mono" style="margin-top:12px">来源：${esc(LENS.structure.svd.file)}（版本 ${esc(LENS.structure.svd.version)}）· 仅解析所选寄存器所需定义。</div></details>
+    <details class="card mapping-details"><summary><b>引脚映射与写入证据</b><span class="note">设备头 + 源码 · ${Object.keys(pins).length} 项</span></summary>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="引脚映射与写入证据表"><table class="pin-table"><thead><tr><th>符号</th><th>端口/位</th><th>已识别写入</th><th>确认</th><th>来源</th></tr></thead><tbody>${pintab}</tbody></table></div>
+      <div class="note">${hsNote?hsNote+' · ':''}写入状态是参数意图，不等于代码已执行或引脚电平；其他写者未覆盖。灰度行表示引脚不在当前所选寄存器端口。</div>
       <div class="note mono" style="margin-top:12px">${g('GPIO_TypeDef')} 布局来自 ${esc(LENS.structure.header.file)} · SVD/头文件一致性：${LENS.structure.cross_check&&LENS.structure.cross_check.svd_header_agree?'一致':'需复核'}</div></details>`;
 }
+document.addEventListener('click',e=>{
+  const all=e.target.closest('#view-reg [data-regall]');
+  if(all){REG_ALL=!REG_ALL;renderReg();const n=document.querySelector('#view-reg [data-regall]');if(n)n.focus({preventScroll:true});return;}
+  const bit=e.target.closest('#view-reg .bit[data-bit]');
+  if(bit){REG_BIT=Number(bit.dataset.bit);renderReg();const n=document.querySelector('#view-reg .bit[data-bit="'+REG_BIT+'"]');if(n)n.focus({preventScroll:true});return;}
+  const chip=e.target.closest('#view-reg [data-regframe]');
+  if(chip){REG_PICK=chip.dataset.regframe;renderReg();const n=[...document.querySelectorAll('#view-reg [data-regframe]')].find(x=>x.dataset.regframe===REG_PICK);if(n)n.focus({preventScroll:true});}
+});
 
 /* ---- V3 术语溯源 ---- */
 function dval(disp,formula,inputs){const o={state:'derived',value:disp,prov:{formula:formula,inputs:inputs||null}};
@@ -1124,6 +1507,7 @@ function fileBase(p){return String(p||'').split(/[\\/]/).pop();}
 
 function delayTermCard(grp,gi){
   const t=grp[0],ticks=t.passed.value,hz=t.decider.value;
+  if(ticks===0)return `<div class="term term-deep" data-fn="${esc(grp.map(x=>x.source.fn||'').join(' '))}"><div class="thead"><h3>vTaskDelay(0)</h3></div><p class="tlead">让出本次执行机会，不设置正延时；是否切换到其他任务仍由调度器决定。</p><div class="note">参数 ${val(t.passed)} tick · ${grp.map(x=>esc(fileBase(x.source.file))+':'+esc(x.source.line)).join(' / ')}</div></div>`;
   const period=1000/hz,lo=(ticks-1)*period,hi=ticks*period,sec=ticks/hz;
   const byFn=new Map();
   grp.forEach(x=>{const fn=x.source.fn||'未命名函数';if(!byFn.has(fn))byFn.set(fn,[]);byFn.get(fn).push(x);});
@@ -1158,7 +1542,7 @@ function delayTermCard(grp,gi){
   const hz2=hz*10;
   return `<div class="term term-deep" data-fn="${esc(fns.join(' '))}">
     <div class="thead"><h3>vTaskDelay(${esc(ticks)})</h3><span class="tag acc">${byFn.size} 个函数 · ${grp.length} 处调用</span></div>
-    <p class="tlead">这行代码让任务睡 <b>${ticks} 个节拍</b>，不是 ${ticks} 毫秒。本工程心跳 <b>${hz} Hz</b>，名义上是 <b>${secFmt(sec)} 秒</b>；而且它只决定「最早什么时候能再跑」，不保证准时执行。</p>
+    <p class="tlead">这行代码设置 <b>${ticks} 个节拍</b>的相对延时，tick 不是固定的毫秒单位。本工程心跳 <b>${hz} Hz</b>，名义上是 <b>${secFmt(sec)} 秒</b>；它只决定「最早什么时候能再跑」，不保证准时执行。</p>
     <div class="tq">
       <div><span class="k">① 传了什么</span><span class="big">${val(t.passed)}<em>tick</em></span><span class="n">节拍数。代码里看不出实际时长——单位换算由 ② 决定。</span></div>
       <div><span class="k">② 谁决定效果</span><span class="big">${val(t.decider)}<em>Hz</em></span><span class="n">${g('configTICK_RATE_HZ')}（${esc(cfgLoc)}）→ 1 tick = ${dval(msFmt(period)+' ms',`1 s ÷ ${hz} = ${msFmt(period)} ms`,{hz:hz})}。</span></div>
@@ -1208,63 +1592,19 @@ function delayTermCard(grp,gi){
 }
 
 function gpioTermCard(t){
-  const w=t.writes&&t.writes[0]?t.writes[0]:{};
-  const key=String(w.pin_macro||'').replace(/_Pin$/,'');
-  const pin=(LENS.facts&&LENS.facts.pins&&LENS.facts.pins[key])||null;
-  const port=pin&&pin.port?pin.port:null;
-  const bit=pin&&pin.bit!=null?pin.bit:null;
-  const regName=(LENS.structure&&LENS.structure.register&&LENS.structure.register.name)||'ODR';
-  const last=validSnaps[validSnaps.length-1];
-  const odr=last&&last.gpio_odr&&last.gpio_odr.state==='measured'?last.gpio_odr:null;
-  const bitVal=(odr&&bit!=null)?((odr.value>>bit)&1):null;
-  const srcs=t.writes.map(x=>`<span class="src" data-jump="reg">${esc(fileBase(x.file))}:${x.line} HAL_GPIO_WritePin(...,${esc(x.pin_macro)},${esc(x.state)})</span>`).join('');
-  const isSet=w.state==='GPIO_PIN_SET',isReset=w.state==='GPIO_PIN_RESET';
-  const hs=(LENS.facts&&LENS.facts.hal_gpio_pin_state&&LENS.facts.hal_gpio_pin_state[w.state])||null;
-  const stateProv=hs?{file:hs.file,line:hs.line,def_value:hs.value}:{file:w.file,line:w.line};
-  const stateV=isSet?val({state:'authoritative',value:'GPIO_PIN_SET',prov:stateProv})
-    :isReset?val({state:'authoritative',value:'GPIO_PIN_RESET',prov:stateProv})
-    :uval('未识别第 3 个参数');
-  const sem=isSet?`置位：把这一位写成 1（高电平），不是翻转${hs?'（HAL 定义值为 '+hs.value+'）':''}。`
-    :isReset?`复位：把这一位写成 0（低电平），不是翻转${hs?'（HAL 定义值为 '+hs.value+'）':''}。`
-    :'按 HAL 定义的写入状态处理。';
-  const pinV=(port&&bit!=null)
-    ?val({state:'authoritative',value:`${port} · bit ${bit}`,prov:{file:pin.file,line:pin.Pin?pin.Pin.line:null,macro:w.pin_macro}})
-    :uval('main.h 未确认这组 Pin / GPIO_Port 宏');
-  const odrV=bit==null?uval('引脚位未知，无法定位 '+regName+' 的位')
-    :(bitVal==null?uval('尚未采样；接调试器读 '+regName+' 对应位，或导入 Keil 手工采集')
-      :val({state:'measured',value:bitVal,prov:(odr.prov||{})}));
-  const states=[...new Set((((LENS.facts&&LENS.facts.gpio_writes)||[]).filter(x=>x.pin_macro===w.pin_macro)).map(x=>x.state))];
-  const onlyOne=states.length===1;
-  return `<div class="term term-deep">
-    <div class="thead"><h3>${esc(t.title)}</h3><span class="tag acc">${t.writes.length} 处写入 · ${onlyOne?'同一电平':'电平有变化'}</span></div>
-    <p class="tlead">同一个函数里 ${t.writes.length} 处调用，传的是同一个引脚、同一个状态：<b>${esc(w.pin_macro)} · ${esc(w.state)}</b>；已提取的写入里没有相反电平，所以这个引脚的电平不会切换。若它接着灯，灯的状态也不会跟着变——但任务是否还在调度，不能靠看灯，要靠 V1 采样。</p>
-    <div class="tq">
-      <div><span class="k">① 写了什么</span><span class="big">${stateV}</span><span class="n">${sem}</span></div>
-      <div><span class="k">② 写到哪里</span><span class="big">${pinV}</span><span class="n">引脚映射来自源码宏，不是猜的；未确认就标不可知。</span></div>
-      <div><span class="k">③ 输出会变吗</span><span class="big">${dval('不变',`${t.writes.length} 处调用都写 ${w.state}，没有相反电平，输出不会切换`,{sites:t.writes.length,state:w.state})}</span><span class="n">实际电平：${odrV}（${g(regName==='ODR'?'ODR':regName)} 对应位，采样后可见）。</span></div>
-    </div>
-    <details class="term-details"><summary>查看源码位置、硬件行为与验证方法</summary><div class="term-detail-grid"><div class="srcrow">${srcs}</div>
-    <div class="tsec"><div class="hd">内核与硬件之间发生了什么</div>
-      <ol class="flow">
-        <li><code>HAL_GPIO_WritePin(port, pin, state)</code> 的第 3 个参数是目标电平：${sem}</li>
-        <li>这个函数里已提取的写入（${t.writes.length} 处）传的都是 ${esc(w.state)}——执行到哪一处，写下去的值都一样。</li>
-        <li>已提取的 GPIO 写入里，这个引脚${onlyOne?`只出现 ${esc(w.state)}，没有相反电平`:`出现过 ${states.map(esc).join(' / ')}`}。</li>
-        <li>没有相反电平，引脚电平和灯的状态就不会切换——这就是「灯不闪」的源码侧解释；调度是否在跑是另一回事。</li>
-      </ol>
-    </div>
-    <div class="tsec"><div class="hd">图上怎么验证（三向联动）</div>
-      <div class="note">V2 寄存器位段里，${bit!=null?`<b>bit ${bit}</b>`:'对应位'} 高亮；采样后该位应与写入状态一致（SET→1，RESET→0）。未采样时每位标「?」，不编造。最后一个有效帧实测：${odrV}。</div>
-      <div style="margin-top:6px"><span class="chip" data-jump="reg">${ic('arrow',14)}跳到寄存器位段</span></div>
-    </div>
-    <div class="tsec"><div class="hd">想让它变化，改哪里</div>
-      <div class="note">把其中一处改成<b>相反</b>电平（如 <code>GPIO_PIN_RESET</code>，或改用 Toggle 函数），引脚才会出现切换；节奏仍由旁边的 vTaskDelay 决定。只改一处、其他处仍写同一电平，切换的间隔就由两次调用之间的代码决定。</div>
-    </div>
-    <details class="tadv"><summary>边界与陷阱（数据诚实契约 §6.2）</summary><div class="body">
-      <b>源码只能证明「写了哪个端口、哪一位、什么电平」。</b>高电平到底点亮还是熄灭，取决于硬件接法（共阴/共阳、是否反相），本页不猜。<br>
-      <b>亮灯 ≠ 调度。</b>GPIO 动作发生在任务执行之后；灯的状态不能证明任务在跑、也不能证明它准时醒。<br>
-      <b>数据出处。</b>${esc(t.note||'')} 引脚宏若被重定义或板子改线，需重新核对映射。
-    </div></details></div></details>
-  </div>`;
+  const ws=t.writes||[],w=ws[0]||{},key=String(w.pin_macro||'').replace(/_Pin$/,''),pin=LENS.facts.pins[key];
+  const mapped=pin&&pin.confirmed_from_source&&Number.isInteger(pin.bit),port=mapped?pin.port:null,bit=mapped?pin.bit:null;
+  const r=LENS.structure.register,per=LENS.structure.peripheral,last=studyLast(LENS),odr=last&&last.gpio_odr;
+  const canRead=mapped&&port===per.name&&r.name==='ODR'&&odr&&odr.state==='measured'&&odr.prov&&String(odr.prov.addr).toLowerCase()===String(r.address).toLowerCase();
+  const observed=canRead?val({state:'measured',value:(odr.value>>>bit)&1,prov:{...odr.prov,bit,source:last.source,sampled_at:last.host_time}}):uval('没有该端口 ODR 对应位的身份已核验采样');
+  const states=[...new Set(ws.map(x=>x.state))],allStates=[...new Set(LENS.facts.gpio_writes.filter(x=>x.pin_macro===w.pin_macro&&x.port_macro===w.port_macro).map(x=>x.state))];
+  const srcs=ws.map(x=>`<span class="src" data-jump="reg">${esc(fileBase(x.file))}:${esc(x.line)} HAL_GPIO_WritePin(${esc(x.port_macro||'…')},${esc(x.pin_macro)},${esc(x.state)})</span>`).join('');
+  const pinV=mapped?val({state:'authoritative',value:`${port} · bit ${bit}`,prov:{file:pin.file,line:pin.Pin&&pin.Pin.line,macro:w.pin_macro}}):uval('源码未确认端口与引脚位映射');
+  const stateV=states.map(state=>{const source=ws.find(x=>x.state===state);return val({state:'authoritative',value:state,prov:{file:source.file,line:source.line}});}).join(' / ');
+  return `<div class="term term-deep"><div class="thead"><h3>${esc(w.in_fn||'GPIO 调用')} · ${esc(w.pin_macro)}</h3><span class="tag acc">${ws.length} 处已识别调用 · ${states.length===1?'相同参数':'多种参数'}</span></div>
+    <p class="tlead">这组源码的写入参数为 <b>${states.map(esc).join(' / ')}</b>；${states.length===1?'这些调用本身没有构成置位与复位交替的序列':'识别到了多种写入参数，但不证明这些路径都实际执行'}。这不能证明引脚始终不变或灯周期闪烁，其他任务、中断、Toggle 与直接寄存器写仍可能影响输出。</p>
+    <div class="tq"><div><span class="k">① 写入意图</span><span class="big">${stateV}</span><span class="n">SET 是置位，RESET 是复位，都不是自动翻转。</span></div><div><span class="k">② 写入位置</span><span class="big">${pinV}</span><span class="n">依据源码映射，不推测硬件接法。</span></div><div><span class="k">③ 本次采样位值</span><span class="big">${observed}</span><span class="n">ODR 是输出锁存值；实际电平、灯亮灭与持续时间需要额外证据。</span></div></div>
+    <details class="term-details"><summary>查看源码位置、硬件行为与验证方法</summary><div class="term-detail-grid"><div class="srcrow">${srcs}</div><div class="tsec"><div class="hd">目前能确认什么</div><ol class="flow"><li>这些调用行中出现了上述参数，不等于运行时一定执行到。</li><li>当前已提取的同端口宏、同引脚宏写入包含 ${allStates.map(esc).join(' / ')||'未知参数'}；宏别名及未提取的路径仍可能遗漏。</li><li>离散快照只能说明采样时刻，不能证明两次采样之间没有切换。</li></ol></div><div class="tsec"><div class="hd">如何继续验证</div><div class="note">先核对引脚模式与硬件接法，再查找全部写入者。若要验证闪烁周期，需要连续时序证据；当前工具不提供连续 trace，也不由灯的亮灭反推调度状态。</div><div class="btns" style="margin-top:12px"><button class="btn sec" data-jump="reg">查看寄存器位段</button><button class="btn sec" data-study-open="guide" data-study-topic="gpio">做一次预测实验</button></div></div></div></details></div>`;
 }
 
 function renderTerm(){
@@ -1287,6 +1627,7 @@ function renderTerm(){
   $('view-term').innerHTML=h;
 }
 function termClick(e){
+  const study=e.target.closest('[data-study-open]');if(study){if(study.dataset.studyTopic)LEARNING.lesson=study.dataset.studyTopic;openStudy(study.dataset.studyOpen);return;}
   const s=e.target.closest('.src[data-link]');
   if(s){const c=$(s.dataset.link);if(c){c.classList.add('lit');setTimeout(()=>c.classList.remove('lit'),1500);if(window.__pulse)window.__pulse(c);}return;}
   const j=e.target.closest('[data-jump]');
@@ -1325,8 +1666,127 @@ function renderReplay(){
   $('rstop').onclick=()=>{clearInterval(replayTimer);replayTimer=null;};
 }
 
+function download(name,text,type){const blob=new Blob([text],{type:type+';charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+function exportPage(name){
+  const clone=document.documentElement.cloneNode(true);
+  ['#impwrap','#glwrap','#readwrap','#prov','#scrim'].forEach(s=>clone.querySelector(s)?.classList.remove('on'));
+  const json=JSON.stringify(LENS).replace(/</g,'\\u003c'),learning=JSON.stringify(LEARNING).replace(/</g,'\\u003c');
+  let html='<!DOCTYPE html>\n'+clone.outerHTML;
+  html=html.replace(/^let LENS = [^\n]*;\nconst STATE=/m,()=>'let LENS = '+json+';\nconst STATE=');
+  html=html.replace(/^let LEARNING = [^\n]*;/m,()=>'let LEARNING = '+learning+';');
+  download(name,html,'text/html');
+}
+let LEARNING = {mode:'guide',lesson:'delay',call:0,gpio:0,answers:{},before:null,after:null};
+let studyNotice='',studyError=false;
+const studyLoads={before:0,after:0};
+function studyFrames(p){return (p.snapshots||[]).filter(s=>s.status==='ok'&&s.valid===true&&s.identity&&s.identity.status==='verified'&&s.resume_ok!==false&&s.decoded);}
+function studyLast(p){const a=studyFrames(p);return a[a.length-1]||null;}
+function studyUnknown(reason){return val({state:'unknown',value:null,prov:{reason}});}
+function studySource(x){return `${fileBase(x.file)||'未提供文件'}:${x.line??'?'} · ${x.in_fn||'未识别函数'}`;}
+function studyGroups(p){const groups=new Map();for(const w of p.facts.gpio_writes||[]){const key=JSON.stringify([w.in_fn,w.port_macro,w.pin_macro]);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(w);}return [...groups.values()];}
+function studyQuestion(){
+  const facts=LENS.facts,cfg=facts.config.configTICK_RATE_HZ,hz=cfg&&Number.isFinite(cfg.value)&&cfg.value>0?cfg.value:null;
+  const delays=facts.delay_calls||[],groups=studyGroups(LENS);
+  if(LEARNING.lesson==='delay'){
+    if(!delays.length)return null;
+    const i=Math.min(LEARNING.call,delays.length-1),d=delays[i],ticks=d.ticks,zero=ticks===0;
+    const correct=zero?'yield':hz?'frequency':'unknown';
+    const options=[['milliseconds',`${ticks} tick 总是等于 ${ticks} ms，与配置无关`],['frequency',hz?`按 ${hz} Hz 换算，名义 ${secFmt(ticks/hz)} s，但不保证立即执行`:'按节拍频率换算，但目前还没有频率依据'],['yield','这次调用只让出本次执行机会，不设置正延时'],['unknown','缺少换算依据，当前无法给出名义时长']];
+    const nominal=zero?'0 tick 不设置正延时':hz?`${ticks} tick ÷ ${hz} Hz = ${secFmt(ticks/hz)} s`:'缺少有效的 configTICK_RATE_HZ，不能把 tick 当毫秒';
+    const feedback={milliseconds:'tick 是节拍数，不是固定的毫秒单位；只有特定频率下两个数值才会恰好相同。',frequency:zero?'vTaskDelay(0) 不进入正延时等待，不能按普通睡眠时间解释。':hz?'名义时长来自参数与节拍配置；到期只代表重新具备就绪条件，不代表准时执行。':'当前没有频率证据，不能给出可靠的时间换算。',yield:zero?'vTaskDelay(0) 让出本次执行机会，随后是否运行其他任务仍由调度器决定。':'这里参数大于 0，是相对延时，不是单纯的零延时让出。',unknown:hz||zero?'这个问题已有足够的源码与配置依据；但真实执行时刻仍然不可知。':'正确保留了未知项：补充该工程的节拍配置后，才能进行换算。'};
+    const last=studyLast(LENS),tc=last&&last.decoded.scalars&&last.decoded.scalars.xTickCount;
+    return {context:JSON.stringify([LENS.build.axf_sha,LENS.build.map_sha,d,cfg]),correct,options,feedback,title:`vTaskDelay(${ticks}) 应该怎样理解？`,select:`<label class="note" for="study-call">选择当前工程中的调用</label><select class="study-select" id="study-call">${delays.map((x,j)=>`<option value="${j}" ${j===i?'selected':''}>${esc(studySource(x))} · ${esc(x.ticks)} tick</option>`).join('')}</select>`,evidence:`<dt>源码参数</dt><dd>${val({state:'authoritative',value:ticks,prov:{file:d.file,line:d.line,unit:'tick'}})} tick · ${esc(studySource(d))}</dd><dt>节拍配置</dt><dd>${hz?val({state:'authoritative',value:hz,prov:{file:cfg.file,line:cfg.line,unit:'Hz'}})+' Hz':studyUnknown('未提供有效的节拍频率')}</dd><dt>换算依据，而非实测时长</dt><dd>${esc(nominal)}</dd><dt>最后有效快照中的 tick</dt><dd>${tc?val(tc):studyUnknown('没有身份核验通过的有效快照')}<div class="note">采样 tick 不是调用时刻；不能用它反推真实到期 tick 或执行耗时。</div></dd>`,next:['在 IDE 中只修改一个延时参数，或只修改节拍频率，先写下你的预期。','重新编译后按自己的实验流程更新固件，再导入同次构建产物并采样核验。','分别保留修改前后数据包，在「前后对比」里核对配置、名义时长与实测证据。']};
+  }
+  if(!groups.length)return null;
+  const i=Math.min(LEARNING.gpio,groups.length-1),ws=groups[i],w=ws[0],states=[...new Set(ws.map(x=>x.state))];
+  return {context:JSON.stringify([LENS.build.axf_sha,LENS.build.map_sha,ws]),correct:'bounded',title:'这些 GPIO 调用能证明什么？',options:[['steady','同状态写入就能证明引脚始终不变'],['toggle','存在 SET 与 RESET 调用就能证明灯周期闪烁'],['bounded','只能解释已识别调用；真实电平与时序仍需验证'],['scheduler','灯没闪就表示任务没有被调度']],feedback:{steady:'同状态调用本身不构成翻转序列，但其他任务、中断、Toggle 或直接写寄存器仍可能改变输出。',toggle:'调用存在不等于代码实际执行；还要确认控制流、引脚模式、硬件接法与时间证据。',bounded:'证据边界判断正确：源码说明写入意图，ODR 快照说明采样时的锁存值，都不能单独证明持续闪烁。',scheduler:'灯的状态不是调度证据；应查看身份核验后的任务快照，而不是由亮灭反推任务是否在运行。'},select:`<label class="note" for="study-gpio">选择已识别的 GPIO 调用组</label><select class="study-select" id="study-gpio">${groups.map((g,j)=>`<option value="${j}" ${i===j?'selected':''}>${esc(g[0].in_fn||'未识别函数')} · ${esc(g[0].port_macro)} / ${esc(g[0].pin_macro)}</option>`).join('')}</select>`,evidence:`<dt>本组已识别的写入状态</dt><dd>${states.map(esc).join(' / ')} · ${ws.length} 处调用</dd><dt>源码位置</dt><dd>${ws.map(x=>`${esc(studySource(x))}<br>${val({state:'authoritative',value:x.state,prov:{file:x.file,line:x.line,port_macro:x.port_macro,pin_macro:x.pin_macro}})}`).join('<br>')}</dd><dt>能确认的范围</dt><dd>这些调用的写入参数；不证明它们已经执行，也不覆盖其他任务、中断、Toggle、直接寄存器写或硬件反相。</dd><dt>寄存器证据</dt><dd>${studyRegister(LENS).html}<div class="note">只读所选寄存器的采样时刻，不据此判断灯是否一直亮或一直闪。</div></dd>`,next:['先在源码中查找该引脚的所有写入者，包括中断、Toggle 和直接寄存器写。','在 IDE 中只改一个因素；重新构建和实验后，采集与新固件匹配的数据包。','比较两份数据中的写入意图与寄存器读数；相同的离散读数不能证明期间没有变化。']};
+}
+function studyRegister(p){
+  const s=studyLast(p),v=s&&s.gpio_odr,r=p.structure.register;
+  if(!v||v.state!=='measured'||!Number.isInteger(v.value)||!v.prov||String(v.prov.addr).toLowerCase()!==String(r.address).toLowerCase())return {key:null,html:studyUnknown('没有与所选寄存器地址一致、身份核验通过且来源完整的有效读数')};
+  return {key:v.value,html:val(v,true)+`<span class="compare-source">${esc(s.host_time)} · ${esc(s.source)}</span>`};
+}
+function studyGuide(){
+  const q=studyQuestion();
+  const lessons=`<div class="study-lessons"><button class="study-lesson" data-study-lesson="delay" aria-pressed="${LEARNING.lesson==='delay'}"><span class="mono">EXPERIMENT / 01</span><b>tick 不是毫秒</b><span>参数 → 配置 → 名义时长</span></button><button class="study-lesson" data-study-lesson="gpio" aria-pressed="${LEARNING.lesson==='gpio'}"><span class="mono">EXPERIMENT / 02</span><b>灯为什么不闪？</b><span>写入意图 → 采样证据 → 结论边界</span></button></div>`;
+  if(!q)return lessons+`<div class="card empty"><b>当前工程缺少这个实验的源码依据</b><p>导入包含数字常量 vTaskDelay 调用或 HAL_GPIO_WritePin 调用的源码；节拍换算还需要 FreeRTOSConfig.h。</p><div class="btns" style="margin-top:16px"><button class="btn" data-study-import>导入工程</button></div></div>`;
+  const saved=LEARNING.answers[LEARNING.lesson],a=saved&&saved.context===q.context?saved:null,done=a&&a.submitted,agree=done&&a.choice===q.correct;
+  return lessons+`<div class="study-layout"><div><form class="card study-question" id="study-answer"><span class="study-step">01 / 先预测，再查证</span><h3>${esc(q.title)}</h3><p class="note">使用当前工程的真实定义与源码事实，不会生成虚拟采样。</p><div style="margin-top:18px">${q.select}</div><fieldset><legend>选择你认为最准确的解释</legend>${q.options.map(([id,text])=>`<label class="study-choice"><input type="radio" name="study-choice" value="${id}" ${a&&a.choice===id?'checked':''} required><span>${esc(text)}</span></label>`).join('')}</fieldset><div class="btns"><button class="btn" type="submit">提交预测，查看反馈</button><button class="btn sec" type="button" data-study-retry>重新预测</button></div>${done?`<div class="study-feedback ${agree?'agree':''}" role="status"><b>${agree?'与当前证据一致':'再检查一下证据'}</b>${esc(q.feedback[a.choice])}<br>这次回答只针对当前问题，不代表已经掌握整个概念。</div>`:''}</form><div class="card"><span class="study-step">03 / 做一次可验证的改动</span><ol class="study-next">${q.next.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="btns" style="margin-top:20px"><button class="btn sec" data-study-mode="compare">打开前后对比${ic('arrow')}</button><button class="btn sec" data-study-mode="diagnosis">检查采样记录</button></div></div></div><aside><details class="card study-evidence" ${done?'open':''}><summary>02 / 查看证据与来源</summary><dl>${q.evidence}</dl><div class="btns"><button class="btn sec" data-jump="${LEARNING.lesson==='delay'?'term':'reg'}">打开对应视图${ic('arrow')}</button></div></details><div class="card"><div class="section-head"><h3>把实验带走</h3><span class="note mono">OFFLINE</span></div><p class="note">导出的实验网页会保存当前工程、预测反馈和已载入的 A/B 数据包；所有文件只在本机处理。</p><button class="btn sec" data-study-export style="margin-top:16px">导出实验网页</button><p class="note" style="margin-top:12px">当前有效采样 ${studyFrames(LENS).length} 帧；没有实测时只做源码与定义实验。</p></div></aside></div>`;
+}
+function validateStudyPayload(p){
+  const obj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),str=x=>typeof x==='string',arr=x=>Array.isArray(x);
+  if(!obj(p)||!obj(p.device)||!str(p.device.name)||!obj(p.build)||!obj(p.identity)||!obj(p.structure)||!obj(p.structure.register)||!obj(p.structure.peripheral)||!obj(p.structure.svd)||!obj(p.facts)||!obj(p.facts.config)||!obj(p.facts.pins)||!arr(p.facts.delay_calls)||!arr(p.facts.gpio_writes)||!arr(p.facts.tasks)||!arr(p.snapshots))throw new Error('需要完整的 EmbeddedLens 数据包：设备、构建、身份、结构、工程事实与快照记录。');
+  const r=p.structure.register;
+  if(!str(r.name)||!str(r.address)||!str(p.structure.peripheral.name)||!Number.isInteger(r.size_bits)||r.size_bits<1||r.size_bits>64||!arr(r.fields))throw new Error('寄存器定义不完整。');
+  if(p.facts.delay_calls.some(d=>!obj(d)||!Number.isInteger(d.ticks)||d.ticks<0||!str(d.file))||p.facts.gpio_writes.some(w=>!obj(w)||!str(w.pin_macro)||!str(w.state)||!str(w.file))||p.facts.tasks.some(t=>!obj(t)||!str(t.name)||!Number.isInteger(t.priority)))throw new Error('工程事实中的调用或任务格式不正确。');
+  const hz=p.facts.config.configTICK_RATE_HZ;
+  if(hz!=null&&(!obj(hz)||!Number.isFinite(hz.value)))throw new Error('节拍频率必须是数值。');
+  if(p.snapshots.some(s=>!obj(s)||!str(s.status)||(s.decoded!=null&&!obj(s.decoded))))throw new Error('快照记录格式不正确。');
+  return p;
+}
+async function studyReadFile(file){if(file.size>16*1024*1024)throw new Error('数据包超过 16 MB，请只保留本次实验所需的快照。');return validateStudyPayload(JSON.parse(await file.text()));}
+function studyCompareRows(p){
+  const f=p.facts,hz=f.config.configTICK_RATE_HZ,rate=hz&&Number.isFinite(hz.value)&&hz.value>0?hz.value:null;
+  const delays=f.delay_calls.map(d=>({fn:d.in_fn||'未识别函数',ticks:d.ticks,seconds:d.ticks===0?0:rate?d.ticks/rate:null,file:d.file,line:d.line}));
+  const writes=f.gpio_writes.map(w=>`${w.in_fn||'未识别函数'} · ${w.port_macro||'?'} / ${w.pin_macro} = ${w.state}`);
+  const tasks=f.tasks.map(t=>`${t.name} · 优先级 ${t.priority}`),s=studyLast(p),current=s&&s.decoded.current;
+  return [{title:'节拍频率',key:rate,html:rate?val({state:'authoritative',value:rate,prov:{file:hz.file,line:hz.line,unit:'Hz'}})+' Hz':studyUnknown('缺少有效节拍配置')},
+    {title:'延时参数与名义时长',key:delays.length?JSON.stringify(delays.map(d=>[d.fn,d.ticks,d.seconds])):null,html:delays.length?delays.map(d=>`${esc(d.fn)} · ${val({state:'authoritative',value:d.ticks,prov:{file:d.file,line:d.line,unit:'tick'}})} tick → ${d.ticks===0?'让出执行机会':d.seconds===null?'时长不可知':esc(secFmt(d.seconds))+' s（推导）'}<span class="compare-source">${esc(fileBase(d.file))}:${esc(d.line)}</span>`).join('<br>'):studyUnknown('未识别到受支持的延时调用')},
+    {title:'已识别 GPIO 写入',key:writes.length?JSON.stringify(writes):null,html:writes.length?writes.map(esc).join('<br>'):studyUnknown('未识别到 GPIO 写入')},
+    {title:'任务定义',key:tasks.length?JSON.stringify(tasks):null,html:tasks.length?tasks.map(esc).join('<br>'):studyUnknown('未识别到任务定义')},
+    {title:'快照选中任务',key:current&&current.name||null,html:current?val({state:'measured',value:current.name,prov:{addr:current.addr,source:s.source,sampled_at:s.host_time}}):studyUnknown('没有身份核验通过的任务快照'),observation:true},
+    {title:'所选寄存器读数',...studyRegister(p),register:true,observation:true}];
+}
+function studyCompare(){
+  let h=`<div class="note" style="margin-bottom:18px">先保存 A，再在 IDE 中改动、重新构建与采样，最后载入 B；这里不会修改固件，也不会把两份数据合并成一条运行轨迹。</div><div class="compare-slots">`;
+  for(const [slot,label]of[['before','A / 修改前'],['after','B / 修改后']]){const s=LEARNING[slot],p=s&&s.payload;
+    h+=`<section class="card compare-slot"><span class="study-step">${label}</span><h3>${p?esc(p.device.name):'等待一份完整数据包'}</h3><div class="compare-meta">${p?`${esc(s.name)}<br>${esc(p.build.rtos)} · 固件 ${esc(p.build.axf_sha||'指纹未提供')}<br>${studyFrames(p).length} 个有效帧 / ${p.snapshots.length} 条记录`:'可以使用当前工程，也可以载入该版本导出的 payload.json。没有实测帧时仍可比较工程事实。'}</div><div class="btns"><button class="btn sec" data-study-capture="${slot}">使用当前工程</button><label class="btn sec compare-file">载入数据包<input type="file" id="study-${slot}-file" data-study-file="${slot}" accept=".json,application/json" aria-label="载入${slot==='before'?'修改前':'修改后'}数据包"></label>${p?`<button class="btn sec" data-study-clear="${slot}">移除</button>`:''}</div></section>`;
+  }
+  h+='</div>';
+  if(!LEARNING.before||!LEARNING.after)return h+`<div class="card empty"><b>保留改前与改后的证据，再判断变化</b><p>不会用模拟数据填充空位；两份数据包就绪后显示对比结果。</p><button class="btn sec" data-study-import style="margin-top:16px">打开工程导入 / 数据导出</button></div>`;
+  const a=LEARNING.before.payload,b=LEARNING.after.payload,rowsA=studyCompareRows(a),rowsB=studyCompareRows(b);
+  const sameRegister=a.device.name===b.device.name&&a.structure.peripheral.name===b.structure.peripheral.name&&a.structure.register.name===b.structure.register.name&&a.structure.register.size_bits===b.structure.register.size_bits&&a.structure.register.address.toLowerCase()===b.structure.register.address.toLowerCase();
+  let changes=0,unknowns=0;
+  const rows=rowsA.map((x,i)=>{const y=rowsB[i],comparable=x.key!==null&&y.key!==null&&(!x.register||sameRegister),changed=comparable&&x.key!==y.key;if(changed)changes++;if(!comparable)unknowns++;
+    return `<tr class="${changed?'changed':''}"><th scope="row">${x.title}</th><td>${x.html}</td><td>${y.html}</td><td>${!comparable?'证据不足或不可比':changed?(x.observation?'观测不同':'事实有变化'):(x.observation?'本次观测相同':'识别结果相同')}</td></tr>`;}).join('');
+  h+=`<div class="card"><div class="section-head"><h3>证据对照</h3><span class="note">${changes} 项不同 · ${unknowns} 项不可判定</span></div><div class="snote"><b>比较边界</b><br>核验结果来自各自数据包，网页没有重新连接开发板。不同构建的 tick 不能直接相减；相同快照值也不能证明两次采样之间没有变化。源码条目按各自提取顺序展示，不自动对齐执行路径。${sameRegister?'':'<br>设备或寄存器定义不一致：原始读数不作数值差异判断。'}</div><div class="table-scroll" role="region" tabindex="0" aria-label="实验前后证据对照"><table class="compare-table"><thead><tr><th>观察项</th><th>A / 修改前</th><th>B / 修改后</th><th>判断</th></tr></thead><tbody>${rows}</tbody></table></div><details class="learn-more"><summary>如何解释这个结果？</summary><div class="lesson-body note">配置或参数变化只能支持对应的名义换算；要证明执行周期或灯闪烁，需要额外的连续时序证据。若只有工程定义，先解释源码变化，不把缺少的实测证据当作反例。一次只改变一个因素，更容易定位因果。</div></details><button class="btn sec" data-study-export style="margin-top:20px">导出实验网页</button></div>`;
+  return h;
+}
+function studyDiagnosis(){
+  const snaps=LENS.snapshots,s=snaps[snaps.length-1],diag=s&&s.diagnostic,raw=s?[...(s.notes||[]),s.identity&&s.identity.reason||'',diag&&diag.message||''].filter(Boolean).join('\n'):'尚无采样记录';
+  let stage=diag&&diag.stage;
+  if(!stage){if(!s)stage='none';else if(s.resume_ok===false||/resume.*失败|恢复目标失败/.test(raw))stage='resume';else if(s.identity&&s.identity.status==='mismatch')stage='identity';else if(s.valid&&s.identity&&s.identity.status==='verified')stage='complete';else if(/ENOENT|WinError 2|No such file/i.test(raw))stage='tool';else if(/halt 失败/i.test(raw))stage='halt';else if(/open failed|无法连接 OpenOCD|探针未连接/i.test(raw))stage='connect';else if(/结构校验/.test(raw))stage='structure';else if(s.identity&&s.identity.status!=='verified')stage='identity';else stage='unknown';}
+  const guidance={none:['先准备一次只读采样',['先导入同次构建的 map、AXF、SVD 和已核定的结构偏移。','确认板子供电、ST-LINK 驱动及 SWD 接线，再在本机运行采样命令。']],tool:['采样工具未能启动',['检查 OpenOCD 可执行文件与 scripts 目录是否存在。','可用 CLI 的 --openocd、--scripts 指定本机路径；DWARF 提取用 --gdb 指定工具。']],connect:['连接阶段需要排查',['确认供电、共地、SWDIO/SWCLK 接线及驱动。','检查 Keil 等程序是否正在独占探针；需要由你确认后关闭占用程序。','日志不足以区分这些原因；不要把排查建议当成已经确认的故障。']],halt:['停核请求未成功',['检查探针连接和目标配置是否与芯片匹配。','查看原始 halt 响应；不要使用烧录或复位来绕过问题。']],read:['内存读取阶段未完成',['检查地址范围、目标配置及构建产物是否匹配。','查看原始读取响应，并确认目标是否已恢复；不要用上次文件冒充本次采样。']],resume:['目标恢复失败，先确认开发板状态',['暂停继续采样，使用原调试工具确认目标当前是否仍停核。','界面不能替你确认目标已经恢复；保留日志并排查连接问题。']],identity:['固件身份尚未核验通过',['确认 AXF、map、偏移与板上固件来自同次构建。','手工采集也需要 Flash 比对数据；不要跳过核验来解释 RTOS 对象。']],structure:['内核结构校验未通过',['核对 DWARF 偏移、FreeRTOS 配置与读取地址范围。','离散停核可能落在链表更新中；确认目标已恢复后再采样，不用坏帧解释任务。']],complete:['记录包含可用的核验快照',['可打开调度快照与寄存器，点击数值检查来源。','这里只反映记录中的采样结果，不表示开发板此刻仍连接或仍处于相同状态。']],unknown:['现有记录不足以定位阶段',['先查看原始日志，确认失败发生在启动、连接、停核、读取还是恢复。','不要凭一条模糊错误判断供电、接线或固件损坏。']]};
+  const [title,steps]=guidance[stage]||guidance.unknown,hasOffset=LENS.offsets&&LENS.offsets.types&&Object.keys(LENS.offsets.types).length>0;
+  const checks=[['RTOS 符号',LENS.build.rtos_linked?'已识别链接':'未确认链接'],['构建指纹',LENS.build.axf_sha?'已提供':'未提供 AXF 指纹'],['结构偏移',hasOffset?'已提供，仍需与构建核对':'未提供'],['最近采样',s?`${s.host_time||'时间未提供'} · ${s.source||'来源未提供'}`:'尚无记录'],['该帧身份',s&&s.identity?({verified:'记录为已核验',mismatch:'不匹配',unverified:'未核验'}[s.identity.status]||s.identity.status):'不可知'],['目标恢复',s&&s.resume_ok===true?'记录为恢复成功':s&&s.resume_ok===false?'恢复失败':'记录未确认'],['可解释状态',s&&studyFrames({snapshots:[s]}).length?'该帧可参与解释':'该帧不参与 RTOS 解释']];
+  return `<div class="study-layout"><div class="card"><span class="study-step">DIAGNOSTICS / 依据采样记录</span><h2>${esc(title)}</h2><p class="note">${diag?'阶段来自采样器的结构化记录。':'旧记录的阶段仅由状态与日志线索归类，无法据此确认唯一根因。'}此页不会探测设备或执行命令。</p><ol class="study-next">${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><div class="btns" style="margin-top:20px"><button class="btn" data-readopen>一键读取</button><button class="btn sec" data-study-import>核对工程文件</button><button class="btn sec" data-jump="sched">查看调度快照</button></div><details class="learn-more"><summary>原始诊断记录</summary><div class="diagnosis-log">${esc(raw)}</div></details></div><aside class="card"><div class="section-head"><h3>采样准备清单</h3></div><ul class="diagnosis-list">${checks.map(([k,v])=>`<li><span>${esc(k)}</span><b>${esc(v)}</b></li>`).join('')}</ul><details class="learn-more"><summary>本机命令与手工采集</summary><div class="lesson-body note">从项目目录执行，路径换成你本机的安装位置：<p class="diagnosis-log">python tools/elens.py sample --example &lt;工程名&gt; --frames 5 --interval 1 --openocd &lt;工具路径&gt; --scripts &lt;脚本目录&gt;</p>采样后重新 export，或用 --manual 导入 Keil 手工采集的实际字节；先确认调试环境不会自动下载或复位。离线网页不能直接连接 ST-LINK。</div></details></aside></div>`;
+}
+function renderLearn(focusId){
+  const modes=[['guide','实验引导'],['compare','前后对比'],['diagnosis','采样诊断']];
+  if(!modes.some(([k])=>k===LEARNING.mode))LEARNING.mode='guide';
+  $('view-learn').innerHTML=`<div class="view-head"><div><h2>学习实验</h2><p>先提出解释，再用你的工程与采样证据检验。</p></div><span class="view-index">00 / LAB NOTEBOOK</span></div><div class="study-nav" role="group" aria-label="学习工具">${modes.map(([k,n])=>`<button id="study-mode-${k}" data-study-mode="${k}" aria-pressed="${LEARNING.mode===k}">${n}</button>`).join('')}</div><div class="study-status ${studyError?'error':''}" role="status">${esc(studyNotice)}</div>${LEARNING.mode==='guide'?studyGuide():LEARNING.mode==='compare'?studyCompare():studyDiagnosis()}`;
+  if(focusId){const el=$(focusId);if(el)el.focus({preventScroll:true});}
+}
+function openStudy(mode){LEARNING.mode=mode;studyNotice='';studyError=false;renderLearn();$('tab-learn').click();$('study-mode-'+mode).focus({preventScroll:true});}
+$('view-learn').addEventListener('click',e=>{
+  const mode=e.target.closest('[data-study-mode]');if(mode){LEARNING.mode=mode.dataset.studyMode;studyNotice='';studyError=false;renderLearn('study-mode-'+LEARNING.mode);return;}
+  const lesson=e.target.closest('[data-study-lesson]');if(lesson){LEARNING.lesson=lesson.dataset.studyLesson;renderLearn();$('study-answer')?.querySelector('input')?.focus({preventScroll:true});return;}
+  const capture=e.target.closest('[data-study-capture]');if(capture){const slot=capture.dataset.studyCapture;LEARNING[slot]={name:'当前工程快照',payload:JSON.parse(JSON.stringify(LENS))};studyNotice=`已保存${slot==='before'?'修改前 A':'修改后 B'}，后续导入不会覆盖这份证据。`;studyError=false;renderLearn('study-mode-compare');return;}
+  const clear=e.target.closest('[data-study-clear]');if(clear){LEARNING[clear.dataset.studyClear]=null;studyNotice='已移除所选对比数据，不影响当前工程。';renderLearn('study-mode-compare');return;}
+  if(e.target.closest('[data-study-import]'))$('impopen').click();
+  if(e.target.closest('[data-study-retry]')){delete LEARNING.answers[LEARNING.lesson];renderLearn();$('study-answer')?.querySelector('input')?.focus({preventScroll:true});}
+  if(e.target.closest('[data-study-export]')){exportPage('embedded-lens-experiment.html');studyNotice='已导出实验网页，包含当前工程、预测记录及 A/B 数据。';studyError=false;renderLearn();}
+});
+$('view-learn').addEventListener('submit',e=>{if(e.target.id!=='study-answer')return;e.preventDefault();const choice=new FormData(e.target).get('study-choice'),q=studyQuestion();if(!q||!q.options.some(([id])=>id===choice))return;LEARNING.answers[LEARNING.lesson]={context:q.context,choice,submitted:true};renderLearn();$('study-answer').querySelector('button[type="submit"]').focus({preventScroll:true});});
+$('view-learn').addEventListener('change',async e=>{
+  const el=e.target;
+  if(el.id==='study-call'||el.id==='study-gpio'){LEARNING[el.id==='study-call'?'call':'gpio']=Number(el.value);renderLearn(el.id);return;}
+  if(el.name==='study-choice'){const q=studyQuestion();LEARNING.answers[LEARNING.lesson]={context:q.context,choice:el.value,submitted:false};$('study-answer').querySelector('.study-feedback')?.remove();return;}
+  if(el.dataset.studyFile&&el.files[0]){const slot=el.dataset.studyFile,file=el.files[0];try{const payload=await studyReadFile(file);LEARNING[slot]={name:file.name,payload};studyNotice=`已载入${slot==='before'?'修改前 A':'修改后 B'}：${file.name}`;studyError=false;}catch(err){studyNotice='未替换原有数据：'+err.message;studyError=true;}renderLearn('study-mode-compare');}
+});
+
 let replayTimer=null;
-function renderAll(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}refreshSnaps();renderTop();renderSched();renderReg();renderTerm();renderPlat();renderReplay();
+function renderAll(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}refreshSnaps();renderTop();renderLearn();renderSched();renderReg();renderTerm();renderPlat();renderReplay();
   const on=document.querySelector('.tab.on');if(on&&window.__enterView)window.__enterView($('view-'+on.dataset.v));}
 document.querySelector('.workbench-main').addEventListener('click',termClick);
 renderAll();
@@ -1856,15 +2316,77 @@ function init3D(){
     new T.MeshBasicMaterial({color:col(0x71b2c2),transparent:true,opacity:.16}));
   ring.rotation.x=-Math.PI/2+.26;ringGroup.add(ring);
 
-  const state={yaw:.56,pitch:.87,radius:420,zoom:1,lookX:0,lookY:0,auto:!RM2.matches,freeze:false,dragging:false,pinching:false};
+  const state={yaw:.56,pitch:.87,radius:420,zoom:1,lookX:0,lookY:0,auto:!RM2.matches,freeze:false,dragging:false,pinching:false,inspecting:false};
+  let renderHost=host,inspection=null,inspectionParts=null;
   function fit(){
-    const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
+    const w=renderHost.clientWidth,h=renderHost.clientHeight;if(!w||!h)return;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
-    const tan=Math.tan(16*Math.PI/180),half=178;
+    const tan=Math.tan(16*Math.PI/180),half=state.inspecting?66:178;
     state.radius=Math.max(half/tan,half/(tan*camera.aspect));
   }
   fit();
-  if(window.ResizeObserver)new ResizeObserver(fit).observe(host);
+  const sizeObserver=new ResizeObserver(fit);sizeObserver.observe(host);
+  function buildInspection(){
+    if(inspectionParts)return;
+    const group=new T.Group();group.name='inspection-core';group.position.set(-10,5,-4);group.visible=false;board.add(group);
+    const die=new T.Mesh(new T.BoxGeometry(19,1.4,19),new T.MeshStandardMaterial({color:col(0x184849),metalness:.65,roughness:.32}));group.add(die);
+    const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');
+    x.fillStyle='#123330';x.fillRect(0,0,512,512);x.strokeStyle='#458f7d';x.lineWidth=2;
+    for(let i=20;i<500;i+=20){x.beginPath();x.moveTo(i,0);x.lineTo(i,512);x.moveTo(0,i);x.lineTo(512,i);x.stroke();}
+    [[32,32,212,212,'CORE'],[270,32,210,130,'FLASH'],[270,188,210,292,'SRAM'],[32,270,212,210,'I/O']].forEach(q=>{
+      x.fillStyle='#142b2e';x.fillRect(q[0],q[1],q[2],q[3]);x.strokeStyle='#94ddba';x.strokeRect(q[0],q[1],q[2],q[3]);
+      x.fillStyle='#caf5d5';x.font='26px Consolas,monospace';x.fillText(q[4],q[0]+12,q[1]+40);
+    });
+    const tex=new T.CanvasTexture(c);tex.encoding=T.sRGBEncoding;
+    const surface=new T.Mesh(new T.PlaneGeometry(18.5,18.5),new T.MeshBasicMaterial({map:tex}));surface.rotation.x=-Math.PI/2;surface.position.y=.72;group.add(surface);
+    const points=[];
+    for(let side=0;side<4;side++)for(let i=0;i<6;i++){
+      const rotation=new T.Matrix4().makeRotationY(side*Math.PI/2),off=-7.5+i*3;
+      [[off,.6,9],[off,3,13],[off,3,13],[off,-1.2,19]].forEach(p=>points.push(new T.Vector3(...p).applyMatrix4(rotation)));
+    }
+    group.add(new T.LineSegments(new T.BufferGeometry().setFromPoints(points),new T.LineBasicMaterial({color:col(0xd8bf7c),transparent:true,opacity:.82})));
+    const focus=new T.Mesh(new T.PlaneGeometry(7,7),new T.MeshBasicMaterial({color:col(0xa4ffd7),transparent:true,opacity:.3,depthWrite:false}));
+    focus.rotation.x=-Math.PI/2;focus.position.y=.8;group.add(focus);
+    const shellMaterial=body.material.clone(),labelMaterial=top.material.clone();
+    [shellMaterial,labelMaterial].forEach(m=>{m.transparent=true;m.depthWrite=false;});
+    inspectionParts={group,focus,shellMaterial,labelMaterial};
+  }
+  function beginInspection(viewport){
+    if(inspection)return;
+    buildInspection();if(G)G.killTweensOf(state);clearTimeout(idle);pts.clear();
+    inspection={parent:canvas.parentNode,next:canvas.nextSibling,yaw:state.yaw,pitch:state.pitch,zoom:state.zoom,lookX:state.lookX,lookY:state.lookY,auto:state.auto,freeze:state.freeze,
+      boardPosition:board.position.clone(),boardRotation:board.rotation.clone(),bodyY:body.position.y,topY:top.position.y,bodyMaterial:body.material,topMaterial:top.material,castShadow:body.castShadow};
+    state.inspecting=true;state.dragging=false;state.pinching=false;state.auto=false;state.freeze=true;state.yaw=.62;state.pitch=.84;state.zoom=1;state.lookX=state.lookY=0;
+    board.position.set(0,0,0);board.rotation.set(0,0,0);body.castShadow=false;
+    body.material=inspectionParts.shellMaterial;top.material=inspectionParts.labelMaterial;body.material.emissive.setHex(0);
+    renderHost=viewport;viewport.appendChild(canvas);sizeObserver.observe(viewport);fit();
+  }
+  function setInspectionTarget(index){
+    if(!inspectionParts)return;
+    const locations=[[4.8,-6],[-4.8,-4.8],[4.8,3.5],[-4.8,4.8]];
+    inspectionParts.focus.position.set(locations[index][0],.8,locations[index][1]);
+  }
+  function setInspectionStep(step){
+    if(!inspection)return;
+    const open=step===1,parts=inspectionParts,targets=[body.position,top.position,body.material,top.material];
+    if(G)targets.forEach(t=>G.killTweensOf(t));
+    parts.group.visible=open;
+    const change=(target,values)=>{if(G&&!RM2.matches)G.to(target,{...values,duration:.7,ease:'power3.inOut',overwrite:true});else Object.assign(target,values);};
+    change(body.position,{y:inspection.bodyY+(open?34:0)});change(top.position,{y:inspection.topY+(open?34:0)});
+    change(body.material,{opacity:open?.18:1});change(top.material,{opacity:open?.25:1});
+    setInspectionTarget(0);
+  }
+  function endInspection(){
+    if(!inspection)return;
+    if(G)[body.position,top.position,body.material,top.material].forEach(t=>G.killTweensOf(t));
+    const saved=inspection;inspection=null;inspectionParts.group.visible=false;
+    body.position.y=saved.bodyY;top.position.y=saved.topY;body.material=saved.bodyMaterial;top.material=saved.topMaterial;body.castShadow=saved.castShadow;
+    board.position.copy(saved.boardPosition);board.rotation.copy(saved.boardRotation);
+    for(const k of ['yaw','pitch','zoom','lookX','lookY','auto','freeze'])state[k]=saved[k];
+    state.inspecting=false;targetZoom=state.zoom;state.dragging=false;state.pinching=false;pts.clear();
+    sizeObserver.unobserve(renderHost);saved.parent.insertBefore(canvas,saved.next);renderHost=host;canvas.style.cursor='grab';fit();
+    if(!state.auto)idle=setTimeout(()=>{state.auto=!RM2.matches;},2600);
+  }
 
   const ray=new T.Raycaster(),pt=new T.Vector2();
   let downX=0,downY=0,lastX=0,lastY=0,idle=null,targetZoom=1;
@@ -1891,11 +2413,13 @@ function init3D(){
     }else flashLed(kind==='key1'?led:led3,1);
   }
   function zoomTo(z){
+    if(state.inspecting)return;
     targetZoom=Math.max(.55,Math.min(2.3,z));
     if(G&&!RM2.matches)G.to(state,{zoom:targetZoom,duration:.32,ease:'power2.out',overwrite:'auto'});
     else state.zoom=targetZoom;
   }
   function resetView(){
+    if(state.inspecting)return;
     targetZoom=1;
     if(G&&!RM2.matches)G.to(state,{yaw:.56,pitch:.87,zoom:1,duration:.6,ease:'power3.inOut',overwrite:'auto'});
     else{state.yaw=.56;state.pitch=.87;state.zoom=1;}
@@ -1903,6 +2427,7 @@ function init3D(){
   const pts=new Map();let pinchDist=0,touchAxis=null;
   function twoDist(){const a=[...pts.values()];return a.length<2?0:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);}
   canvas.addEventListener('pointerdown',e=>{
+    if(state.inspecting)return;
     pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(canvas.setPointerCapture)canvas.setPointerCapture(e.pointerId);
     if(pts.size===2){state.pinching=true;state.dragging=false;state.auto=false;pinchDist=twoDist();clearTimeout(idle);}
@@ -1912,6 +2437,7 @@ function init3D(){
     }
   });
   canvas.addEventListener('pointermove',e=>{
+    if(state.inspecting)return;
     if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(state.pinching){
       if(pts.size>=2){const d=twoDist();if(d>0&&pinchDist>0)zoomTo(targetZoom*(pinchDist/d));pinchDist=d;}
@@ -1934,6 +2460,7 @@ function init3D(){
     }
   });
   function endDrag(e){
+    if(state.inspecting)return;
     pts.delete(e.pointerId);
     if(state.pinching){if(pts.size<2){state.pinching=false;idle=setTimeout(()=>{state.auto=!RM2.matches;},2600);}return;}
     if(!state.dragging)return;
@@ -1950,8 +2477,8 @@ function init3D(){
   canvas.addEventListener('pointerup',endDrag);
   canvas.addEventListener('pointercancel',endDrag);
   canvas.addEventListener('pointerleave',()=>{bodyMat.emissive.setHex(0x000000);canvas.style.cursor='grab';});
-  canvas.addEventListener('wheel',e=>{e.preventDefault();zoomTo(targetZoom*Math.exp(e.deltaY*.0011));},{passive:false});
-  canvas.addEventListener('dblclick',e=>{e.preventDefault();resetView();});
+  canvas.addEventListener('wheel',e=>{if(state.inspecting)return;e.preventDefault();zoomTo(targetZoom*Math.exp(e.deltaY*.0011));},{passive:false});
+  canvas.addEventListener('dblclick',e=>{e.preventDefault();if(!state.inspecting&&hitAt(e)!=='chip')resetView();});
   const zin=$('ldzin'),zout=$('ldzout'),zreset=$('ldzreset');
   if(zin)zin.addEventListener('click',()=>zoomTo(targetZoom/1.22));
   if(zout)zout.addEventListener('click',()=>zoomTo(targetZoom*1.22));
@@ -1959,15 +2486,16 @@ function init3D(){
 
   let prev=0;
   renderer.setAnimationLoop(t=>{
-    if(document.hidden||host.offsetParent===null)return;
+    if(document.hidden||renderHost.offsetParent===null)return;
     const dt=prev?Math.min(.06,(t-prev)/1000):0;prev=t;
     if(state.auto&&!state.dragging&&!state.freeze)state.yaw+=dt*.035;
     const yaw=state.yaw+state.lookX*.22,pitch=state.pitch+state.lookY*.07;
     const sp=Math.sin(pitch),rad=state.radius*state.zoom;
-    camera.position.set(rad*sp*Math.sin(yaw),rad*Math.cos(pitch)+12,rad*sp*Math.cos(yaw));
-    camera.lookAt(0,12,0);
+    const centerX=state.inspecting?-10:0,centerY=state.inspecting?18:12,centerZ=state.inspecting?-4:0;
+    camera.position.set(centerX+rad*sp*Math.sin(yaw),rad*Math.cos(pitch)+centerY,centerZ+rad*sp*Math.cos(yaw));
+    camera.lookAt(centerX,centerY,centerZ);
     if(!state.freeze&&!RM2.matches){board.position.y=Math.sin(t/2100)*.65;board.rotation.z=Math.sin(t/3200)*.005;ringGroup.rotation.y+=dt*.2;}
-    led.material.emissiveIntensity=state.freeze?.7+Math.sin(t/90)*.6:.7+Math.sin(t/700)*.35;
+    led.material.emissiveIntensity=state.freeze?.55:.7+Math.sin(t/700)*.35;
     led3.material.emissiveIntensity=.9;
     for(let i=fx.length-1;i>=0;i--){
       const f=fx[i];
@@ -1977,7 +2505,7 @@ function init3D(){
     renderer.render(scene,camera);
   });
   host.classList.add('gl-ok');
-  return {state:state,setLook(nx,ny){state.lookX=nx;state.lookY=ny;}};
+  return {state:state,beginInspection,setInspectionStep,setInspectionTarget,endInspection,setLook(nx,ny){if(!state.inspecting){state.lookX=nx;state.lookY=ny;}}};
 }
 const gl=init3D();
 
@@ -2030,7 +2558,7 @@ if(G&&!RM2.matches){
   const tx=G.quickTo('.ld-main','x',{duration:.9,ease:'power3.out'});
   const ty=G.quickTo('.ld-main','y',{duration:.9,ease:'power3.out'});
   landing.addEventListener('pointermove',e=>{
-    if(e.pointerType==='touch')return;
+    if(e.pointerType==='touch'||eggDialog.open)return;
     probe.style.opacity=1;xq(e.clientX-4.5);yq(e.clientY-4.5);
     const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;
     if(gl)gl.setLook(nx,ny);else{ry(nx*7);rx(-ny*6);}
@@ -2069,7 +2597,9 @@ function enterApp(ev){
     .to(iris,{opacity:0,duration:.5,ease:'power2.out'});
 }
 enterBtn.addEventListener('click',enterApp);
-document.addEventListener('keydown',e=>{if(!landing.hidden&&e.key==='Enter'){e.preventDefault();enterApp();}});
+document.addEventListener('keydown',e=>{
+  if(!landing.hidden&&!eggDialog.open&&e.key==='Enter'&&!e.target.closest('button,input,textarea,select,[contenteditable="true"]')){e.preventDefault();enterApp();}
+});
 
 function showLanding(){
   if(!landing.hidden)return;
@@ -2082,55 +2612,74 @@ function showLanding(){
 }
 home.addEventListener('click',showLanding);
 
-/* ---- 彩蛋：连点中央芯片 3 次，或键入 swd ---- */
-const stage=$('ldstage'),hit=$('ldhit'),trace=$('ldtrace'),scan=$('ldscan'),toast=$('ldeggtoast'),secret=$('ldsecret');
-let eggOn=false,eggTl=null,clicks=[];
-function eggOff(){
-  eggOn=false;
-  if(eggTl){eggTl.kill();eggTl=null;}
-  if(G){G.set([trace,toast],{opacity:0,clearProps:'transform'});if(secret)G.set(secret,{opacity:1});}
-  else{trace.style.opacity=0;toast.style.opacity=0;}
+const hit=$('ldhit'),eggDialog=$('eggdialog'),eggUnlock=$('eggunlock');
+const eggPhases=[
+  {title:'先让时间停下来。',body:'暂停的是这次演练中的执行过程。真正采样时，调试器短暂停核，给分散在内存里的信息拍一张尽量一致的快照。',state:'CORE / HALTED',caption:'HALT / 把时间停在这一拍',hint:'下一步将掀开模型外壳。真实 SWD 不需要拆开芯片。',symbol:'HALT → 一次观察窗口',detail:'暂停也会影响目标的运行。因此真实采样要记录暂停时长，并在读取结束后恢复目标。',next:'掀开芯片 · 下一步'},
+  {title:'先核身份，再读状态。',body:'外壳下是用于讲解的概念电路。选择下面的检查对象，看看“一个真实读数”需要哪些证据；这里不会生成假数据。',state:'SWD / INSPECTION',caption:'READ / 选择一个检查对象',hint:'高亮仅标记概念功能区，不代表真实硅片布局或 SWD 走线。',next:'合上芯片 · 恢复执行'},
+  {title:'让程序继续往前走。',body:'外壳重新合拢，观察窗口结束。真实采样器应恢复原先运行的目标，而不是让程序永远停在调试器里。',state:'CORE / RESUME',caption:'RESUME / 观察结束，恢复运行',hint:'你看到的是一拍，不是连续录像；两拍之间发生了什么，不能靠动画补出来。',symbol:'SNAPSHOT ≠ CONTINUOUS TRACE',detail:'只有身份已核验的真实快照，才能解释任务、tick 与引脚状态。进入工作台后，每个读数仍然需要来源。',next:'再拆一次 · 重新体验'}
+];
+const eggTargets=[
+  ['FLASH ↔ BUILD','先比对板上 Flash 与构建产物。身份不匹配就停止解释 RTOS 对象，不能拿另一份符号表“猜”这块板。'],
+  ['pxCurrentTCB','沿当前任务指针找到任务控制块，再结合这一份固件的结构偏移解释名字与优先级。没有内存快照，就不能知道选中了谁。'],
+  ['xTickCount','节拍计数必须从板上读取。动画的进度不是 tick，也不能用两次采样之间的时间猜测任务切换。'],
+  ['GPIO → ODR','寄存器定义来自 SVD，输出位来自实测。源码只负责确认引脚映射，高电平也不必然等于灯亮。']
+];
+let eggOn=false,eggStep=0,returnFocus=null,clicks=[],clickTimer=null,kbBuf='',lastKey=0;
+function resetEggClicks(){clearTimeout(clickTimer);clickTimer=null;clicks=[];eggUnlock.firstChild.nodeValue='芯片里藏了一个实验 ';}
+function chooseEggTarget(index){
+  document.querySelectorAll('[data-egg-target]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.eggTarget===index)));
+  $('eggsymbol').textContent=eggTargets[index][0];$('eggdetail').textContent=eggTargets[index][1];
+  if(gl)gl.setInspectionTarget(index);
+}
+function setEggStep(index){
+  if(!eggOn)return;eggStep=index;const phase=eggPhases[index];eggDialog.dataset.step=String(index);
+  document.querySelectorAll('[data-egg-step]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.eggStep===index)));
+  $('eggheading').textContent=phase.title;$('eggbody').textContent=phase.body;$('eggvisualstate').textContent=phase.state;
+  $('eggcaptiontitle').textContent=phase.caption;$('eggcaption').textContent=phase.hint;$('eggnext').textContent=phase.next;
+  $('eggtargets').hidden=index!==1;
+  if(gl)gl.setInspectionStep(index);
+  if(index===1)chooseEggTarget(0);else{$('eggsymbol').textContent=phase.symbol;$('eggdetail').textContent=phase.detail;}
+}
+function eggOff(restoreFocus=true){
+  if(!eggOn)return;eggOn=false;resetEggClicks();kbBuf='';
+  if(G){G.killTweensOf(eggDialog);G.set(eggDialog,{clearProps:'opacity,transform'});}
+  if(gl)gl.endInspection();
   ambient.forEach(t=>t.resume());if(marqTween)marqTween.resume();
-  stage.classList.remove('egg-on');
-  if(gl)gl.state.freeze=false;
+  if(eggDialog.open)eggDialog.close();
+  if(restoreFocus&&!landing.hidden){const target=returnFocus&&returnFocus.isConnected&&returnFocus!==document.body?returnFocus:eggUnlock;target.focus({preventScroll:true});}
+  returnFocus=null;
 }
 function eggPlay(){
-  if(eggOn||landing.hidden)return;eggOn=true;
-  stage.classList.add('egg-on');
-  if(gl)gl.state.freeze=true;
-  if(!G||RM2.matches){
-    if(G)G.set([trace,toast],{opacity:1});else{trace.style.opacity=1;toast.style.opacity=1;}
-    setTimeout(()=>{if(G)G.set([trace,toast],{opacity:0});else{trace.style.opacity=0;toast.style.opacity=0;}stage.classList.remove('egg-on');eggOn=false;},2600);return;}
-  ambient.forEach(t=>t.pause());if(marqTween)marqTween.pause();
-  const beats=[...trace.querySelectorAll('span')];
-  G.set([trace,toast],{opacity:1});
-  if(secret)G.to(secret,{opacity:0,duration:.2,overwrite:'auto'});
-  eggTl=G.timeline({onComplete:()=>{
-    eggTl=null;
-    const done=()=>eggOff();
-    if(RM2.matches)done();
-    else G.to([trace,toast],{opacity:0,duration:.45,ease:'power2.out',onComplete:done,overwrite:'auto'});
-  }});
-  eggTl.fromTo(beats,{opacity:0,y:6},{opacity:1,y:0,duration:.24,stagger:.5,ease:'power2.out'},0)
-    .fromTo(toast,{opacity:0,y:-6},{opacity:1,y:0,duration:.35,ease:'power2.out'},0)
-    .fromTo(scan,{xPercent:0},{xPercent:520,duration:.62,ease:'power1.inOut',repeat:2,repeatDelay:.3},.15)
-    .fromTo('#ldticks line.mj',{opacity:.3},{opacity:1,duration:.16,stagger:{each:.015,from:'random'},yoyo:true,repeat:1},.1)
-    .fromTo('.ld-core',{scale:1,opacity:1},{scale:5,opacity:0,duration:.7,ease:'power2.out',svgOrigin:'280 280'},.1)
-    .to({},{duration:1.5});
+  if(eggOn||landing.hidden||busy)return;
+  returnFocus=document.activeElement;eggOn=true;resetEggClicks();kbBuf='';
+  eggDialog.showModal();eggDialog.scrollTop=0;eggDialog.classList.toggle('has-webgl',!!gl);
+  ambient.forEach(t=>t.pause());if(marqTween)marqTween.pause();probe.style.opacity=0;
+  if(gl)gl.beginInspection($('eggviewport'));setEggStep(0);
+  if(G&&!RM2.matches)G.fromTo(eggDialog,{opacity:0,y:12},{opacity:1,y:0,duration:.35,ease:'power3.out',clearProps:'opacity,transform'});
 }
 function registerEggClick(){
-  const now=Date.now();clicks=clicks.filter(t=>now-t<1500);clicks.push(now);
-  if(clicks.length>=3){clicks=[];eggPlay();}
+  if(eggOn||landing.hidden)return;
+  const now=performance.now();clicks=clicks.filter(t=>now-t<1500);clicks.push(now);clearTimeout(clickTimer);
+  if(clicks.length>=3){eggPlay();return;}
+  eggUnlock.firstChild.nodeValue='再点芯片 '+(3-clicks.length)+' 次，进入实验 ';
+  clickTimer=setTimeout(resetEggClicks,1500);
 }
 if(hit)hit.addEventListener('click',registerEggClick);
-let kbBuf='';
+eggUnlock.addEventListener('click',eggPlay);
+$('eggclose').addEventListener('click',()=>eggOff());
+eggDialog.addEventListener('cancel',e=>{e.preventDefault();eggOff();});
+eggDialog.addEventListener('close',()=>{if(!eggDialog.open)eggOff();});
+$('eggnext').addEventListener('click',()=>setEggStep((eggStep+1)%3));
+document.querySelectorAll('[data-egg-step]').forEach(b=>b.addEventListener('click',()=>setEggStep(+b.dataset.eggStep)));
+document.querySelectorAll('[data-egg-target]').forEach(b=>b.addEventListener('click',()=>chooseEggTarget(+b.dataset.eggTarget)));
+$('eggworkspace').addEventListener('click',()=>{eggOff(false);document.querySelector('.tab[data-v="sched"]').click();enterApp();});
 document.addEventListener('keydown',e=>{
-  if(landing.hidden||e.metaKey||e.ctrlKey||e.altKey)return;
-  if(e.key&&e.key.length===1){kbBuf=(kbBuf+e.key.toLowerCase()).slice(-6);
-    if(kbBuf.endsWith('swd')){kbBuf='';eggPlay();}}
+  if(landing.hidden||eggDialog.open||e.metaKey||e.ctrlKey||e.altKey||e.repeat||e.isComposing||e.target.isContentEditable||e.target.closest('input,textarea,select'))return;
+  if(e.key&&e.key.length===1){const now=performance.now();kbBuf=now-lastKey>1500?'':kbBuf;lastKey=now;kbBuf=(kbBuf+e.key.toLowerCase()).slice(-3);
+    if(kbBuf==='swd')eggPlay();}
 });
 
-const deep=['sched','reg','term','plat','replay'].some(v=>location.hash==='#'+v);
+const deep=TABS.some(([v])=>location.hash==='#'+v);
 if(deep){landing.hidden=true;document.body.classList.remove('landing-on');setAppHidden(false);if(window.__appIntro)window.__appIntro();}
 else{setAppHidden(true);landingIn();}
 })();
@@ -2273,20 +2822,17 @@ function elfFlash(buf,flashBase,flashSize){
 /* ---- 术语卡（通用生成，不写死任务名）---- */
 function buildTerms(facts){
   const terms=[];const cfg=facts.config.configTICK_RATE_HZ;const tick=cfg?cfg.value:null;
-  for(const d of facts.delay_calls){if(!tick)continue;const sec=d.ticks/tick;const secStr=String(+sec.toFixed(6));
+  for(const d of facts.delay_calls){if(!Number.isFinite(tick)||tick<=0)continue;const sec=d.ticks/tick;const secStr=String(+sec.toFixed(6));
     terms.push({kind:'delay',title:'vTaskDelay('+d.ticks+')',source:{file:d.file,line:d.line,fn:d.in_fn},
       passed:authoritative(d.ticks,d.file,null,d.line),decider:authoritative(tick,cfg.file,null,cfg.line),
       derived:derived(Math.round(sec*1e4)/1e4,d.ticks+' tick ÷ '+tick+' Hz ≈ '+secStr+' s',{ticks:d.ticks,hz:tick}),
       visible:'延时链表中的实测到期 tick（采样后可见）',links:{config:'configTICK_RATE_HZ',graph:'delayed'}});}
-  const groups={};
-  for(const w of facts.gpio_writes){const k=w.in_fn+'|'+w.pin_macro;(groups[k]=groups[k]||[]).push(w);}
-  for(const k in groups){const ws=groups[k];const states=new Set(ws.map(w=>w.state));
-    if(ws.length>=2&&states.size===1){const st=[...states][0];const fn=ws[0].in_fn,pin=ws[0].pin_macro;
-      const sem=st==='GPIO_PIN_SET'?'置位操作（写 1）':st==='GPIO_PIN_RESET'?'复位操作（写 0）':'按 HAL 定义的写入';
-      terms.push({kind:'gpio_dual',title:fn+': '+ws.length+' 处写入都是 '+st,
-        writes:ws.map(w=>({file:w.file,line:w.line,state:w.state,pin_macro:w.pin_macro})),
-        note:st+' 表示'+sem+'，置哪一位由 pin 参数决定（'+pin+'），不可混淆。同函数内所有写入状态相同 → 引脚电平不会切换。',
-        links:{graph:'register'}});}}
+  const groups=new Map();
+  for(const w of facts.gpio_writes){const k=JSON.stringify([w.in_fn,w.port_macro,w.pin_macro]);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(w);}
+  for(const ws of groups.values()){if(ws.length<2)continue;const states=[...new Set(ws.map(w=>w.state))];
+    terms.push({kind:'gpio_dual',title:(ws[0].in_fn||'未识别函数')+': '+ws.length+' 处已识别写入 · '+states.join(' / '),
+      writes:ws.map(w=>({file:w.file,line:w.line,in_fn:w.in_fn,port_macro:w.port_macro,state:w.state,pin_macro:w.pin_macro})),
+      note:'调用存在不等于实际执行；其他任务、中断、Toggle/直接寄存器写和硬件接法未覆盖，不能证明电平恒定或周期闪烁。',links:{graph:'register'}});}
   return terms;
 }
 
@@ -2374,23 +2920,14 @@ $('impgo').addEventListener('click',async()=>{
 });
 
 /* ---- 导出 / 恢复 ---- */
-function download(name,text,type){const blob=new Blob([text],{type:type+';charset=utf-8'});const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
-$('impexphtml').addEventListener('click',()=>{
-  const clone=document.documentElement.cloneNode(true);
-  ['#impwrap','#prov','#scrim'].forEach(s=>{const el=clone.querySelector(s);if(el)el.classList.remove('on');});
-  let html='<!DOCTYPE html>\n'+clone.outerHTML;
-  const json=JSON.stringify(LENS).replace(/</g,'\\u003c');
-  html=html.replace(/let LENS = [^\n]*;\nconst STATE=/,'let LENS = '+json+';\nconst STATE=');
-  download('embedded-lens-imported.html',html,'text/html');
-  status('已导出单文件 HTML（内嵌当前导入数据，双击离线打开）。','ok');
-});
+$('impexphtml').addEventListener('click',()=>{exportPage('embedded-lens-imported.html');status('已导出单文件 HTML（含当前工程与实验记录，双击离线打开）。','ok');});
 $('impexpjson').addEventListener('click',()=>{download('payload.json',JSON.stringify(LENS,null,1),'application/json');status('已导出 payload.json。','ok');});
 $('f_json').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
-  try{const p=JSON.parse(await f.text());
-    if(!p.device||!p.build||!p.structure)throw new Error('不是有效的 EmbeddedLens payload');
-    p.concepts=p.concepts||CONCEPTS;p.honesty=p.honesty||HONESTY;p.snapshots=p.snapshots||[];p.terms=p.terms||[];
-    LENS=p;renderAll();$('impexphtml').disabled=false;$('impexpjson').disabled=false;
+  try{const p=await studyReadFile(f);
+    p.concepts=p.concepts||CONCEPTS;p.honesty=p.honesty||HONESTY;p.terms=buildTerms(p.facts);
+    const previous=LENS;LENS=p;
+    try{renderAll();}catch(err){LENS=previous;renderAll();throw err;}
+    $('impexphtml').disabled=false;$('impexpjson').disabled=false;
     status('✓ 已载入 payload.json 并渲染。','ok');$('impwrap').classList.remove('on');
   }catch(err){status('✗ 导入 payload 失败：'+err.message,'err');}});
 function resetFiles(){IMP.files={};IMP.svdDoc=null;IMP.peripherals=[];
@@ -2407,6 +2944,102 @@ $('impopen').addEventListener('click',()=>{closeProv();hideGl();$('glwrap').clas
 $('impclose').addEventListener('click',()=>$('impwrap').classList.remove('on'));
 $('impwrap').addEventListener('click',e=>{if(e.target===$('impwrap'))$('impwrap').classList.remove('on');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('impwrap').classList.remove('on');});
+})();
+
+/* ---- 一键读取：本机 bridge。静态页不能直接访问 ST-LINK，桥接只读采样 ---- */
+(function(){
+const READ_URL='http://127.0.0.1:8765';
+const LOCAL_ORIGIN=(location.hostname==='127.0.0.1'||location.hostname==='localhost')?location.origin:null;
+const BRIDGE_CANDIDATES=[...new Set([LOCAL_ORIGIN,READ_URL].filter(Boolean))];
+let BRIDGE=BRIDGE_CANDIDATES[0];
+const COPY_CMD='python tools\\elens_bridge.py';
+let health=null,busy=false;
+function readStatus(msg,cls){const el=$('readstatus');if(!el)return;el.textContent=msg;el.className='read-status'+(cls?' '+cls:'');}
+async function bridgeFetch(base,path,opts,ms){
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),ms||2500);
+  try{
+    const res=await fetch(base+path,{cache:'no-store',...opts,signal:ctrl.signal,headers:{'Content-Type':'application/json',...((opts&&opts.headers)||{})}});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data.error||('HTTP '+res.status));
+    return data;
+  }finally{clearTimeout(timer);}
+}
+async function bridgeConnect(){
+  readStatus('正在连接本机桥接…','busy');
+  let found=null;
+  for(const base of BRIDGE_CANDIDATES){
+    try{const h=await bridgeFetch(base,'/health',{},3000);if(h&&h.app==='EmbeddedLens bridge'){found={base,h};break;}}catch(e){}
+  }
+  if(!found){
+    health=null;$('readgo').disabled=true;$('readcmd').classList.add('on');
+    readStatus('未检测到本机桥接。'+(location.protocol==='https:'?'线上页面若被浏览器拦截，请点「打开本机页面」。':'')+'\n请在本机运行下面的启动命令，然后点「重试连接」。','err');
+    return;
+  }
+  BRIDGE=found.base;health=found.h;
+  const ready=(health.examples||[]).filter(x=>x.ready);
+  const sel=$('read-example'),want=sel.value||(LENS.meta&&LENS.meta.example)||health.default;
+  sel.innerHTML=ready.length?ready.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join(''):'<option value="">没有可用工程</option>';
+  if(ready.some(x=>x.name===want))sel.value=want;
+  else if(health.default&&ready.some(x=>x.name===health.default))sel.value=health.default;
+  const toolOk=!!(health.tools&&health.tools.openocd_exists),scriptOk=!!(health.tools&&health.tools.scripts_exists);
+  $('readgo').disabled=busy||!ready.length||!toolOk||!scriptOk;
+  $('readcmd').classList.remove('on');
+  if(!toolOk||!scriptOk)readStatus('桥接已连接，但工具不完整：'+(toolOk?'':'OpenOCD 未找到。')+(scriptOk?'':'OpenOCD scripts 未找到。')+'请检查安装路径或启动参数。','err');
+  else readStatus(`本机桥接已连接 · ${ready.length} 个工程就绪。\n探针连接状态将在读取时检测；读取只读，不写内存、不烧录。`,'ok');
+}
+function openRead(){
+  closeProv();hideGl();$('glwrap').classList.remove('on');
+  $('readwrap').classList.add('on');
+  bridgeConnect();
+  setTimeout(()=>$('read-example').focus({preventScroll:true}),60);
+}
+document.addEventListener('click',e=>{
+  const op=e.target.closest('#readopen,[data-readopen]');
+  if(op){e.preventDefault();openRead();return;}
+  if(e.target.closest('#readclose')){$('readwrap').classList.remove('on');return;}
+  if(e.target===$('readwrap'))$('readwrap').classList.remove('on');
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('readwrap').classList.remove('on');});
+$('readretry').addEventListener('click',bridgeConnect);
+$('readcopy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(COPY_CMD);readStatus('启动命令已复制。','ok');}
+  catch(e){readStatus('复制失败，请手动执行：\n'+COPY_CMD,'err');}
+});
+$('readgo').addEventListener('click',async()=>{
+  if(busy)return;
+  const example=$('read-example').value;
+  if(!example){readStatus('请先选择工程，并确认本机桥接已连接。','err');return;}
+  const frames=Math.max(1,Math.min(20,parseInt($('read-frames').value,10)||5));
+  const interval=Math.max(0,Math.min(10,parseFloat($('read-interval').value)||0));
+  busy=true;$('readgo').disabled=true;$('readretry').disabled=true;
+  readStatus(`正在读取 ${example}：${frames} 帧，请求间隔 ${interval} s。\n目标会短暂停核并立即恢复；不写内存、不烧录、不复位。请勿拔线。`,'busy');
+  try{
+    const timeout=Math.min(300000,(frames*(interval+4)+20)*1000);
+    const r=await bridgeFetch(BRIDGE,'/sample',{method:'POST',body:JSON.stringify({example,frames,interval})},timeout);
+    if(r.payload)LENS=r.payload;
+    else{
+      const got=Array.isArray(r.snapshots)?r.snapshots:[],ids=new Set((LENS.snapshots||[]).map(s=>s.id));
+      for(const s of got)if(!ids.has(s.id)){LENS.snapshots.push(s);ids.add(s.id);}
+      const verified=[...LENS.snapshots].reverse().find(s=>s.identity&&s.identity.status==='verified');
+      const mismatch=[...LENS.snapshots].reverse().find(s=>s.identity&&s.identity.status==='mismatch');
+      LENS.identity=verified?verified.identity:(mismatch?mismatch.identity:{status:'no-sample',reason:'尚未采集板上数据'});
+    }
+    refreshSnaps();renderAll();
+    if(r.ok){
+      const sum=r.summary||{};
+      readStatus(`读取完成：${sum.valid??0} 个有效帧 / ${sum.frames??0} 帧。\n页面已更新，正在打开调度快照。`+(sum.exported===false?'\n本机页面文件重建失败，可仍用页面内「导出网页」。':''),'ok');
+      $('readwrap').classList.remove('on');
+      document.querySelector('.tab[data-v="sched"]').click();
+    }else{
+      const d=(r.summary&&r.summary.diagnostic)||{};
+      readStatus(`未产出有效帧${d.stage?`（${d.stage}/${d.code}）`:''}：${d.message||r.error||'请查看采样诊断。'}\n失败帧已记录，页面不会编造数据。`,'err');
+    }
+  }catch(e){
+    readStatus('读取失败：'+e.message+'\n请确认本机桥接在运行、ST-LINK 已连接且未被 Keil 独占。','err');
+  }finally{
+    busy=false;$('readgo').disabled=false;$('readretry').disabled=false;
+  }
+});
 })();
 </script></body></html>"""
 

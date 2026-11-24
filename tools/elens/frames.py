@@ -20,21 +20,21 @@ def build_terms(facts, structure):
                 "visible": "延时链表中的实测到期 tick（采样后可见）",
                 "links": {"config": "configTICK_RATE_HZ", "graph": "delayed"},
             })
-    # GPIO 同状态多处写入：同一函数内多处写同一状态 → 输出为何不变（通用，按 fn+pin 分组）
-    by_fn_pin = {}
+    # 只归纳同一函数/端口宏/引脚宏中已识别的写入，不推断实际执行或电平变化。
+    by_fn_port_pin = {}
     for w in facts["gpio_writes"]:
-        by_fn_pin.setdefault((w["in_fn"], w["pin_macro"]), []).append(w)
-    for (fn, pin), ws in by_fn_pin.items():
-        states = {w["state"] for w in ws}
-        if len(ws) >= 2 and len(states) == 1:
-            st = next(iter(states))
-            sem = "置位操作（写 1）" if st == "GPIO_PIN_SET" else "复位操作（写 0）" if st == "GPIO_PIN_RESET" else "按 HAL 定义的写入"
+        by_fn_port_pin.setdefault((w["in_fn"], w["port_macro"], w["pin_macro"]), []).append(w)
+    for (fn, port, pin), ws in by_fn_port_pin.items():
+        if len(ws) >= 2:
+            states = " / ".join(dict.fromkeys(w["state"] for w in ws))
             terms.append({
-                "kind": "gpio_dual", "title": f"{fn}: {len(ws)} 处写入都是 {st}",
-                "writes": [{"file": w["file"], "line": w["line"], "state": w["state"],
-                            "pin_macro": w["pin_macro"]} for w in ws],
-                "note": f"{st} 表示{sem}，置哪一位由 pin 参数决定（{pin}），不可混淆。"
-                        "同函数内所有写入状态相同 → 引脚电平不会切换。",
+                "kind": "gpio_dual", "title": f"{fn} / {port} / {pin}: 已识别 {len(ws)} 处写入（{states}）",
+                "writes": [{"file": w["file"], "line": w["line"], "in_fn": w["in_fn"],
+                            "port_macro": w["port_macro"], "pin_macro": w["pin_macro"],
+                            "state": w["state"]} for w in ws],
+                "notice": f"仅统计 {fn} 中端口宏 {port}、引脚宏 {pin} 的已识别写入；状态参数：{states}。",
+                "note": "调用存在不等于实际执行；其他任务、中断、Toggle/直接寄存器写和硬件接法未覆盖，"
+                        "不能证明电平恒定或周期闪烁。",
                 "links": {"graph": "register"},
             })
     return terms
