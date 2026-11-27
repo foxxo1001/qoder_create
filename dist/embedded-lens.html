@@ -2093,7 +2093,7 @@ function init3D(){
       const housingMatrix=new T.Matrix4().makeScale((i===0||i===23)?.72:1,1,1);housingMatrix.setPosition(x,4.7,z);
       headerBody.setMatrixAt(index,housingMatrix);
       headerPins.setMatrixAt(index,new T.Matrix4().makeTranslation(x,8.7,z));
-      headerTips.setMatrixAt(index,new T.Matrix4().makeTranslation(x,11.85,z));
+      headerTips.setMatrixAt(index,new T.Matrix4().makeTranslation(x,11.83,z));
     }
   });
   [headerBody,headerPins,headerTips].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.castShadow=true;board.add(m);});
@@ -2137,7 +2137,7 @@ function init3D(){
     [-1,1].forEach(sign=>{
       const vent=box(5.7,.08,.22,blackMat,q[0],12.72,q[1]);vent.rotation.y=sign*Math.PI/4;vent.castShadow=false;
     });
-    box(1,6,.5,silkMat,q[0]+4.2,7.7,q[1]);
+    box(.5,6,.9,silkMat,q[0]+4.76,7.7,q[1]);
   });
   /* 电源拨动开关 */
   box(10,3,6,blackMat,-134,4.7,48);
@@ -2146,7 +2146,7 @@ function init3D(){
     box(size,.4,size,blackMat,x,3.4,z);
     const well=new T.Path();well.absarc(0,0,2.7,0,Math.PI*2,true);
     const base=new T.Mesh(roundedGeometry(size,2.65,size,.55,[well]),blackMat);
-    base.name='switch-housing';base.position.set(x,4.925,z);base.castShadow=true;board.add(base);
+    base.name='switch-housing';base.position.set(x,4.93,z);base.castShadow=true;board.add(base);
     const aperture=new T.Path();aperture.absarc(0,0,radius>2?2.6:2.25,0,Math.PI*2,true);
     const lid=new T.Mesh(roundedGeometry(size-.8,.4,size-.8,.5,[aperture]),canMat);
     lid.name='switch-cover';lid.position.set(x,6.45,z);lid.castShadow=true;board.add(lid);
@@ -2165,7 +2165,7 @@ function init3D(){
   cyl(2,2,1,canMat,62,9.7,50);
   box(2.6,.4,.6,blackMat,62,10.3,50);
   box(19.6,.55,16.2,blackMat,52,3.475,14);
-  box(12,.9,10,blackMat,50,4.2,14);
+  box(12,.9,10,blackMat,50,4.205,14);
   [6,22].forEach(z=>box(20,2.6,.5,canMat,52,4.9,z));
   box(.5,2.6,16,canMat,42.25,4.9,14);
   const sdWindows=[-4.8,4.8].map(z=>{
@@ -2184,7 +2184,7 @@ function init3D(){
     const x=36-3+i*2;
     [-29.5,-22.5].forEach(z=>box(.8,.7,2.4,tinMat,x,3.6,z));
   }
-  box(12,1.25,9,whiteMat,-134,3.825,32);
+  box(12,1.25,9,whiteMat,-134,3.82,32);
   const jstCavity=new T.Path();jstCavity.moveTo(-4.9,-3.1);jstCavity.lineTo(-4.9,3.1);jstCavity.lineTo(4.9,3.1);jstCavity.lineTo(4.9,-3.1);jstCavity.closePath();
   const jst=new T.Mesh(roundedGeometry(12,4.7,9,.55,[jstCavity]),whiteMat);
   jst.name='jst-housing';jst.position.set(-134,6.8,32);jst.castShadow=true;board.add(jst);
@@ -2196,8 +2196,9 @@ function init3D(){
   const indMat=new T.MeshStandardMaterial({color:col(0x3a3f45),roughness:.5,metalness:.3});
   const tantMat=new T.MeshStandardMaterial({color:col(0xc9a13a),roughness:.45,metalness:.25});
   function smd(x,z,mat,w,d,h){
-    box(w,h,d,mat,x,3.2+h/2,z);
-    [-1,1].forEach(sx=>box(w*.24,h+.2,d+.2,tinMat,x+sx*(w/2-w*.12),3.2+h/2,z));
+    const y=3.19+h/2;
+    box(w,h,d,mat,x,y,z);
+    [-1,1].forEach(sx=>box(w*.24,h+.2,d+.2,tinMat,x+sx*(w/2-w*.12+.05),y,z));
   }
   function res(x,z){smd(x,z,resMat,7.5,3.7,1.8);}
   function cap(x,z){smd(x,z,mlccMat,7.5,3.7,2);}
